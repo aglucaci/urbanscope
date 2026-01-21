@@ -47,6 +47,10 @@ import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
 from typing import Any, Dict, Iterable, List, Optional, Set, Tuple
+import random
+import socket
+import http.client
+import urllib.error
 
 EUTILS = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
 
@@ -141,10 +145,54 @@ STUDY_TYPE_RULES = [
 # -------------------------
 # HTTP / NCBI helpers
 # -------------------------
-def http_get(url: str, timeout: int = 30) -> bytes:
-    req = urllib.request.Request(url, headers={"User-Agent": "urbanscope/1.0"})
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
-        return resp.read()
+def http_get(url: str, timeout: int = 30, retries: int = 6, base_sleep: float = 0.8) -> bytes:
+    """
+    Robust GET with retries/backoff for flaky upstream (e.g., NCBI E-utilities).
+
+    Retries on:
+      - RemoteDisconnected
+      - timeout / socket errors
+      - HTTP 429/500/502/503/504
+      - transient URLError
+    """
+    last_err = None
+
+    for attempt in range(retries):
+        try:
+            # NCBI asks for identifying UA; keep it stable.
+            req = urllib.request.Request(
+                url,
+                headers={
+                    "User-Agent": "urbanscope/1.0 (GitHub Actions; contact: none)",
+                    "Accept": "application/xml,text/xml,application/json;q=0.9,*/*;q=0.8",
+                },
+            )
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                data = resp.read()
+                # Small guard: if upstream returns empty, treat as retryable
+                if not data:
+                    raise urllib.error.URLError("Empty response body")
+                return data
+
+        except (http.client.RemoteDisconnected, TimeoutError, socket.timeout, ConnectionResetError) as e:
+            last_err = e
+
+        except urllib.error.HTTPError as e:
+            # Retry on transient server/rate-limit errors
+            if e.code in (429, 500, 502, 503, 504):
+                last_err = e
+            else:
+                raise
+
+        except urllib.error.URLError as e:
+            # Often transient network issues; retry
+            last_err = e
+
+        # Exponential backoff + jitter
+        sleep_s = base_sleep * (2 ** attempt) + random.uniform(0, 0.25)
+        time.sleep(sleep_s)
+
+    raise RuntimeError(f"HTTP GET failed after {retries} retries. Last error: {last_err}")
 
 
 def esearch(db: str, term: str, mindate: str, maxdate: str, retmax: int, sort: str) -> List[str]:
