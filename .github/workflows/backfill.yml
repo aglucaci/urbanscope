@@ -1,16 +1,12 @@
-name: UrbanScope Historical Backfill (Date Range)
+name: UrbanScope Historical Backfill (Year)
 
 on:
   workflow_dispatch:
     inputs:
-      start:
-        description: "Start date (YYYY-MM-DD)"
+      year:
+        description: "Year to backfill (e.g. 2018)"
         required: true
-        default: "2018-01-01"
-      end:
-        description: "End date (YYYY-MM-DD)"
-        required: true
-        default: "2018-12-31"
+        default: "2018"
       max_per_day:
         description: "Max results per day"
         required: true
@@ -29,11 +25,10 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Run historical backfill (date range)
+      - name: Run historical backfill (year)
         run: |
           python scripts/urbanscope_radar.py backfill-year \
-            --start "${{ inputs.start }}" \
-            --end "${{ inputs.end }}" \
+            --year "${{ inputs.year }}" \
             --max-per-day "${{ inputs.max_per_day }}"
 
       - name: Commit & push backfill results
@@ -41,5 +36,5 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add data/ docs/
-          git commit -m "UrbanScope backfill ${{ inputs.start }} → ${{ inputs.end }}" || echo "No changes"
+          git commit -m "UrbanScope backfill year ${{ inputs.year }}" || echo "No changes"
           git push
