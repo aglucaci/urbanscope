@@ -1,4 +1,4 @@
-name: UrbanScope Backfill (Year)
+name: UrbanScope Historical Backfill (Date Range)
 
 on:
   workflow_dispatch:
@@ -29,9 +29,9 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Run historical backfill chunk
+      - name: Run historical backfill (date range)
         run: |
-          python scripts/urbanscope_radar.py backfill \
+          python scripts/urbanscope_radar.py backfill-year \
             --start "${{ inputs.start }}" \
             --end "${{ inputs.end }}" \
             --max-per-day "${{ inputs.max_per_day }}"
@@ -41,5 +41,5 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add data/ docs/
-          git commit -m "Panopticon backfill ${{ inputs.start }} to ${{ inputs.end }}" || echo "No changes"
+          git commit -m "UrbanScope backfill ${{ inputs.start }} → ${{ inputs.end }}" || echo "No changes"
           git push
