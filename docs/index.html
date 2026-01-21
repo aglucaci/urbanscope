@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Panopticon</title>
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Arial;max-width:980px;margin:40px auto;padding:0 16px}
+    .muted{color:#666}
+    .card{border:1px solid #eee;border-radius:14px;padding:14px;margin:10px 0}
+    a{text-decoration:none} a:hover{text-decoration:underline}
+    code{background:#f2f2f2;padding:2px 6px;border-radius:6px}
+  </style>
+</head>
+<body>
+  <h1>Panopticon</h1>
+  <p class="muted">Urban metagenomics & metatranscriptomics dataset radar. Updated daily.</p>
+  <p id="meta" class="muted">Loading…</p>
+  <div id="list"></div>
+
+<script>
+(async () => {
+  const res = await fetch("latest.json", {cache: "no-store"});
+  const data = await res.json();
+  document.getElementById("meta").textContent =
+    `Updated (UTC): ${data.generated_at_utc} • Added records this run: ${data.added_records}`;
+
+  const el = document.getElementById("list");
+  const records = data.records || [];
+  if (!records.length) {
+    el.innerHTML = "<p class='muted'>No new linked datasets in this window.</p>";
+    return;
+  }
+
+  el.innerHTML = records.slice().reverse().map(r => {
+    const src = r.source || "";
+    const paper = r.paper ? `<div><a href="${r.paper}" target="_blank"><b>Paper</b></a></div>` : "";
+    const sra = r.sra_link ? `<div><a href="${r.sra_link}" target="_blank"><b>Dataset</b></a></div>` : (r.sra_link || "");
+    const uid = r.sra_uid ? `<div class="muted">SRA UID: <code>${r.sra_uid}</code></div>` : "";
+    const title = r.title ? `<div style="margin-top:6px">${r.title}</div>` : "";
+    return `<div class="card">
+      <div class="muted">${src}</div>
+      ${paper}
+      ${sra}
+      ${uid}
+      ${title}
+    </div>`;
+  }).join("");
+})();
+</script>
+</body>
+</html>
