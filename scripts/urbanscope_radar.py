@@ -340,6 +340,9 @@ def run_day(query: str, day: dt.date, retmax: int, seen: Set[str]) -> Tuple[List
             title = s.get("title", "") or ""
             stype = classify_study_type(title)
             city, country = extract_city_country(title)
+            # Enforce location requirement
+            if not city or not country:
+                continue 
             if uid:
                 new_records.append(
                     {
@@ -373,6 +376,9 @@ def run_day(query: str, day: dt.date, retmax: int, seen: Set[str]) -> Tuple[List
             # You can enrich later by efetch PubMed titles if you want.
             stype = classify_study_type(query)
             city, country = extract_city_country(query)
+            # Enforce: must have BOTH city and country
+            if not city or not country:
+                continue
             new_records.append(
                 {
                     "source": "pubmed_elink_sra",
