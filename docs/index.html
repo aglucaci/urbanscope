@@ -3,49 +3,112 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Panopticon</title>
+  <title>UrbanScope</title>
   <style>
-    body{font-family:system-ui,Segoe UI,Roboto,Arial;max-width:980px;margin:40px auto;padding:0 16px}
+    body{font-family:system-ui,Segoe UI,Roboto,Arial;max-width:980px;margin:40px auto;padding:0 16px;line-height:1.55}
     .muted{color:#666}
+    .controls{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
+    input,select{padding:10px;border:1px solid #ddd;border-radius:10px}
     .card{border:1px solid #eee;border-radius:14px;padding:14px;margin:10px 0}
     a{text-decoration:none} a:hover{text-decoration:underline}
     code{background:#f2f2f2;padding:2px 6px;border-radius:6px}
+    .tag{display:inline-block;background:#f3f3f3;border-radius:999px;padding:3px 10px;font-size:.85em;margin-left:8px;color:#444}
   </style>
 </head>
 <body>
-  <h1>Panopticon</h1>
-  <p class="muted">Urban metagenomics & metatranscriptomics dataset radar. Updated daily.</p>
-  <p id="meta" class="muted">Loading…</p>
+  <h1>UrbanScope <span class="tag">urban metagenomics • metatranscriptomics</span></h1>
+  <p class="muted">Daily dataset radar (PubMed ↔ SRA) with best-effort city/country + study-type classification.</p>
+  <p class="muted" id="meta">Loading…</p>
+  <p>
+    <a href="archive/index.html">Browse archive by year</a> ·
+    <a href="archive/csv/latest_added.csv">Download latest_added.csv</a>
+  </p>
+
+  <div class="controls">
+    <input id="q" placeholder="Search titles/links…" style="flex:1;min-width:220px"/>
+    <select id="stype">
+      <option value="">All study types</option>
+      <option value="wastewater">wastewater</option>
+      <option value="air">air</option>
+      <option value="surface">surface</option>
+      <option value="other">other</option>
+    </select>
+    <input id="city" placeholder="City filter" style="min-width:180px"/>
+    <input id="country" placeholder="Country filter" style="min-width:180px"/>
+  </div>
+
   <div id="list"></div>
 
 <script>
 (async () => {
-  const res = await fetch("latest.json", {cache: "no-store"});
+  const res = await fetch("latest.json", {cache:"no-store"});
   const data = await res.json();
-  document.getElementById("meta").textContent =
-    `Updated (UTC): ${data.generated_at_utc} • Added records this run: ${data.added_records}`;
+  const meta = document.getElementById("meta");
+  meta.textContent = `Updated (UTC): ${data.generated_at_utc} • Added records this run: ${data.added_records}`;
 
-  const el = document.getElementById("list");
   const records = data.records || [];
-  if (!records.length) {
-    el.innerHTML = "<p class='muted'>No new linked datasets in this window.</p>";
-    return;
+  const list = document.getElementById("list");
+
+  const qEl = document.getElementById("q");
+  const sEl = document.getElementById("stype");
+  const cEl = document.getElementById("city");
+  const kEl = document.getElementById("country");
+
+  function norm(x){ return (x||"").toString().toLowerCase(); }
+
+  function render(){
+    const q = norm(qEl.value);
+    const st = norm(sEl.value);
+    const city = norm(cEl.value);
+    const country = norm(kEl.value);
+
+    const filtered = records.filter(r => {
+      const blob = norm((r.title||"") + " " + (r.paper||"") + " " + (r.sra_link||""));
+      const okQ = !q || blob.includes(q);
+      const okS = !st || norm(r.study_type) === st;
+      const okC = !city || norm(r.city).includes(city);
+      const okK = !country || norm(r.country).includes(country);
+      return okQ && okS && okC && okK;
+    });
+
+    if (!filtered.length) {
+      list.innerHTML = "<p class='muted'>No records match filters for this run.</p>";
+      return;
+    }
+
+    list.innerHTML = filtered.slice().reverse().map(r => {
+      const src = r.source || "";
+      const st = r.study_type ? `<span class="tag">${r.study_type}</span>` : "";
+      const loc = [r.city, r.country].filter(Boolean).join(", ");
+      const locHtml = loc ? `<div class="muted" style="margin-top:6px">📍 ${loc}</div>` : "";
+      const title = r.title ? `<div style="margin-top:8px">${r.title}</div>` : "";
+      const paper = r.paper ? `<div><a href="${r.paper}" target="_blank"><b>Paper</b></a></div>` : "";
+      const dataset = r.sra_link ? `<div><a href="${r.sra_link}" target="_blank"><b>Dataset</b></a></div>` : "";
+      const uid = r.sra_uid ? `<div class="muted">SRA UID: <code>${r.sra_uid}</code></div>` : "";
+      const pmid = r.pmid ? `<div class="muted">PMID: <code>${r.pmid}</code></div>` : "";
+      return `<div class="card">
+        <div class="muted">${src} ${st}</div>
+        ${paper}
+        ${dataset}
+        ${uid}
+        ${pmid}
+        ${locHtml}
+        ${title}
+      </div>`;
+    }).join("");
   }
 
-  el.innerHTML = records.slice().reverse().map(r => {
-    const src = r.source || "";
-    const paper = r.paper ? `<div><a href="${r.paper}" target="_blank"><b>Paper</b></a></div>` : "";
-    const sra = r.sra_link ? `<div><a href="${r.sra_link}" target="_blank"><b>Dataset</b></a></div>` : (r.sra_link || "");
-    const uid = r.sra_uid ? `<div class="muted">SRA UID: <code>${r.sra_uid}</code></div>` : "";
-    const title = r.title ? `<div style="margin-top:6px">${r.title}</div>` : "";
-    return `<div class="card">
-      <div class="muted">${src}</div>
-      ${paper}
-      ${sra}
-      ${uid}
-      ${title}
-    </div>`;
-  }).join("");
+  qEl.addEventListener("input", render);
+  sEl.addEventListener("change", render);
+  cEl.addEventListener("input", render);
+  kEl.addEventListener("input", render);
+
+  // If no records, still show a friendly message
+  if (!records.length) {
+    list.innerHTML = "<p class='muted'>No new linked datasets in this window.</p>";
+  } else {
+    render();
+  }
 })();
 </script>
 </body>
