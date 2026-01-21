@@ -17,8 +17,21 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # Prefer requirements.txt if present; otherwise install minimal deps needed for radar
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          else
+            pip install numpy pandas matplotlib
+          fi
 
       - name: Run daily update
+        env:
+          MPLBACKEND: Agg
         run: |
           python scripts/urbanscope_radar.py daily --days 1 --max-per-day 200
 
