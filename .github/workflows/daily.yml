@@ -33,7 +33,11 @@ jobs:
         env:
           MPLBACKEND: Agg
         run: |
-          python scripts/urbanscope_radar.py daily --days 1 --max-per-day 200
+          python scripts/urbanscope_radar.py \
+            -i data/daily_metrics.csv \
+            --city NYC \
+            --ranges data/metric_ranges.csv \
+            -o docs/figures
 
       - name: Commit results
         run: |
