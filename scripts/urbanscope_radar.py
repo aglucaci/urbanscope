@@ -453,7 +453,7 @@ def run_day(query: str, day: dt.date, retmax: int, seen: Set[str]) -> Tuple[List
         sra_uids = esearch("sra", query, mindate, maxdate, retmax=retmax, sort="Date")
     except Exception:
         sra_uids = []
-    time.sleep(0.34)
+    time.sleep(0.6)
 
     sra_uids_new = [u for u in sra_uids if f"sra:{u}" not in seen]
     if sra_uids_new:
