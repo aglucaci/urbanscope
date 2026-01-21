@@ -1,7 +1,0 @@
-{
-  "generated_at_utc": "2026-01-21T21:08:23",
-  "query": "(urban OR city OR cities OR subway OR transit OR \"built environment\" OR wastewater OR sewage) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR \"RNA-seq\")",
-  "added_records": 0,
-  "added_ids": 0,
-  "records": []
-}
