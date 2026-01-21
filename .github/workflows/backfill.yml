@@ -1,4 +1,4 @@
-name: Panopticon Backfill (Manual)
+name: Urbanscope Backfill (Manual)
 
 on:
   workflow_dispatch:
