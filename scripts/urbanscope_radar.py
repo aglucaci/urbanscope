@@ -79,9 +79,11 @@ DB_YEAR_DIR = os.path.join(DB_DIR, "year")
 DB_INDEX_JSON = os.path.join(DB_DIR, "index.json")
 DB_ALL_NDJSON = os.path.join(DB_DIR, "records.ndjson")
 DB_ALL_CSV = os.path.join(DB_DIR, "records.csv")
-
+SEEN_PROJECTS_PATH = os.path.join(DATA_DIR, "seen_projects.txt")
 os.makedirs(DB_DIR, exist_ok=True)
 os.makedirs(DB_YEAR_DIR, exist_ok=True)
+BIOPROJECT_RE = re.compile(r"\bPRJ(?:NA|EB|DB)\d+\b", re.IGNORECASE)
+
 # -------------------------
 # Country / city heuristics
 # -------------------------
@@ -233,7 +235,6 @@ def elink_pubmed_to_sra(pmids: List[str]) -> Dict[str, List[str]]:
 
 
 def esummary_sra(uids: List[str]) -> List[Dict[str, Any]]:
-    """Lightweight SRA summary (Title only) to avoid huge repo artifacts."""
     if not uids:
         return []
     params = {"db": "sra", "id": ",".join(uids), "retmode": "xml"}
@@ -243,14 +244,30 @@ def esummary_sra(uids: List[str]) -> List[Dict[str, Any]]:
     items: List[Dict[str, Any]] = []
     for docsum in root.findall(".//DocSum"):
         uid = (docsum.findtext("Id") or "").strip()
-        rec: Dict[str, Any] = {"sra_uid": uid}
+        rec: Dict[str, Any] = {"sra_uid": uid, "title": "", "bioproject": ""}
+
         for it in docsum.findall("Item"):
-            name = it.attrib.get("Name", "")
+            name = (it.attrib.get("Name", "") or "").strip()
             text = (it.text or "").strip()
+
             if name == "Title":
                 rec["title"] = text
+
+            # Try common BioProject fields (NCBI is inconsistent across records)
+            if name.lower() in {"bioproject", "bioprojectaccn", "bioprojectaccession", "project"}:
+                # Prefer PRJ* accession if present
+                m = BIOPROJECT_RE.search(text)
+                rec["bioproject"] = (m.group(0).upper() if m else text)
+
+        # Fallback: mine PRJ* from title if not found
+        if not rec["bioproject"] and rec["title"]:
+            m = BIOPROJECT_RE.search(rec["title"])
+            if m:
+                rec["bioproject"] = m.group(0).upper()
+
         rec["sra_link"] = f"https://www.ncbi.nlm.nih.gov/sra/?term={uid}" if uid else ""
         items.append(rec)
+
     return items
 
 def list_catalog_years() -> List[int]:
@@ -322,6 +339,19 @@ def write_database_exports() -> Dict[str, Any]:
         json.dump(index, f, indent=2, ensure_ascii=False)
 
     return index
+
+def load_seen_projects(path: str) -> Set[str]:
+    if not os.path.exists(path):
+        return set()
+    with open(path, "r", encoding="utf-8") as f:
+        return set(line.strip() for line in f if line.strip())
+
+def append_seen_projects(path: str, projects: Set[str]) -> None:
+    if not projects:
+        return
+    with open(path, "a", encoding="utf-8") as f:
+        for p in sorted(projects):
+            f.write(p + "\n")
 
 # -------------------------
 # Dedupe + storage
@@ -433,7 +463,8 @@ def extract_city_country(text: str) -> Tuple[Optional[str], Optional[str]]:
 # -------------------------
 # Core acquisition logic
 # -------------------------
-def run_day(query: str, day: dt.date, retmax: int, seen: Set[str]) -> Tuple[List[Dict[str, Any]], List[str], Set[int]]:
+def run_day(query: str, day: dt.date, retmax: int, seen: Set[str], require_location: bool,
+            seen_projects: Set[str]) -> Tuple[List[Dict[str, Any]], List[str], Set[int], Set[str]]:
     """
     For a given day window, collect:
       - SRA hits directly (db=sra)
@@ -463,9 +494,15 @@ def run_day(query: str, day: dt.date, retmax: int, seen: Set[str]) -> Tuple[List
             title = s.get("title", "") or ""
             stype = classify_study_type(title)
             city, country = extract_city_country(title)
-            # Enforce location requirement
-            if not city or not country:
-                continue 
+            # Optional location requirement
+            if require_location and (not city or not country):
+                continue
+            # Enforce one SRA per BioProject (if we know BioProject)
+            if bioproject:
+                if bioproject in seen_projects or bioproject in new_projects:
+                    continue
+                new_projects.add(bioproject)
+
             if uid:
                 new_records.append(
                     {
@@ -479,10 +516,11 @@ def run_day(query: str, day: dt.date, retmax: int, seen: Set[str]) -> Tuple[List
                         "sra_uid": uid,
                         "sra_link": s.get("sra_link", ""),
                         "ingested_utc": dt.datetime.utcnow().isoformat(timespec="seconds"),
+                        "bioproject": bioproject or None,
                     }
                 )
                 new_seen.append(f"sra:{uid}")
-    time.sleep(0.34)
+    time.sleep(0.6)
 
     # B) PubMed -> SRA
     try:
@@ -494,33 +532,59 @@ def run_day(query: str, day: dt.date, retmax: int, seen: Set[str]) -> Tuple[List
     pmids_new = [p for p in pmids if f"pmid:{p}" not in seen]
     if pmids_new:
         pmid_to_sra = elink_pubmed_to_sra(pmids_new[:200])
+
+        # Flatten all uids and summarize once
+        all_uids = sorted({uid for uids in pmid_to_sra.values() for uid in uids})
+        uid_summary = {r["sra_uid"]: r for r in esummary_sra(all_uids[:400])}  # cap for safety
+        
         for pmid, uids in pmid_to_sra.items():
-            # We don't have the PubMed title in this minimal pipeline; classify by query/day only.
-            # You can enrich later by efetch PubMed titles if you want.
-            stype = classify_study_type(query)
-            city, country = extract_city_country(query)
-            # Enforce: must have BOTH city and country
-            if not city or not country:
-                continue
-            new_records.append(
-                {
-                    "source": "pubmed_elink_sra",
-                    "day_utc": day.isoformat(),
-                    "query": query,
-                    "study_type": stype,
-                    "city": city,
-                    "country": country,
-                    "pmid": pmid,
-                    "paper": f"https://pubmed.ncbi.nlm.nih.gov/{pmid}/",
-                    "sra_uids": uids,
-                    "sra_link": f"https://www.ncbi.nlm.nih.gov/sra/?term={' OR '.join(uids)}" if uids else "",
-                    "ingested_utc": dt.datetime.utcnow().isoformat(timespec="seconds"),
-                }
-            )
-            new_seen.append(f"pmid:{pmid}")
+            chosen_uid = None
+            chosen_bioproject = ""
+        
             for uid in uids:
-                new_seen.append(f"sra:{uid}")
-    time.sleep(0.34)
+                s = uid_summary.get(uid, {})
+                bioproject = (s.get("bioproject", "") or "").strip().upper()
+        
+                # If we have a BioProject, enforce one-per-project
+                if bioproject:
+                    if bioproject in seen_projects or bioproject in new_projects:
+                        continue
+                    chosen_uid = uid
+                    chosen_bioproject = bioproject
+                    new_projects.add(bioproject)
+                    break
+                else:
+                    # If no BioProject metadata, we can still pick one UID as a fallback,
+                    # but this won't enforce project-level uniqueness for unknown projects.
+                    if chosen_uid is None:
+                        chosen_uid = uid
+        
+            if not chosen_uid:
+                continue
+        
+            # For PubMed-linked records, we don't have a reliable city/country unless you efetch PubMed title.
+            # Keep them if require_location is OFF; if require_location is ON, drop these (recommended).
+            if require_location:
+                continue
+        
+            new_records.append({
+                "source": "pubmed_elink_sra",
+                "day_utc": day.isoformat(),
+                "query": query,
+                "study_type": classify_study_type(query),
+                "city": None,
+                "country": None,
+                "pmid": pmid,
+                "paper": f"https://pubmed.ncbi.nlm.nih.gov/{pmid}/",
+                "sra_uid": chosen_uid,
+                "bioproject": chosen_bioproject or None,
+                "sra_link": f"https://www.ncbi.nlm.nih.gov/sra/?term={chosen_uid}",
+                "ingested_utc": dt.datetime.utcnow().isoformat(timespec="seconds"),
+            })
+            new_seen.append(f"pmid:{pmid}")
+            new_seen.append(f"sra:{chosen_uid}")
+
+    time.sleep(0.6)
 
     # De-dupe IDs within-run & against seen
     uniq_ids: List[str] = []
@@ -539,8 +603,7 @@ def run_day(query: str, day: dt.date, retmax: int, seen: Set[str]) -> Tuple[List
                 continue
         filtered_records.append(r)
 
-    return filtered_records, uniq_ids, touched_years
-
+    return filtered_records, uniq_ids, touched_years, new_projects
 
 # -------------------------
 # CSV export + archive generation
@@ -821,16 +884,22 @@ def main() -> int:
     p_back.add_argument("--year", type=int, required=True)
     p_back.add_argument("--query", default=DEFAULT_QUERY)
     p_back.add_argument("--max-per-day", type=int, default=200)
-
+    p_back.add_argument("--require-location", action="store_true",
+                    help="Only keep records with BOTH city and country (default: off)")
+  
     p_daily = sub.add_parser("daily", help="Daily incremental update (last N days)")
     p_daily.add_argument("--days", type=int, default=1)
     p_daily.add_argument("--query", default=DEFAULT_QUERY)
     p_daily.add_argument("--max-per-day", type=int, default=200)
+    p_daily.add_argument("--require-location", action="store_true",
+                     help="Only keep records with BOTH city and country (default: off)")
+
 
     args = ap.parse_args()
     ensure_dirs()
 
     seen = load_seen(SEEN_PATH)
+    seen_projects = load_seen_projects(SEEN_PROJECTS_PATH)
 
     added_records_all: List[Dict[str, Any]] = []
     touched_years: Set[int] = set()
@@ -843,7 +912,11 @@ def main() -> int:
         cat_path = catalog_path_for_year(year)
 
         for day in daterange(start, end):
-            recs, new_ids, tys = run_day(args.query, day, args.max_per_day, seen)
+            recs, new_ids, tys, new_projects = run_day(args.query, day, args.max_per_day, seen, args.require_location, seen_projects)
+            # after recs/new_ids...
+            if new_projects:
+                append_seen_projects(SEEN_PROJECTS_PATH, new_projects)
+                seen_projects |= new_projects
             if recs:
                 append_jsonl(cat_path, recs)
                 added_records_all.extend(recs)
@@ -862,7 +935,11 @@ def main() -> int:
         cat_path = catalog_path_for_year(end.year)
 
         for day in daterange(start, end):
-            recs, new_ids, tys = run_day(args.query, day, args.max_per_day, seen)
+            recs, new_ids, tys, new_projects = run_day(args.query, day, args.max_per_day, seen, args.require_location, seen_projects)
+            # after recs/new_ids...
+            if new_projects:
+                append_seen_projects(SEEN_PROJECTS_PATH, new_projects)
+                seen_projects |= new_projects
             if recs:
                 append_jsonl(cat_path, recs)
                 added_records_all.extend(recs)
