@@ -1,4 +1,4 @@
-name: Urbanscope Backfill (Manual)
+name: UrbanScope Backfill (Year)
 
 on:
   workflow_dispatch:
