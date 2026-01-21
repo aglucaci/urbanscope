@@ -1,0 +1,45 @@
+name: Panopticon Backfill (Manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      start:
+        description: "Start date (YYYY-MM-DD)"
+        required: true
+        default: "2018-01-01"
+      end:
+        description: "End date (YYYY-MM-DD)"
+        required: true
+        default: "2018-12-31"
+      max_per_day:
+        description: "Max results per day"
+        required: true
+        default: "200"
+
+permissions:
+  contents: write
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run historical backfill chunk
+        run: |
+          python scripts/panopticon_radar.py backfill \
+            --start "${{ inputs.start }}" \
+            --end "${{ inputs.end }}" \
+            --max-per-day "${{ inputs.max_per_day }}"
+
+      - name: Commit & push backfill results
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add data/ docs/
+          git commit -m "Panopticon backfill ${{ inputs.start }} to ${{ inputs.end }}" || echo "No changes"
+          git push
