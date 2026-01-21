@@ -31,7 +31,7 @@ jobs:
 
       - name: Run historical backfill chunk
         run: |
-          python scripts/panopticon_radar.py backfill \
+          python scripts/urbanscope_radar.py backfill \
             --start "${{ inputs.start }}" \
             --end "${{ inputs.end }}" \
             --max-per-day "${{ inputs.max_per_day }}"
