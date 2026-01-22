@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-01-22T01:18:51+00:00",
+  "generated_at_utc": "2026-01-22T12:24:34+00:00",
   "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"public transit\" OR \"built environment\" OR \"indoor microbiome\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR \"RNA-seq\" OR \"total RNA\")",
   "require_location": false,
   "added_bioprojects": 0,
