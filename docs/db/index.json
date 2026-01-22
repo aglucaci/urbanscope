@@ -1,19 +1,22 @@
 {
-  "generated_at_utc": "2026-01-22T00:10:57+00:00",
+  "generated_at_utc": "2026-01-22T00:37:15+00:00",
   "years": [
+    2025,
     2026
   ],
-  "total_records": 233,
+  "total_records": 39438,
   "counts_by_year": {
+    "2025": 39205,
     "2026": 233
   },
   "counts_by_type": {
-    "other": 233
+    "other": 39324,
+    "wastewater": 114
   },
   "top_countries": [
     [
       "Unknown",
-      233
+      39438
     ]
   ],
   "downloads": {

@@ -1,6 +1,11 @@
 {
-  "generated_at_utc": "2026-01-22T00:10:57+00:00",
+  "generated_at_utc": "2026-01-22T00:37:13+00:00",
   "years": [
+    {
+      "year": 2025,
+      "records": 39205,
+      "csv": "csv/catalog_2025.csv"
+    },
     {
       "year": 2026,
       "records": 233,
