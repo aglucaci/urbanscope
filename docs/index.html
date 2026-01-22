@@ -1,21 +1,866 @@
 <!doctype html>
-<html><head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>UrbanScope</title>
-<style>
-body{font-family:system-ui,Segoe UI,Roboto,Arial;max-width:980px;margin:40px auto;padding:0 16px;line-height:1.55}
-.muted{color:#666}
-a{text-decoration:none} a:hover{text-decoration:underline}
-code{background:#f2f2f2;padding:2px 6px;border-radius:6px}
-</style></head><body>
-<h1>UrbanScope</h1>
-<p class="muted">Urban metagenomics & metatranscriptomics BioProject database (updated daily).</p>
-<ul>
-  <li><a href="db/index.json">db/index.json</a></li>
-  <li><a href="db/records.ndjson">db/records.ndjson</a> (full database)</li>
-  <li><a href="db/records.csv">db/records.csv</a> (collaborator export)</li>
-  <li><a href="latest.json">latest.json</a> (new BioProjects this run)</li>
-  <li><a href="archive/index.html">archive/index.html</a></li>
-  <li><a href="archive/csv/latest_added.csv">archive/csv/latest_added.csv</a></li>
-</ul>
-</body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>UrbanScope — BioProject Database</title>
+  <meta name="description" content="Urban metagenomics & metatranscriptomics BioProject database. Search, filter, sort, and inspect BioProjects enriched from NCBI SRA."/>
+  <style>
+    :root{
+      --bg:#ffffff; --fg:#111; --muted:#666; --subtle:#f4f5f7; --border:#e6e7eb;
+      --chip:#eef2ff; --chipfg:#1f2a6a; --link:#0b5fff; --shadow:0 8px 24px rgba(0,0,0,.08);
+      --radius:14px; --radius2:10px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#0b0f17; --fg:#f3f4f6; --muted:#a4a9b4; --subtle:#121a27; --border:#223047;
+        --chip:#1a2550; --chipfg:#dbe3ff; --link:#7fb0ff; --shadow:0 10px 26px rgba(0,0,0,.35);
+      }
+      a{color:var(--link)}
+    }
+    *{box-sizing:border-box}
+    body{
+      font-family:var(--sans); background:var(--bg); color:var(--fg);
+      margin:0; padding:0; line-height:1.5;
+    }
+    a{color:var(--link); text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:1220px; margin:0 auto; padding:28px 16px 44px}
+    header{
+      display:flex; gap:16px; align-items:flex-start; justify-content:space-between; flex-wrap:wrap;
+      padding:14px 0 18px; border-bottom:1px solid var(--border);
+    }
+    h1{font-size:28px; margin:0}
+    .subtitle{margin:6px 0 0; color:var(--muted); font-size:14px}
+    .top-actions{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    .btn{
+      display:inline-flex; align-items:center; gap:8px;
+      background:var(--subtle); border:1px solid var(--border); color:var(--fg);
+      padding:9px 11px; border-radius:999px; font-size:13px;
+      cursor:pointer;
+    }
+    .btn:hover{filter:brightness(0.98)}
+    .btn:active{transform:translateY(1px)}
+    .btn.primary{
+      background:linear-gradient(180deg, rgba(11,95,255,.15), rgba(11,95,255,.08));
+      border-color:rgba(11,95,255,.35);
+    }
+    .grid{
+      display:grid; grid-template-columns: 1.1fr 2.9fr; gap:18px; margin-top:18px;
+    }
+    @media (max-width: 980px){ .grid{grid-template-columns:1fr} }
+
+    .panel{
+      background:var(--bg);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .panel .hd{
+      padding:14px 14px 12px;
+      background:linear-gradient(180deg, var(--subtle), transparent);
+      border-bottom:1px solid var(--border);
+    }
+    .panel .bd{padding:14px}
+    .kpis{display:grid; grid-template-columns: repeat(3, 1fr); gap:10px}
+    @media (max-width: 980px){ .kpis{grid-template-columns:repeat(2,1fr)} }
+    .kpi{
+      border:1px solid var(--border);
+      background:var(--subtle);
+      border-radius:var(--radius2);
+      padding:10px;
+    }
+    .kpi .label{font-size:12px; color:var(--muted)}
+    .kpi .value{font-size:16px; font-weight:700; margin-top:2px}
+
+    .controls{
+      display:grid; grid-template-columns: 1fr 1fr; gap:10px;
+    }
+    @media (max-width: 980px){ .controls{grid-template-columns:1fr} }
+    .field{display:flex; flex-direction:column; gap:6px}
+    label{font-size:12px; color:var(--muted)}
+    input[type="search"], select{
+      width:100%;
+      padding:10px 11px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:var(--bg);
+      color:var(--fg);
+      outline:none;
+    }
+    input[type="search"]:focus, select:focus{
+      border-color:rgba(11,95,255,.55);
+      box-shadow:0 0 0 3px rgba(11,95,255,.15);
+    }
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .chips{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px}
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      background:var(--chip); color:var(--chipfg);
+      border:1px solid rgba(127,176,255,.25);
+      padding:6px 10px; border-radius:999px; font-size:12px;
+    }
+    .chip button{
+      border:none; background:transparent; color:inherit; cursor:pointer; font-size:14px; line-height:1;
+      padding:0; margin:0;
+    }
+
+    .table-wrap{overflow:auto}
+    table{width:100%; border-collapse:separate; border-spacing:0; min-width:860px}
+    th, td{
+      text-align:left;
+      padding:10px 10px;
+      border-bottom:1px solid var(--border);
+      vertical-align:top;
+      font-size:13px;
+    }
+    th{
+      position:sticky; top:0;
+      background:var(--bg);
+      z-index:2;
+      cursor:pointer;
+      user-select:none;
+      border-bottom:1px solid var(--border);
+    }
+    th .hint{color:var(--muted); font-weight:400; font-size:11px; margin-left:6px}
+    tr:hover td{background:rgba(127,176,255,.06)}
+    .mono{font-family:var(--mono)}
+    .muted{color:var(--muted)}
+    .small{font-size:12px}
+    .pill{
+      display:inline-flex; align-items:center; gap:6px;
+      padding:3px 8px; border-radius:999px;
+      border:1px solid var(--border); background:var(--subtle);
+      font-size:12px;
+      white-space:nowrap;
+    }
+
+    .pager{
+      display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
+      padding:12px 14px;
+      border-top:1px solid var(--border);
+      background:linear-gradient(180deg, transparent, var(--subtle));
+    }
+    .pager .left{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    .pager .right{display:flex; gap:8px; align-items:center}
+    .pager button{
+      border:1px solid var(--border);
+      background:var(--bg);
+      color:var(--fg);
+      padding:8px 10px;
+      border-radius:10px;
+      cursor:pointer;
+    }
+    .pager button:disabled{opacity:.45; cursor:not-allowed}
+    .links ul{margin:0; padding-left:18px}
+    .links li{margin:6px 0}
+    .footer{
+      margin-top:18px; color:var(--muted); font-size:12px;
+      display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    }
+    .callout{
+      border:1px dashed var(--border);
+      border-radius:var(--radius2);
+      padding:10px 12px;
+      background:rgba(127,176,255,.06);
+      color:var(--muted);
+      font-size:12px;
+    }
+    .err{
+      border:1px solid rgba(255,0,0,.25);
+      background:rgba(255,0,0,.06);
+      color:var(--fg);
+      padding:10px 12px;
+      border-radius:var(--radius2);
+      margin-top:10px;
+      font-size:12px;
+      white-space:pre-wrap;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>UrbanScope</h1>
+        <p class="subtitle">
+          Urban metagenomics & metatranscriptomics <span class="mono">BioProject</span> database (updated daily).
+          <span class="muted">Search, filter, sort, and export.</span>
+        </p>
+      </div>
+      <div class="top-actions">
+        <a class="btn primary" href="db/index.json" title="Database index metadata">DB index</a>
+        <a class="btn" href="db/records.json" title="Full records JSON">records.json</a>
+        <a class="btn" href="db/bioprojects.json" title="BioProject lookup map">bioprojects.json</a>
+        <a class="btn" href="archive/index.html" title="Archived daily snapshots">archive</a>
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- Left: Controls + metadata -->
+      <section class="panel">
+        <div class="hd">
+          <strong>Explore</strong>
+          <div class="muted small" id="metaLine">Loading metadata…</div>
+        </div>
+        <div class="bd">
+          <div class="kpis" aria-label="Key metrics">
+            <div class="kpi">
+              <div class="label">Total BioProjects</div>
+              <div class="value" id="kpiTotal">—</div>
+            </div>
+            <div class="kpi">
+              <div class="label">Total records</div>
+              <div class="value" id="kpiRecords">—</div>
+            </div>
+            <div class="kpi">
+              <div class="label">Years covered</div>
+              <div class="value" id="kpiYears">—</div>
+            </div>
+          </div>
+
+          <div style="height:12px"></div>
+
+          <div class="controls">
+            <div class="field">
+              <label for="q">Search</label>
+              <input id="q" type="search" placeholder="PRJNA…, keyword in title/description, organism, center…" autocomplete="off"/>
+            </div>
+
+            <div class="field">
+              <label for="year">Year</label>
+              <select id="year">
+                <option value="">All years</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="datatype">Data type</label>
+              <select id="datatype">
+                <option value="">All</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="sort">Sort</label>
+              <select id="sort">
+                <option value="last_update_desc">Last update ↓</option>
+                <option value="last_update_asc">Last update ↑</option>
+                <option value="submission_desc">Submission date ↓</option>
+                <option value="submission_asc">Submission date ↑</option>
+                <option value="title_asc">Title A→Z</option>
+                <option value="title_desc">Title Z→A</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="pageSize">Page size</label>
+              <select id="pageSize">
+                <option>25</option>
+                <option>50</option>
+                <option>100</option>
+                <option>200</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>&nbsp;</label>
+              <div class="row">
+                <button class="btn" id="resetBtn" type="button" title="Clear filters">Reset</button>
+                <button class="btn" id="exportBtn" type="button" title="Download filtered results as CSV">Export CSV</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="chips" id="chips"></div>
+
+          <div style="height:12px"></div>
+
+          <div class="callout">
+            Tip: click a column header to sort. Use <span class="mono">PRJNA</span> / <span class="mono">PRJEB</span> accessions for exact lookups.
+          </div>
+
+          <div style="height:14px"></div>
+
+          <div class="links">
+            <strong class="small">Raw endpoints</strong>
+            <ul class="small">
+              <li><a href="db/index.json">db/index.json</a></li>
+              <li><a href="db/records.json">db/records.json</a></li>
+              <li><a href="db/bioprojects.json">db/bioprojects.json</a></li>
+              <li><a href="latest.json">latest.json</a></li>
+              <li><a href="archive/csv/latest_added.csv">archive/csv/latest_added.csv</a></li>
+            </ul>
+          </div>
+
+          <div id="error" class="err" style="display:none"></div>
+        </div>
+      </section>
+
+      <!-- Right: Table -->
+      <section class="panel">
+        <div class="hd">
+          <div class="row" style="justify-content:space-between">
+            <strong>BioProjects</strong>
+            <span class="muted small" id="resultLine">Loading…</span>
+          </div>
+        </div>
+
+        <div class="bd table-wrap" aria-label="BioProject table">
+          <table>
+            <thead>
+              <tr>
+                <th data-sort="accession">Accession <span class="hint">↕</span></th>
+                <th data-sort="title">Title <span class="hint">↕</span></th>
+                <th data-sort="organism">Organism <span class="hint">↕</span></th>
+                <th data-sort="data_type">Data type <span class="hint">↕</span></th>
+                <th data-sort="center_name">Center <span class="hint">↕</span></th>
+                <th data-sort="submission_date">Submitted <span class="hint">↕</span></th>
+                <th data-sort="last_update">Updated <span class="hint">↕</span></th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+              <tr><td class="muted" colspan="7">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pager">
+          <div class="left">
+            <span class="small muted" id="pageLine">—</span>
+          </div>
+          <div class="right">
+            <button id="prevBtn" type="button">Prev</button>
+            <button id="nextBtn" type="button">Next</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="footer">
+      <div>
+        <span class="mono">UrbanScope</span> • static database page powered by GitHub Pages
+      </div>
+      <div class="muted" id="genLine"></div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const $ = (id)=>document.getElementById(id);
+
+  // Endpoints (relative to docs/)
+  const ENDPOINTS = {
+    index: "db/index.json",
+    records: "db/records.json"
+  };
+
+  // State
+  const state = {
+    index: null,
+    records: [],
+    view: [],
+    page: 1,
+    pageSize: 25,
+    q: "",
+    year: "",
+    datatype: "",
+    sort: "last_update_desc",
+    headerSort: null,   // {key, dir} when clicking table headers
+  };
+
+  // ---------- helpers ----------
+  function safe(v){ return (v===undefined || v===null) ? "" : String(v); }
+
+  function parseDateLoose(s){
+    // NCBI dates vary; attempt: ISO, YYYY/MM/DD, YYYY-MM-DD, etc.
+    s = safe(s).trim();
+    if(!s) return null;
+    const t = Date.parse(s);
+    if(!Number.isNaN(t)) return new Date(t);
+    // Try YYYY-MM-DD fallback
+    const m = s.match(/^(\d{4})[-\/](\d{2})[-\/](\d{2})/);
+    if(m) return new Date(Number(m[1]), Number(m[2])-1, Number(m[3]));
+    // Try YYYY-MM
+    const m2 = s.match(/^(\d{4})[-\/](\d{2})$/);
+    if(m2) return new Date(Number(m2[1]), Number(m2[2])-1, 1);
+    // Try YYYY
+    const m3 = s.match(/^(\d{4})$/);
+    if(m3) return new Date(Number(m3[1]), 0, 1);
+    return null;
+  }
+
+  function yearFromRecord(r){
+    // Prefer provenance day, else submission date, else update date.
+    const pday = r?.provenance?.day;
+    if(pday && /^\d{4}-\d{2}-\d{2}$/.test(pday)) return pday.slice(0,4);
+    const sd = parseDateLoose(r?.bioproject?.submission_date);
+    if(sd) return String(sd.getFullYear());
+    const ud = parseDateLoose(r?.bioproject?.last_update);
+    if(ud) return String(ud.getFullYear());
+    return "";
+  }
+
+  function norm(s){
+    return safe(s).toLowerCase();
+  }
+
+  function recordToSearchBlob(r){
+    const bp = r.bioproject || {};
+    return [
+      bp.accession,
+      bp.title,
+      bp.description,
+      bp.organism,
+      bp.data_type,
+      bp.center_name,
+      safe(r.representative_sra?.uid),
+      safe(r.representative_sra?.title)
+    ].map(norm).join(" • ");
+  }
+
+  function getSortKey(r, key){
+    const bp = r.bioproject || {};
+    switch(key){
+      case "accession": return safe(bp.accession);
+      case "title": return safe(bp.title);
+      case "organism": return safe(bp.organism);
+      case "data_type": return safe(bp.data_type);
+      case "center_name": return safe(bp.center_name);
+      case "submission_date": return parseDateLoose(bp.submission_date)?.getTime() || 0;
+      case "last_update": return parseDateLoose(bp.last_update)?.getTime() || 0;
+      default: return "";
+    }
+  }
+
+  function cmp(a,b){
+    return (a<b)?-1:(a>b)?1:0;
+  }
+
+  function sortRecords(arr){
+    let key, dir;
+    // If user clicked header, that takes precedence over sort dropdown.
+    if(state.headerSort){
+      key = state.headerSort.key;
+      dir = state.headerSort.dir;
+    }else{
+      const [k, d] = state.sort.split("_");
+      // dropdown uses "last_update_desc" / "submission_asc" / "title_desc" etc
+      key = (k === "submission") ? "submission_date"
+          : (k === "last") ? "last_update"
+          : k;
+      dir = d;
+    }
+    const mul = (dir === "asc") ? 1 : -1;
+
+    arr.sort((ra, rb)=>{
+      const va = getSortKey(ra, key);
+      const vb = getSortKey(rb, key);
+
+      // numeric vs string
+      if(typeof va === "number" || typeof vb === "number"){
+        return (va - vb) * mul;
+      }
+      return cmp(norm(va), norm(vb)) * mul;
+    });
+  }
+
+  function addChip(label, onClear){
+    const chips = $("chips");
+    const chip = document.createElement("span");
+    chip.className = "chip";
+    chip.innerHTML = `<span>${label}</span>`;
+    const x = document.createElement("button");
+    x.type = "button";
+    x.setAttribute("aria-label", "Remove filter");
+    x.textContent = "×";
+    x.onclick = onClear;
+    chip.appendChild(x);
+    chips.appendChild(chip);
+  }
+
+  function renderChips(){
+    const chips = $("chips");
+    chips.innerHTML = "";
+    if(state.q) addChip(`Search: ${state.q}`, ()=>{ state.q=""; $("q").value=""; state.page=1; apply(); });
+    if(state.year) addChip(`Year: ${state.year}`, ()=>{ state.year=""; $("year").value=""; state.page=1; apply(); });
+    if(state.datatype) addChip(`Data type: ${state.datatype}`, ()=>{ state.datatype=""; $("datatype").value=""; state.page=1; apply(); });
+    if(state.headerSort) addChip(`Sort: ${state.headerSort.key} (${state.headerSort.dir})`, ()=>{ state.headerSort=null; apply(); });
+  }
+
+  function setError(msg){
+    const el = $("error");
+    if(!msg){
+      el.style.display = "none";
+      el.textContent = "";
+      return;
+    }
+    el.style.display = "block";
+    el.textContent = msg;
+  }
+
+  // ---------- loading ----------
+  async function fetchJson(path){
+    const res = await fetch(path, {cache:"no-store"});
+    if(!res.ok) throw new Error(`Failed to fetch ${path}: ${res.status} ${res.statusText}`);
+    return await res.json();
+  }
+
+  async function init(){
+    try{
+      const idx = await fetchJson(ENDPOINTS.index);
+      state.index = idx;
+
+      // Load records (single file; simplest for GH Pages)
+      const recs = await fetchJson(ENDPOINTS.records);
+      state.records = Array.isArray(recs) ? recs : [];
+
+      // Precompute blobs for search performance
+      for(const r of state.records){
+        r.__year = yearFromRecord(r);
+        r.__blob = recordToSearchBlob(r);
+      }
+
+      populateFilters();
+      renderMeta();
+      wireEvents();
+      apply();
+    }catch(e){
+      setError(String(e));
+      $("tbody").innerHTML = `<tr><td class="muted" colspan="7">Failed to load database.</td></tr>`;
+    }
+  }
+
+  function populateFilters(){
+    // Years
+    const years = new Set();
+    const datatypes = new Set();
+    for(const r of state.records){
+      if(r.__year) years.add(r.__year);
+      const dtp = safe(r?.bioproject?.data_type).trim();
+      if(dtp) datatypes.add(dtp);
+    }
+
+    const yearSel = $("year");
+    [...years].sort().forEach(y=>{
+      const opt = document.createElement("option");
+      opt.value = y; opt.textContent = y;
+      yearSel.appendChild(opt);
+    });
+
+    const dtypeSel = $("datatype");
+    [...datatypes].sort((a,b)=>cmp(norm(a), norm(b))).forEach(v=>{
+      const opt = document.createElement("option");
+      opt.value = v; opt.textContent = v;
+      dtypeSel.appendChild(opt);
+    });
+  }
+
+  function renderMeta(){
+    const idx = state.index || {};
+    const years = idx.years || [];
+    $("kpiYears").textContent = years.length ? `${years[0]}–${years[years.length-1]}` : "—";
+    $("kpiRecords").textContent = safe(idx.total_records || idx.total || state.records.length || "—");
+    $("kpiTotal").textContent = safe(idx.total_bioprojects || "—");
+    $("metaLine").textContent = `Generated: ${safe(idx.generated || "—")}`;
+    $("genLine").textContent = idx.generated ? `Last generated (UTC): ${idx.generated}` : "";
+  }
+
+  // ---------- filtering/paging ----------
+  function apply(){
+    setError("");
+    const q = norm(state.q.trim());
+    const year = state.year;
+    const dtype = state.datatype;
+
+    let view = state.records;
+
+    if(year){
+      view = view.filter(r => r.__year === year);
+    }
+    if(dtype){
+      view = view.filter(r => safe(r?.bioproject?.data_type).trim() === dtype);
+    }
+    if(q){
+      view = view.filter(r => r.__blob.includes(q));
+    }
+
+    view = view.slice(); // copy
+    sortRecords(view);
+
+    state.view = view;
+    renderChips();
+    renderTable();
+    renderPager();
+  }
+
+  function renderTable(){
+    const tbody = $("tbody");
+    const total = state.view.length;
+    const ps = state.pageSize;
+    const pages = Math.max(1, Math.ceil(total / ps));
+    state.page = Math.min(state.page, pages);
+
+    const start = (state.page - 1) * ps;
+    const end = Math.min(start + ps, total);
+    const rows = state.view.slice(start, end);
+
+    $("resultLine").textContent = `${total.toLocaleString()} match${total===1?"":"es"}`;
+
+    if(!rows.length){
+      tbody.innerHTML = `<tr><td class="muted" colspan="7">No results.</td></tr>`;
+      return;
+    }
+
+    const html = rows.map(r=>{
+      const bp = r.bioproject || {};
+      const acc = safe(bp.accession);
+      const url = safe(bp.url) || (bp.uid ? `https://www.ncbi.nlm.nih.gov/bioproject/${bp.uid}` : "");
+      const title = safe(bp.title);
+      const org = safe(bp.organism);
+      const dtype = safe(bp.data_type);
+      const center = safe(bp.center_name);
+      const sub = safe(bp.submission_date);
+      const upd = safe(bp.last_update);
+
+      const pmids = (bp.linked_pubmed_ids || []).length;
+
+      return `
+        <tr>
+          <td class="mono">
+            ${url ? `<a href="${url}" target="_blank" rel="noopener">${acc}</a>` : acc}
+            ${pmids ? `<div class="muted small">${pmids} PubMed</div>` : ``}
+          </td>
+          <td>
+            <div style="font-weight:600">${escapeHtml(title) || "<span class='muted'>—</span>"}</div>
+            ${bp.description ? `<div class="muted small">${escapeHtml(bp.description).slice(0, 260)}${bp.description.length>260?"…":""}</div>` : ``}
+            <div class="row" style="margin-top:6px">
+              ${r.representative_sra?.uid ? `<span class="pill">SRA: <span class="mono">${escapeHtml(r.representative_sra.uid)}</span></span>` : ``}
+              ${r.run_summary?.rows ? `<span class="pill">${r.run_summary.rows} runs</span>` : ``}
+              ${r.run_summary?.biosample_count ? `<span class="pill">${r.run_summary.biosample_count} BioSamples</span>` : ``}
+            </div>
+          </td>
+          <td>${escapeHtml(org) || "<span class='muted'>—</span>"}</td>
+          <td>${escapeHtml(dtype) || "<span class='muted'>—</span>"}</td>
+          <td>${escapeHtml(center) || "<span class='muted'>—</span>"}</td>
+          <td class="mono small">${escapeHtml(sub) || "<span class='muted'>—</span>"}</td>
+          <td class="mono small">${escapeHtml(upd) || "<span class='muted'>—</span>"}</td>
+        </tr>
+      `;
+    }).join("");
+
+    tbody.innerHTML = html;
+  }
+
+  function renderPager(){
+    const total = state.view.length;
+    const ps = state.pageSize;
+    const pages = Math.max(1, Math.ceil(total / ps));
+    const start = total ? ((state.page - 1) * ps + 1) : 0;
+    const end = Math.min(state.page * ps, total);
+
+    $("pageLine").textContent = total
+      ? `Showing ${start.toLocaleString()}–${end.toLocaleString()} of ${total.toLocaleString()} (page ${state.page}/${pages})`
+      : "—";
+
+    $("prevBtn").disabled = state.page <= 1;
+    $("nextBtn").disabled = state.page >= pages;
+  }
+
+  // ---------- export ----------
+  function toCsvValue(s){
+    s = safe(s);
+    // CSV escape quotes
+    if(s.includes('"') || s.includes(",") || s.includes("\n")){
+      return `"${s.replaceAll('"', '""')}"`;
+    }
+    return s;
+  }
+
+  function exportCsv(){
+    // Export CURRENT filtered + sorted view (all rows, not only page)
+    const rows = state.view;
+    const cols = [
+      "bioproject_accession",
+      "bioproject_uid",
+      "bioproject_title",
+      "bioproject_description",
+      "organism",
+      "data_type",
+      "center_name",
+      "submission_date",
+      "last_update",
+      "bioproject_url",
+      "linked_pubmed_count",
+      "representative_sra_uid",
+      "representative_sra_title",
+      "runs",
+      "biosample_count",
+      "platform_counts_json",
+      "library_strategy_counts_json",
+      "provenance_day",
+      "ingested_utc",
+      "query"
+    ];
+
+    const lines = [];
+    lines.push(cols.join(","));
+
+    for(const r of rows){
+      const bp = r.bioproject || {};
+      const platformCounts = JSON.stringify(r?.run_summary?.platform_counts || {});
+      const stratCounts = JSON.stringify(r?.run_summary?.library_strategy_counts || {});
+      const out = {
+        bioproject_accession: safe(bp.accession),
+        bioproject_uid: safe(bp.uid),
+        bioproject_title: safe(bp.title),
+        bioproject_description: safe(bp.description),
+        organism: safe(bp.organism),
+        data_type: safe(bp.data_type),
+        center_name: safe(bp.center_name),
+        submission_date: safe(bp.submission_date),
+        last_update: safe(bp.last_update),
+        bioproject_url: safe(bp.url),
+        linked_pubmed_count: String((bp.linked_pubmed_ids || []).length),
+        representative_sra_uid: safe(r?.representative_sra?.uid),
+        representative_sra_title: safe(r?.representative_sra?.title),
+        runs: String(safe(r?.run_summary?.rows)),
+        biosample_count: String(safe(r?.run_summary?.biosample_count)),
+        platform_counts_json: platformCounts,
+        library_strategy_counts_json: stratCounts,
+        provenance_day: safe(r?.provenance?.day),
+        ingested_utc: safe(r?.provenance?.ingested_utc),
+        query: safe(r?.provenance?.query),
+      };
+
+      lines.push(cols.map(c=>toCsvValue(out[c])).join(","));
+    }
+
+    const blob = new Blob([lines.join("\n")], {type:"text/csv;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const stamp = new Date().toISOString().slice(0,10);
+    a.href = url;
+    a.download = `urbanscope_filtered_${stamp}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 2000);
+  }
+
+  // ---------- events ----------
+  function wireEvents(){
+    $("q").addEventListener("input", debounce((e)=>{
+      state.q = e.target.value;
+      state.page = 1;
+      apply();
+    }, 120));
+
+    $("year").addEventListener("change", (e)=>{
+      state.year = e.target.value;
+      state.page = 1;
+      apply();
+    });
+
+    $("datatype").addEventListener("change", (e)=>{
+      state.datatype = e.target.value;
+      state.page = 1;
+      apply();
+    });
+
+    $("sort").addEventListener("change", (e)=>{
+      state.sort = e.target.value;
+      state.headerSort = null;
+      state.page = 1;
+      apply();
+    });
+
+    $("pageSize").addEventListener("change", (e)=>{
+      state.pageSize = Number(e.target.value) || 25;
+      state.page = 1;
+      apply();
+    });
+
+    $("resetBtn").addEventListener("click", ()=>{
+      state.q = "";
+      state.year = "";
+      state.datatype = "";
+      state.sort = "last_update_desc";
+      state.headerSort = null;
+      state.pageSize = 25;
+      state.page = 1;
+
+      $("q").value = "";
+      $("year").value = "";
+      $("datatype").value = "";
+      $("sort").value = "last_update_desc";
+      $("pageSize").value = "25";
+      apply();
+    });
+
+    $("exportBtn").addEventListener("click", exportCsv);
+
+    $("prevBtn").addEventListener("click", ()=>{
+      state.page = Math.max(1, state.page - 1);
+      renderTable();
+      renderPager();
+      window.scrollTo({top: 0, behavior:"smooth"});
+    });
+
+    $("nextBtn").addEventListener("click", ()=>{
+      const total = state.view.length;
+      const pages = Math.max(1, Math.ceil(total / state.pageSize));
+      state.page = Math.min(pages, state.page + 1);
+      renderTable();
+      renderPager();
+      window.scrollTo({top: 0, behavior:"smooth"});
+    });
+
+    // Table header sorting
+    document.querySelectorAll("th[data-sort]").forEach(th=>{
+      th.addEventListener("click", ()=>{
+        const key = th.getAttribute("data-sort");
+        if(!key) return;
+
+        const cur = state.headerSort;
+        let dir = "asc";
+        if(cur && cur.key === key){
+          dir = (cur.dir === "asc") ? "desc" : "asc";
+        }else{
+          // default directions for dates
+          if(key === "last_update" || key === "submission_date") dir = "desc";
+        }
+        state.headerSort = {key, dir};
+        state.page = 1;
+        apply();
+      });
+    });
+  }
+
+  function debounce(fn, ms){
+    let t;
+    return function(...args){
+      clearTimeout(t);
+      t = setTimeout(()=>fn.apply(this, args), ms);
+    }
+  }
+
+  function escapeHtml(s){
+    s = safe(s);
+    return s
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
