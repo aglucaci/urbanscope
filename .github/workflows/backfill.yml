@@ -8,7 +8,7 @@ on:
         required: true
         default: "2018"
       max_per_day:
-        description: "Max results per day"
+        description: "Max SRA records per day"
         required: true
         default: "200"
 
@@ -18,23 +18,61 @@ permissions:
 jobs:
   backfill:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+    timeout-minutes: 360
 
-      - uses: actions/setup-python@v5
+    env:
+      # Recommended by NCBI for higher rate limits + attribution
+      NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}
+      NCBI_EMAIL: ${{ secrets.NCBI_EMAIL }}
+      NCBI_TOOL: urbanscope-radar
+
+      PYTHONUNBUFFERED: "1"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Run historical backfill (year)
+      - name: Install dependencies (if any)
         run: |
+          python -m pip install --upgrade pip
+          # If you later add requests, pandas, etc.
+          # pip install -r requirements.txt
+
+      - name: Ensure directories exist
+        run: |
+          mkdir -p data/cache docs/db docs/archive
+
+      - name: Run historical backfill
+        run: |
+          echo "Starting UrbanScope backfill for year=${{ inputs.year }}"
           python scripts/urbanscope_radar.py backfill-year \
             --year "${{ inputs.year }}" \
             --max-per-day "${{ inputs.max_per_day }}"
 
-      - name: Commit & push backfill results
+      - name: Show summary
+        run: |
+          echo "=== Files changed ==="
+          git status --short
+          echo "=== Record count ==="
+          if [ -f docs/db/index.json ]; then
+            cat docs/db/index.json
+          fi
+
+      - name: Commit & push results
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
+
           git add data/ docs/
-          git commit -m "UrbanScope backfill year ${{ inputs.year }}" || echo "No changes"
+
+          git commit -m "UrbanScope backfill year ${{ inputs.year }}" \
+            || echo "No changes to commit"
+
           git push
