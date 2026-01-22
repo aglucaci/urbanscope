@@ -1,705 +1,785 @@
 {
-  "generated_utc": "2026-01-22T20:11:33+00:00",
+  "generated_utc": "2026-01-22T20:23:58+00:00",
   "reports": [
     {
       "day": "2026-01-22",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:54+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2026-01-22&maxdate=2026-01-22&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2026-01-22.json",
+        "decision": "data/debug/decision_log_2026-01-22.ndjson",
+        "initial": "data/debug/initial_2026-01-22.json"
+      }
     },
     {
       "day": "2026-01-21",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:55+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2026-01-21&maxdate=2026-01-21&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2026-01-21.json",
+        "decision": "data/debug/decision_log_2026-01-21.ndjson",
+        "initial": "data/debug/initial_2026-01-21.json"
+      }
     },
     {
       "day": "2026-01-20",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:55+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2026-01-20&maxdate=2026-01-20&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2026-01-20.json",
+        "decision": "data/debug/decision_log_2026-01-20.ndjson",
+        "initial": "data/debug/initial_2026-01-20.json"
+      }
     },
     {
       "day": "2026-01-19",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:55+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2026-01-19&maxdate=2026-01-19&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2026-01-19.json",
+        "decision": "data/debug/decision_log_2026-01-19.ndjson",
+        "initial": "data/debug/initial_2026-01-19.json"
+      }
     },
     {
       "day": "2026-01-18",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:55+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2026-01-18&maxdate=2026-01-18&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2026-01-18.json",
+        "decision": "data/debug/decision_log_2026-01-18.ndjson",
+        "initial": "data/debug/initial_2026-01-18.json"
+      }
     },
     {
       "day": "2026-01-17",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:55+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2026-01-17&maxdate=2026-01-17&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2026-01-17.json",
+        "decision": "data/debug/decision_log_2026-01-17.ndjson",
+        "initial": "data/debug/initial_2026-01-17.json"
+      }
     },
     {
       "day": "2026-01-16",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:55+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2026-01-16&maxdate=2026-01-16&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2026-01-16.json",
+        "decision": "data/debug/decision_log_2026-01-16.ndjson",
+        "initial": "data/debug/initial_2026-01-16.json"
+      }
     },
     {
       "day": "2026-01-15",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:55+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2026-01-15&maxdate=2026-01-15&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2026-01-15.json",
+        "decision": "data/debug/decision_log_2026-01-15.ndjson",
+        "initial": "data/debug/initial_2026-01-15.json"
+      }
     },
     {
       "day": "2026-01-14",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:55+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2026-01-14&maxdate=2026-01-14&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2026-01-14.json",
+        "decision": "data/debug/decision_log_2026-01-14.ndjson",
+        "initial": "data/debug/initial_2026-01-14.json"
+      }
     },
     {
       "day": "2026-01-13",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:56+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2026-01-13&maxdate=2026-01-13&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2026-01-13.json",
+        "decision": "data/debug/decision_log_2026-01-13.ndjson",
+        "initial": "data/debug/initial_2026-01-13.json"
+      }
     },
     {
       "day": "2026-01-12",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:56+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2026-01-12&maxdate=2026-01-12&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2026-01-12.json",
+        "decision": "data/debug/decision_log_2026-01-12.ndjson",
+        "initial": "data/debug/initial_2026-01-12.json"
+      }
     },
     {
       "day": "2026-01-11",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:56+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2026-01-11&maxdate=2026-01-11&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2026-01-11.json",
+        "decision": "data/debug/decision_log_2026-01-11.ndjson",
+        "initial": "data/debug/initial_2026-01-11.json"
+      }
     },
     {
       "day": "2026-01-10",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:56+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2026-01-10&maxdate=2026-01-10&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2026-01-10.json",
+        "decision": "data/debug/decision_log_2026-01-10.ndjson",
+        "initial": "data/debug/initial_2026-01-10.json"
+      }
     },
     {
       "day": "2026-01-09",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:56+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2026-01-09&maxdate=2026-01-09&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2026-01-09.json",
+        "decision": "data/debug/decision_log_2026-01-09.ndjson",
+        "initial": "data/debug/initial_2026-01-09.json"
+      }
     },
     {
       "day": "2026-01-08",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:56+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2026-01-08&maxdate=2026-01-08&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2026-01-08.json",
+        "decision": "data/debug/decision_log_2026-01-08.ndjson",
+        "initial": "data/debug/initial_2026-01-08.json"
+      }
     },
     {
       "day": "2026-01-07",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:56+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2026-01-07&maxdate=2026-01-07&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2026-01-07.json",
+        "decision": "data/debug/decision_log_2026-01-07.ndjson",
+        "initial": "data/debug/initial_2026-01-07.json"
+      }
     },
     {
       "day": "2026-01-06",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:56+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2026-01-06&maxdate=2026-01-06&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2026-01-06.json",
+        "decision": "data/debug/decision_log_2026-01-06.ndjson",
+        "initial": "data/debug/initial_2026-01-06.json"
+      }
     },
     {
       "day": "2026-01-05",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:56+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2026-01-05&maxdate=2026-01-05&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2026-01-05.json",
+        "decision": "data/debug/decision_log_2026-01-05.ndjson",
+        "initial": "data/debug/initial_2026-01-05.json"
+      }
     },
     {
       "day": "2026-01-04",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:57+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2026-01-04&maxdate=2026-01-04&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2026-01-04.json",
+        "decision": "data/debug/decision_log_2026-01-04.ndjson",
+        "initial": "data/debug/initial_2026-01-04.json"
+      }
     },
     {
       "day": "2026-01-03",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:57+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2026-01-03&maxdate=2026-01-03&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2026-01-03.json",
+        "decision": "data/debug/decision_log_2026-01-03.ndjson",
+        "initial": "data/debug/initial_2026-01-03.json"
+      }
     },
     {
       "day": "2026-01-02",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:57+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2026-01-02&maxdate=2026-01-02&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2026-01-02.json",
+        "decision": "data/debug/decision_log_2026-01-02.ndjson",
+        "initial": "data/debug/initial_2026-01-02.json"
+      }
     },
     {
       "day": "2026-01-01",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:57+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2026-01-01&maxdate=2026-01-01&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2026-01-01.json",
+        "decision": "data/debug/decision_log_2026-01-01.ndjson",
+        "initial": "data/debug/initial_2026-01-01.json"
+      }
     },
     {
       "day": "2025-12-31",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:57+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2025-12-31&maxdate=2025-12-31&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2025-12-31.json",
+        "decision": "data/debug/decision_log_2025-12-31.ndjson",
+        "initial": "data/debug/initial_2025-12-31.json"
+      }
     },
     {
       "day": "2025-12-30",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:57+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2025-12-30&maxdate=2025-12-30&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2025-12-30.json",
+        "decision": "data/debug/decision_log_2025-12-30.ndjson",
+        "initial": "data/debug/initial_2025-12-30.json"
+      }
     },
     {
       "day": "2025-12-29",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:57+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2025-12-29&maxdate=2025-12-29&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2025-12-29.json",
+        "decision": "data/debug/decision_log_2025-12-29.ndjson",
+        "initial": "data/debug/initial_2025-12-29.json"
+      }
     },
     {
       "day": "2025-12-28",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:57+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2025-12-28&maxdate=2025-12-28&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2025-12-28.json",
+        "decision": "data/debug/decision_log_2025-12-28.ndjson",
+        "initial": "data/debug/initial_2025-12-28.json"
+      }
     },
     {
       "day": "2025-12-27",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:58+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2025-12-27&maxdate=2025-12-27&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2025-12-27.json",
+        "decision": "data/debug/decision_log_2025-12-27.ndjson",
+        "initial": "data/debug/initial_2025-12-27.json"
+      }
     },
     {
       "day": "2025-12-26",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:58+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2025-12-26&maxdate=2025-12-26&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2025-12-26.json",
+        "decision": "data/debug/decision_log_2025-12-26.ndjson",
+        "initial": "data/debug/initial_2025-12-26.json"
+      }
     },
     {
       "day": "2025-12-25",
-      "counters": {
-        "sra_ids": 0
+      "generated_utc": "2026-01-22T20:23:58+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2025-12-25&maxdate=2025-12-25&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
       },
-      "notes": "No SRA IDs returned"
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2025-12-25.json",
+        "decision": "data/debug/decision_log_2025-12-25.ndjson",
+        "initial": "data/debug/initial_2025-12-25.json"
+      }
     },
     {
       "day": "2025-12-24",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-12-23",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-12-22",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-12-21",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-12-20",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-12-19",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-12-18",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-12-17",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-12-16",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-12-15",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-12-14",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-12-13",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-12-12",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-12-11",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-12-10",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-12-09",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-12-08",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-12-07",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-12-06",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-12-05",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-12-04",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-12-03",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-12-02",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-12-01",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-30",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-29",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-28",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-27",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-26",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-25",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-24",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-23",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-22",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-21",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-20",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-19",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-18",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-17",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-16",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-15",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-14",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-13",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-12",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-11",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-10",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-09",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-08",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-07",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-06",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-05",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-04",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-03",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-02",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-11-01",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-10-31",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-10-30",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-10-29",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-10-28",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-10-27",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-10-26",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-10-25",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-10-24",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-10-23",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-10-22",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-10-21",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-10-20",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-10-19",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-10-18",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-10-17",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-10-16",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
-    },
-    {
-      "day": "2025-10-15",
-      "counters": {
-        "sra_ids": 0
-      },
-      "notes": "No SRA IDs returned"
+      "generated_utc": "2026-01-22T20:23:58+00:00",
+      "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
+      "retmax": 200,
+      "urls": {
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2025-12-24&maxdate=2025-12-24&datetype=edat&retmax=200&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-radar&email=agl4001%40med.cornell.edu",
+        "sra_esummary": "",
+        "sra_to_bioproject_elink": ""
+      },
+      "counters": {
+        "sra_ids": 0,
+        "summaries": 0,
+        "elink_mapped": 0,
+        "bpuid_resolved_to_accession": 0,
+        "collapsed_bioprojects_total": 0,
+        "unmapped_sra_uids": 0
+      },
+      "top_bioproject_groups_sample": [],
+      "unmapped_sra_uid_sample": [],
+      "debug_files": {
+        "report": "data/debug/report_2025-12-24.json",
+        "decision": "data/debug/decision_log_2025-12-24.ndjson",
+        "initial": "data/debug/initial_2025-12-24.json"
+      }
     }
   ]
 }
