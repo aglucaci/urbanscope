@@ -1,142 +1,21 @@
 <!doctype html>
 <html><head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>UrbanScope</title>
 <style>
-body{font-family:system-ui,Segoe UI,Roboto,Arial;max-width:1100px;margin:40px auto;padding:0 16px;line-height:1.55}
+body{font-family:system-ui,Segoe UI,Roboto,Arial;max-width:980px;margin:40px auto;padding:0 16px;line-height:1.55}
 .muted{color:#666}
 a{text-decoration:none} a:hover{text-decoration:underline}
-.tag{display:inline-block;background:#f3f3f3;border-radius:999px;padding:3px 10px;font-size:.85em;color:#444;margin-left:8px}
-.controls{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
-input,select{padding:10px;border:1px solid #ddd;border-radius:10px}
-.card{border:1px solid #eee;border-radius:14px;padding:14px;margin:10px 0}
 code{background:#f2f2f2;padding:2px 6px;border-radius:6px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-@media(max-width:900px){.grid{grid-template-columns:1fr}}
-</style>
-</head><body>
-<h1>UrbanScope <span class="tag">urban metagenomics • metatranscriptomics</span></h1>
-
-<div class="grid">
-  <div>
-    <h2 style="margin:0 0 6px 0;">Database</h2>
-    <p class="muted" id="dbmeta">Loading db/index.json…</p>
-    <p>
-      <a href="db/records.csv">Download full CSV</a> ·
-      <a href="db/records.ndjson">Download full NDJSON</a> ·
-      <a href="archive/index.html">Browse archive by year</a>
-    </p>
-  </div>
-  <div>
-    <h2 style="margin:0 0 6px 0;">Latest run</h2>
-    <p class="muted" id="runmeta">Loading latest.json…</p>
-    <p><a href="archive/csv/latest_added.csv">Download latest_added.csv</a></p>
-  </div>
-</div>
-
-<div class="controls">
-  <select id="year"></select>
-  <select id="stype">
-    <option value="">All study types</option>
-    <option value="wastewater">wastewater</option>
-    <option value="air">air</option>
-    <option value="surface">surface</option>
-    <option value="other">other</option>
-  </select>
-  <input id="city" placeholder="City filter" />
-  <input id="country" placeholder="Country filter" />
-  <input id="q" placeholder="Search title / links…" style="flex:1;min-width:220px"/>
-</div>
-
-<div id="list"></div>
-
-<script>
-function norm(x){ return (x||"").toString().toLowerCase(); }
-
-let DB = {years:[]};
-let YEAR_DATA = {records:[]};
-
-async function loadDB(){
-  const res = await fetch("db/index.json", {cache:"no-store"});
-  DB = await res.json();
-  const years = (DB.years || []).map(String);
-  const ysel = document.getElementById("year");
-  ysel.innerHTML = years.map(y => `<option value="${y}">${y}</option>`).join("");
-  const latestYear = years.length ? years[years.length-1] : "";
-  if (latestYear) ysel.value = latestYear;
-
-  document.getElementById("dbmeta").textContent =
-    `Total records: ${DB.total_records} • Years: ${(DB.years||[]).join(", ")} • Updated (UTC): ${DB.generated_at_utc}`;
-
-  if (latestYear) await loadYear(latestYear);
-}
-
-async function loadRun(){
-  const res = await fetch("latest.json", {cache:"no-store"});
-  const run = await res.json();
-  document.getElementById("runmeta").textContent =
-    `Added records: ${run.added_records} • require_location: ${run.require_location} • Updated (UTC): ${run.generated_at_utc}`;
-}
-
-async function loadYear(y){
-  const res = await fetch(`db/year/${y}.json`, {cache:"no-store"});
-  YEAR_DATA = await res.json();
-  render();
-}
-
-function render(){
-  const records = YEAR_DATA.records || [];
-  const q = norm(document.getElementById("q").value);
-  const st = norm(document.getElementById("stype").value);
-  const city = norm(document.getElementById("city").value);
-  const country = norm(document.getElementById("country").value);
-
-  const filtered = records.filter(r => {
-    const blob = norm((r.title||"") + " " + (r.paper||"") + " " + (r.sra_link||"") + " " + (r.sra_uid||""));
-    const okQ = !q || blob.includes(q);
-    const okS = !st || norm(r.study_type) === st;
-    const okC = !city || norm(r.city).includes(city);
-    const okK = !country || norm(r.country).includes(country);
-    return okQ && okS && okC && okK;
-  });
-
-  const list = document.getElementById("list");
-  if (!filtered.length) {
-    list.innerHTML = "<p class='muted'>No records match filters for this year.</p>";
-    return;
-  }
-
-  list.innerHTML = filtered.slice().reverse().map(r => {
-    const src = r.source || "";
-    const st = r.study_type ? `<span class="tag">${r.study_type}</span>` : "";
-    const loc = [r.city, r.country].filter(Boolean).join(", ");
-    const locHtml = loc ? `<div class="muted" style="margin-top:6px">📍 ${loc}</div>` : "";
-    const title = r.title ? `<div style="margin-top:8px">${r.title}</div>` : "";
-    const paper = r.paper ? `<div><a href="${r.paper}" target="_blank" rel="noreferrer"><b>Paper</b></a></div>` : "";
-    const dataset = r.sra_link ? `<div><a href="${r.sra_link}" target="_blank" rel="noreferrer"><b>Dataset</b></a></div>` : "";
-    const uid = r.sra_uid ? `<div class="muted">SRA UID: <code>${r.sra_uid}</code></div>` : "";
-    const bp = r.bioproject ? `<div class="muted">BioProject: <code>${r.bioproject}</code></div>` : "";
-    const pmid = r.pmid ? `<div class="muted">PMID: <code>${r.pmid}</code></div>` : "";
-    return `<div class="card">
-      <div class="muted">${src} ${st}</div>
-      ${paper}
-      ${dataset}
-      ${uid}
-      ${bp}
-      ${pmid}
-      ${locHtml}
-      ${title}
-    </div>`;
-  }).join("");
-}
-
-document.getElementById("year").addEventListener("change", async (e) => loadYear(e.target.value));
-["q","stype","city","country"].forEach(id => {
-  document.getElementById(id).addEventListener(id==="stype" ? "change" : "input", render);
-});
-
-loadDB();
-loadRun();
-</script>
+</style></head><body>
+<h1>UrbanScope</h1>
+<p class="muted">Urban metagenomics & metatranscriptomics BioProject database (updated daily).</p>
+<ul>
+  <li><a href="db/index.json">db/index.json</a></li>
+  <li><a href="db/records.ndjson">db/records.ndjson</a> (full database)</li>
+  <li><a href="db/records.csv">db/records.csv</a> (collaborator export)</li>
+  <li><a href="latest.json">latest.json</a> (new BioProjects this run)</li>
+  <li><a href="archive/index.html">archive/index.html</a></li>
+  <li><a href="archive/csv/latest_added.csv">archive/csv/latest_added.csv</a></li>
+</ul>
 </body></html>

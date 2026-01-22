@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-01-22T00:37:15+00:00",
+  "generated_at_utc": "2026-01-22T01:18:53+00:00",
   "years": [
     2025,
     2026
@@ -10,8 +10,7 @@
     "2026": 233
   },
   "counts_by_type": {
-    "other": 39324,
-    "wastewater": 114
+    "other": 39438
   },
   "top_countries": [
     [
