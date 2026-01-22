@@ -1,24 +1,24 @@
 {
-  "generated_at_utc": "2026-01-21T23:06:54",
+  "generated_at_utc": "2026-01-22T00:10:57+00:00",
   "years": [
     2026
   ],
-  "total_records": 175,
+  "total_records": 233,
   "counts_by_year": {
-    "2026": 175
+    "2026": 233
   },
   "counts_by_type": {
-    "other": 175
+    "other": 233
   },
   "top_countries": [
     [
       "Unknown",
-      175
+      233
     ]
   ],
   "downloads": {
-    "ndjson": "db/records.ndjson",
     "csv": "db/records.csv",
+    "ndjson": "db/records.ndjson",
     "archive": "archive/index.html"
   }
 }
