@@ -1,0 +1,75 @@
+{
+  "generated_utc": "2026-01-22T19:44:49+00:00",
+  "reports": [
+    {
+      "day": "2026-01-22",
+      "counters": {
+        "sra_ids": 0
+      },
+      "notes": "No SRA IDs returned"
+    },
+    {
+      "day": "2026-01-21",
+      "counters": {
+        "sra_ids": 0
+      },
+      "notes": "No SRA IDs returned"
+    },
+    {
+      "day": "2026-01-20",
+      "counters": {
+        "sra_ids": 0
+      },
+      "notes": "No SRA IDs returned"
+    },
+    {
+      "day": "2026-01-19",
+      "counters": {
+        "sra_ids": 0
+      },
+      "notes": "No SRA IDs returned"
+    },
+    {
+      "day": "2026-01-18",
+      "counters": {
+        "sra_ids": 0
+      },
+      "notes": "No SRA IDs returned"
+    },
+    {
+      "day": "2026-01-17",
+      "counters": {
+        "sra_ids": 0
+      },
+      "notes": "No SRA IDs returned"
+    },
+    {
+      "day": "2026-01-16",
+      "counters": {
+        "sra_ids": 0
+      },
+      "notes": "No SRA IDs returned"
+    },
+    {
+      "day": "2026-01-15",
+      "counters": {
+        "sra_ids": 0
+      },
+      "notes": "No SRA IDs returned"
+    },
+    {
+      "day": "2026-01-14",
+      "counters": {
+        "sra_ids": 0
+      },
+      "notes": "No SRA IDs returned"
+    },
+    {
+      "day": "2026-01-13",
+      "counters": {
+        "sra_ids": 0
+      },
+      "notes": "No SRA IDs returned"
+    }
+  ]
+}
