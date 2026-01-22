@@ -1,36 +1,38 @@
 #!/usr/bin/env python3
 """
-UrbanScope — Urban Metagenomics & Metatranscriptomics Radar
+UrbanScope — Urban Metagenomics & Metatranscriptomics Radar (Loose + Collapse + PubMed visibility)
 
-This version adds **transparent debugging + raw capture** so you can see:
-- what SRA IDs were found for a day
-- what BioProject resolution returned (esummary vs elink vs runinfo)
-- why each candidate was dropped (no BP, duplicate BP, no title, etc.)
-- a per-day debug report + a latest debug summary for GH Pages
+What this version does (per day):
+- "Loose" ingestion: accept ANY SRA datasets returned by your SRA search
+  (no title requirement; no dependence on SRA esummary BioProject fields).
+- Resolve BioProject robustly:
+    1) elink(sra -> bioproject UID) + esummary(bioproject UID -> PRJ accession)
+    2) fallback: efetch(runinfo) BioProject column (PRJ* accession)
+- Collapse all SRA hits to BioProjects (group-by PRJ accession).
+- For each BioProject group:
+    - pick a representative SRA UID
+    - store group sizes (how many SRA UIDs matched that day)
+    - (optional) store a sample of those UIDs
+- PubMed: show exactly what’s being used (the elink URL) + what was returned initially (first N PMIDs).
+- Debug outputs so you can see:
+    - initial SRA IDs
+    - initial summaries
+    - SRA->BioProject mapping coverage
+    - which BioProjects were seen vs newly added
+    - why some SRA UIDs cannot be mapped to a BioProject
 
-Outputs (new):
-- data/debug/sra_ids_<DAY>.json
-- data/debug/summaries_<DAY>.json
-- data/debug/linkmap_<DAY>.json
-- data/debug/decision_log_<DAY>.ndjson
+Outputs:
 - data/debug/report_<DAY>.json
+- data/debug/decision_log_<DAY>.ndjson
 - docs/debug/latest_report.json
-- docs/latest.json  (BioProjects added in this run; small list for UI)
+- docs/latest.json (new BioProjects added in this run)
+- docs/db/records.json + docs/db/index.json + docs/db/bioprojects.json
 
 Author: Alexander G. Lucaci
 """
 
 from __future__ import annotations
-
-import argparse
-import csv
-import json
-import os
-import re
-import time
-import random
-import urllib.request
-import urllib.parse
+import argparse, csv, json, os, re, time, random, urllib.request, urllib.parse
 import datetime as dt
 import xml.etree.ElementTree as ET
 from typing import Dict, List, Set, Tuple, Iterable, Any, Optional
@@ -52,6 +54,9 @@ DEFAULT_QUERY = (
 DATA_DIR = "data"
 DOCS_DIR = "docs"
 DB_DIR = f"{DOCS_DIR}/db"
+CACHE_DIR = f"{DATA_DIR}/cache"
+DEBUG_DIR = f"{DATA_DIR}/debug"
+DOCS_DEBUG_DIR = f"{DOCS_DIR}/debug"
 
 ARCHIVE_DIR = f"{DOCS_DIR}/archive"
 ARCHIVE_CSV_DIR = f"{ARCHIVE_DIR}/csv"
@@ -59,14 +64,11 @@ ARCHIVE_CSV_DIR = f"{ARCHIVE_DIR}/csv"
 SEEN_IDS = f"{DATA_DIR}/seen_ids.txt"
 SEEN_PROJECTS = f"{DATA_DIR}/seen_bioprojects.txt"
 
-CACHE_DIR = f"{DATA_DIR}/cache"
 BIOPROJECT_CACHE = f"{CACHE_DIR}/bioproject.json"          # accession -> details dict
 BIOPROJECT_UID_CACHE = f"{CACHE_DIR}/bioproject_uid.json"  # accession -> uid (numeric)
 
-DEBUG_DIR = f"{DATA_DIR}/debug"
-DOCS_DEBUG_DIR = f"{DOCS_DIR}/debug"
-DOCS_LATEST = f"{DOCS_DIR}/latest.json"                    # small list of newly added BioProjects
-DOCS_LATEST_DEBUG = f"{DOCS_DEBUG_DIR}/latest_report.json" # latest debug report
+DOCS_LATEST = f"{DOCS_DIR}/latest.json"
+DOCS_LATEST_DEBUG = f"{DOCS_DEBUG_DIR}/latest_report.json"
 
 BIOPROJECT_RE = re.compile(r"\bPRJ(?:NA|EB|DB)\d+\b", re.I)
 
@@ -74,10 +76,10 @@ BIOPROJECT_RE = re.compile(r"\bPRJ(?:NA|EB|DB)\d+\b", re.I)
 # Utilities
 # ------------------------
 def ensure_dirs():
-    for p in [DATA_DIR, DOCS_DIR, DB_DIR, ARCHIVE_DIR, ARCHIVE_CSV_DIR, CACHE_DIR, DEBUG_DIR, DOCS_DEBUG_DIR]:
+    for p in [DATA_DIR, DOCS_DIR, DB_DIR, CACHE_DIR, DEBUG_DIR, DOCS_DEBUG_DIR, ARCHIVE_DIR, ARCHIVE_CSV_DIR]:
         os.makedirs(p, exist_ok=True)
 
-def utc_now() -> str:
+def utc_now():
     return dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
 
 def _sleep_backoff(i: int):
@@ -98,49 +100,48 @@ def parse_xml(data: bytes) -> ET.Element:
     return ET.fromstring(data)
 
 def load_set(path: str) -> Set[str]:
-    if not os.path.exists(path):
-        return set()
+    if not os.path.exists(path): return set()
     return set(x.strip() for x in open(path, encoding="utf-8") if x.strip())
 
 def append_lines(path: str, vals: Iterable[str]):
     vals = list(vals)
-    if not vals:
-        return
+    if not vals: return
     with open(path, "a", encoding="utf-8") as f:
         for v in vals:
             f.write(v + "\n")
 
 def append_jsonl(path: str, records: List[Dict]):
-    if not records:
-        return
+    if not records: return
     with open(path, "a", encoding="utf-8") as f:
         for r in records:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
+def append_jsonl_one(path: str, rec: Dict):
+    with open(path, "a", encoding="utf-8") as f:
+        f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+
 def iter_jsonl(path: str):
-    if not os.path.exists(path):
-        return
+    if not os.path.exists(path): return
     with open(path, encoding="utf-8") as fh:
         for ln in fh:
             if ln.strip():
                 yield json.loads(ln)
 
 def read_json(path: str, default):
-    if not os.path.exists(path):
-        return default
+    if not os.path.exists(path): return default
     try:
         with open(path, "r", encoding="utf-8") as f:
             return json.load(f)
     except Exception:
         return default
 
-def write_json(path: str, obj):
+def write_json(path: str, obj: Any):
     tmp = path + ".tmp"
     with open(tmp, "w", encoding="utf-8") as f:
         json.dump(obj, f, ensure_ascii=False, indent=2)
     os.replace(tmp, path)
 
-def chunked(xs: List[str], n: int) -> Iterable[List[str]]:
+def chunked(xs: List[str], n: int):
     for i in range(0, len(xs), n):
         yield xs[i:i+n]
 
@@ -152,67 +153,58 @@ def inc(d: Dict[str, int], k: str, n: int = 1):
 # ------------------------
 def _eutils_params(extra: Dict[str, str]) -> Dict[str, str]:
     p = dict(extra)
-    if NCBI_API_KEY:
-        p["api_key"] = NCBI_API_KEY
-    if TOOL_NAME:
-        p["tool"] = TOOL_NAME
-    if NCBI_EMAIL:
-        p["email"] = NCBI_EMAIL
+    if NCBI_API_KEY: p["api_key"] = NCBI_API_KEY
+    if TOOL_NAME: p["tool"] = TOOL_NAME
+    if NCBI_EMAIL: p["email"] = NCBI_EMAIL
     return p
 
-def esearch(db: str, term: str, day: str, retmax: int, datetype: str = "edat") -> List[str]:
+def esearch(db: str, term: str, day: str, retmax: int, datetype: str = "edat") -> Tuple[List[str], str]:
     """
-    For SRA, edat is typically more consistent than pdat.
+    Returns (ids, url_used)
+    NOTE: for SRA, datetype=edat tends to be more consistent than pdat.
     """
     params = _eutils_params({
-        "db": db,
-        "term": term,
-        "retmode": "xml",
-        "mindate": day,
-        "maxdate": day,
-        "datetype": datetype,
-        "retmax": str(retmax),
+        "db": db, "term": term, "retmode": "xml",
+        "mindate": day, "maxdate": day, "datetype": datetype,
+        "retmax": str(retmax)
     })
     url = EUTILS + "esearch.fcgi?" + urllib.parse.urlencode(params)
     root = parse_xml(http_get(url))
-    return [x.text for x in root.findall(".//Id") if x.text]
+    ids = [x.text for x in root.findall(".//Id") if x.text]
+    return ids, url
 
-def esearch_any(db: str, term: str, retmax: int = 20) -> List[str]:
-    params = _eutils_params({
-        "db": db,
-        "term": term,
-        "retmode": "xml",
-        "retmax": str(retmax),
-    })
+def esearch_any(db: str, term: str, retmax: int = 20) -> Tuple[List[str], str]:
+    params = _eutils_params({"db": db, "term": term, "retmode": "xml", "retmax": str(retmax)})
     url = EUTILS + "esearch.fcgi?" + urllib.parse.urlencode(params)
     root = parse_xml(http_get(url))
-    return [x.text for x in root.findall(".//Id") if x.text]
+    ids = [x.text for x in root.findall(".//Id") if x.text]
+    return ids, url
 
-def esummary(db: str, ids: List[str]) -> ET.Element:
+def esummary(db: str, ids: List[str]) -> Tuple[ET.Element, str]:
     if not ids:
-        return ET.Element("EMPTY")
+        return ET.Element("EMPTY"), ""
     params = _eutils_params({"db": db, "id": ",".join(ids), "retmode": "xml"})
     url = EUTILS + "esummary.fcgi?" + urllib.parse.urlencode(params)
-    return parse_xml(http_get(url))
+    return parse_xml(http_get(url)), url
 
-def elink(dbfrom: str, db: str, ids: List[str], linkname: Optional[str] = None) -> ET.Element:
+def elink(dbfrom: str, db: str, ids: List[str], linkname: Optional[str] = None) -> Tuple[ET.Element, str]:
     if not ids:
-        return ET.Element("EMPTY")
+        return ET.Element("EMPTY"), ""
     params: Dict[str, str] = {"dbfrom": dbfrom, "db": db, "id": ",".join(ids), "retmode": "xml"}
     if linkname:
         params["linkname"] = linkname
     params = _eutils_params(params)
     url = EUTILS + "elink.fcgi?" + urllib.parse.urlencode(params)
-    return parse_xml(http_get(url))
+    return parse_xml(http_get(url)), url
 
-def esummary_sra(uids: List[str]) -> Dict[str, Dict]:
+def esummary_sra(uids: List[str]) -> Tuple[Dict[str, Dict], str]:
     """
-    Return per-SRA UID: title + best-effort PRJ accession from esummary.
-    (Not reliable; we will prefer elink/runinfo for BioProject.)
+    Best-effort SRA summary: title + (unreliable) PRJ accession.
+    Returns (summaries, url_used).
     """
     if not uids:
-        return {}
-    root = esummary("sra", uids)
+        return {}, ""
+    root, url = esummary("sra", uids)
     out: Dict[str, Dict] = {}
     for d in root.findall(".//DocSum"):
         uid = (d.findtext("Id") or "").strip()
@@ -228,26 +220,26 @@ def esummary_sra(uids: List[str]) -> Dict[str, Dict]:
                     bioproject = m.group(0).upper()
         if uid:
             out[uid] = {"uid": uid, "title": title, "bioproject": bioproject}
-    return out
+    return out, url
+
+def efetch_runinfo_text(uid: str) -> Tuple[str, str]:
+    params = _eutils_params({"db": "sra", "id": uid, "rettype": "runinfo", "retmode": "text"})
+    url = EUTILS + "efetch.fcgi?" + urllib.parse.urlencode(params)
+    text = http_get(url).decode(errors="replace")
+    return text, url
 
 def efetch_runinfo(uid: str) -> Dict[str, Any]:
-    url = EUTILS + "efetch.fcgi?" + urllib.parse.urlencode(
-        _eutils_params({"db": "sra", "id": uid, "rettype": "runinfo", "retmode": "text"})
-    )
-    text = http_get(url).decode(errors="replace")
+    text, _ = efetch_runinfo_text(uid)
     rows = list(csv.DictReader(text.splitlines()))
 
     biosamples = sorted({r.get("BioSample") for r in rows if r.get("BioSample")})
     platforms: Dict[str, int] = {}
     lib_strategies: Dict[str, int] = {}
-
     for r in rows:
         p = r.get("Platform")
-        if p:
-            platforms[p] = platforms.get(p, 0) + 1
+        if p: platforms[p] = platforms.get(p, 0) + 1
         ls = r.get("LibraryStrategy")
-        if ls:
-            lib_strategies[ls] = lib_strategies.get(ls, 0) + 1
+        if ls: lib_strategies[ls] = lib_strategies.get(ls, 0) + 1
 
     keep_cols = [
         "Run", "BioProject", "BioSample", "SampleName",
@@ -267,27 +259,29 @@ def efetch_runinfo(uid: str) -> Dict[str, Any]:
     }
 
 # ------------------------
-# Robust BioProject resolution
+# Robust BioProject resolution (SRA -> BioProject)
 # ------------------------
-def sra_uids_to_bioproject_uids(sra_uids: List[str]) -> Dict[str, str]:
+def sra_uids_to_bioproject_uids(sra_uids: List[str]) -> Tuple[Dict[str, str], str]:
     """
-    Map SRA UID -> BioProject UID using elink. Returns {sra_uid: bioproject_uid}.
+    Map SRA UID -> BioProject UID using elink. Returns ({sra_uid: bioproject_uid}, url_used_last).
     """
     out: Dict[str, str] = {}
+    last_url = ""
     for chunk in chunked(sra_uids, 200):
-        root = elink("sra", "bioproject", chunk)
+        root, url = elink("sra", "bioproject", chunk)
+        last_url = url
         for linkset in root.findall(".//LinkSet"):
             sra_id = (linkset.findtext("./IdList/Id") or "").strip()
             bp_id = (linkset.findtext(".//LinkSetDb/Link/Id") or "").strip()
             if sra_id and bp_id:
                 out[sra_id] = bp_id
-    return out
+    return out, last_url
 
 def bioproject_uid_to_accession(uid: str) -> str:
     uid = (uid or "").strip()
     if not uid:
         return ""
-    root = esummary("bioproject", [uid])
+    root, _ = esummary("bioproject", [uid])
     doc = root.find(".//DocSum")
     if doc is None:
         return ""
@@ -299,48 +293,33 @@ def bioproject_uid_to_accession(uid: str) -> str:
                 return acc.upper()
     return ""
 
-def bioproject_from_runinfo(sra_uid: str) -> str:
+def bioproject_from_runinfo(sra_uid: str) -> Tuple[str, Dict[str, Any]]:
     """
     Fallback: parse PRJ accession from SRA runinfo CSV BioProject column.
+    Returns (accession, debug_info).
     """
-    url = EUTILS + "efetch.fcgi?" + urllib.parse.urlencode(
-        _eutils_params({"db": "sra", "id": sra_uid, "rettype": "runinfo", "retmode": "text"})
-    )
-    text = http_get(url).decode(errors="replace")
+    text, url = efetch_runinfo_text(sra_uid)
     rows = list(csv.DictReader(text.splitlines()))
     for r in rows:
         m = BIOPROJECT_RE.search((r.get("BioProject") or ""))
         if m:
-            return m.group(0).upper()
-    return ""
+            return m.group(0).upper(), {"source": "runinfo", "url": url}
+    return "", {"source": "runinfo_missing", "url": url}
 
 # ------------------------
-# BioProject enrichment (cached)
+# BioProject enrichment (cached) + PubMed visibility
 # ------------------------
-def _load_bioproject_cache() -> Dict[str, Any]:
-    return read_json(BIOPROJECT_CACHE, {})
-
-def _load_bioproject_uid_cache() -> Dict[str, str]:
-    return read_json(BIOPROJECT_UID_CACHE, {})
-
-def _save_bioproject_cache(cache: Dict[str, Any]):
-    write_json(BIOPROJECT_CACHE, cache)
-
-def _save_bioproject_uid_cache(cache: Dict[str, str]):
-    write_json(BIOPROJECT_UID_CACHE, cache)
-
 def bioproject_accession_to_uid(accession: str, uid_cache: Dict[str, str]) -> Optional[str]:
     accession = accession.upper()
     if accession in uid_cache:
         return uid_cache[accession] or None
-    ids = esearch_any("bioproject", f"{accession}[Accession]", retmax=5)
+    ids, _ = esearch_any("bioproject", f"{accession}[Accession]", retmax=5)
     uid = ids[0] if ids else None
     uid_cache[accession] = uid or ""
     return uid
 
 def parse_bioproject_esummary_docsum(docsum: ET.Element) -> Dict[str, Any]:
     uid = (docsum.findtext("Id") or "").strip()
-
     items: Dict[str, str] = {}
     for it in docsum.findall("Item"):
         name = it.attrib.get("Name", "")
@@ -374,16 +353,24 @@ def parse_bioproject_esummary_docsum(docsum: ET.Element) -> Dict[str, Any]:
             "bioproject_uid": uid,
             "bioproject_url": f"https://www.ncbi.nlm.nih.gov/bioproject/{uid}" if uid else "",
         },
-        "raw_esummary_keys": sorted(items.keys()),
     }
 
 def fetch_bioproject_details(accession: str,
                              bp_cache: Dict[str, Any],
                              uid_cache: Dict[str, str],
-                             pubmed: bool = True) -> Dict[str, Any]:
+                             pubmed_limit: int = 25) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+    """
+    Returns (details, pubmed_debug)
+    pubmed_debug includes:
+      - pubmed_elink_url
+      - pmids_initial (first N)
+      - pmid_count
+    """
     accession = accession.upper()
     if accession in bp_cache:
-        return bp_cache[accession]
+        # still return pubmed_debug if present; else empty
+        cached = bp_cache[accession]
+        return cached, cached.get("_pubmed_debug", {})
 
     uid = bioproject_accession_to_uid(accession, uid_cache)
     details: Dict[str, Any] = {
@@ -403,84 +390,111 @@ def fetch_bioproject_details(accession: str,
         "linked_pubmed_ids": [],
     }
 
-    if not uid:
-        bp_cache[accession] = details
-        return details
+    if uid:
+        root, _ = esummary("bioproject", [uid])
+        docsum = root.find(".//DocSum")
+        if docsum is not None:
+            parsed = parse_bioproject_esummary_docsum(docsum)
+            parsed["accession"] = parsed.get("accession") or accession
+            details.update(parsed)
 
-    root = esummary("bioproject", [uid])
-    docsum = root.find(".//DocSum")
-    if docsum is not None:
-        parsed = parse_bioproject_esummary_docsum(docsum)
-        parsed["accession"] = parsed.get("accession") or accession
-        details.update(parsed)
-
-    if pubmed:
+    # PubMed via elink (this is the “PubMed search” being performed)
+    pubmed_debug = {"pubmed_elink_url": "", "pmids_initial": [], "pmid_count": 0}
+    if uid:
         try:
-            link_root = elink("bioproject", "pubmed", [uid])
+            link_root, link_url = elink("bioproject", "pubmed", [uid])
             pmids = sorted({x.text for x in link_root.findall(".//LinkSetDb/Link/Id") if x.text})
             details["linked_pubmed_ids"] = pmids[:200]
+            pubmed_debug = {
+                "pubmed_elink_url": link_url,
+                "pmids_initial": pmids[:pubmed_limit],
+                "pmid_count": len(pmids),
+            }
         except Exception:
-            details["linked_pubmed_ids"] = []
+            pubmed_debug = {"pubmed_elink_url": "", "pmids_initial": [], "pmid_count": 0}
 
+    # Store pubmed debug in cache (keeps the “what search ran” visible)
+    details["_pubmed_debug"] = pubmed_debug
     bp_cache[accession] = details
-    return details
+    return details, pubmed_debug
 
 # ------------------------
-# Debug capture helpers
+# Exports
 # ------------------------
-def debug_path(prefix: str, day: str, ext: str) -> str:
-    return f"{DEBUG_DIR}/{prefix}_{day}.{ext}"
+def rebuild_exports():
+    years = sorted(
+        int(f.split("_")[1].split(".")[0])
+        for f in os.listdir(DATA_DIR)
+        if f.startswith("catalog_") and f.endswith(".jsonl")
+    )
 
-def write_json_if(enabled: bool, path: str, obj: Any):
-    if enabled:
-        write_json(path, obj)
+    all_records: List[Dict[str, Any]] = []
+    for y in years:
+        all_records.extend(list(iter_jsonl(f"{DATA_DIR}/catalog_{y}.jsonl")))
 
-def append_jsonl_if(enabled: bool, path: str, rec: Dict[str, Any]):
-    if enabled:
-        with open(path, "a", encoding="utf-8") as f:
-            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+    with open(f"{DB_DIR}/records.json", "w", encoding="utf-8") as f:
+        json.dump(all_records, f, ensure_ascii=False, indent=2)
+
+    bp_map: Dict[str, Any] = {}
+    for r in all_records:
+        bp = r.get("bioproject")
+        if isinstance(bp, dict):
+            acc = (bp.get("accession") or "").upper()
+            if acc and acc not in bp_map:
+                bp_map[acc] = bp
+
+    with open(f"{DB_DIR}/bioprojects.json", "w", encoding="utf-8") as f:
+        json.dump(bp_map, f, ensure_ascii=False, indent=2)
+
+    with open(f"{DB_DIR}/index.json", "w", encoding="utf-8") as f:
+        json.dump(
+            {
+                "generated": utc_now(),
+                "total_records": len(all_records),
+                "total_bioprojects": len(bp_map),
+                "years": years,
+            },
+            f,
+            ensure_ascii=False,
+            indent=2,
+        )
 
 # ------------------------
-# Core logic (with decision logging)
+# Core logic (Loose + Collapse-to-BioProject + Debug)
 # ------------------------
+def debug_paths(day: str) -> Dict[str, str]:
+    return {
+        "report": f"{DEBUG_DIR}/report_{day}.json",
+        "decision": f"{DEBUG_DIR}/decision_log_{day}.ndjson",
+        "initial": f"{DEBUG_DIR}/initial_{day}.json",
+    }
+
 def run_day(day: str,
             query: str,
             retmax: int,
-            seen_ids: Set[str],
             seen_projects: Set[str],
             bp_cache: Dict[str, Any],
             uid_cache: Dict[str, str],
-            debug: bool = False) -> Tuple[List[Dict], Set[str], Set[str], Dict[str, Any]]:
+            debug: bool = False,
+            pubmed_limit: int = 25,
+            keep_sra_uid_sample: int = 50) -> Tuple[List[Dict], Set[str], Dict[str, Any]]:
 
     counters: Dict[str, int] = {}
-    decisions_path = debug_path("decision_log", day, "ndjson")
+    paths = debug_paths(day)
 
-    added: List[Dict] = []
-    new_ids: Set[str] = set()
-    new_projects: Set[str] = set()
-
-    # 1) initial SRA ids
-    sra_ids = esearch("sra", query, day, retmax, datetype="edat")
+    # 1) SRA search (loose: we accept all returned IDs)
+    sra_ids, esearch_url = esearch("sra", query, day, retmax, datetype="edat")
     inc(counters, "sra_ids", len(sra_ids))
-    write_json_if(debug, debug_path("sra_ids", day, "json"), {"day": day, "count": len(sra_ids), "sra_ids": sra_ids})
 
-    if not sra_ids:
-        return added, new_ids, new_projects, {"day": day, "counters": counters, "notes": "No SRA IDs returned"}
-
-    # 2) SRA summaries (titles, etc.)
-    summaries = esummary_sra(sra_ids)
+    # 2) SRA summaries (best-effort only; but we save them as “initial returned”)
+    summaries, esummary_url = esummary_sra(sra_ids[:500])  # cap summary load
     inc(counters, "summaries", len(summaries))
-    write_json_if(debug, debug_path("summaries", day, "json"), {"day": day, "count": len(summaries), "summaries": summaries})
 
-    if not summaries:
-        return added, new_ids, new_projects, {"day": day, "counters": counters, "notes": "No summaries returned"}
-
-    # 3) link map (SRA UID -> BioProject UID)
-    sra_to_bpuid = sra_uids_to_bioproject_uids(list(summaries.keys()))
+    # 3) Map SRA UID -> BioProject UID
+    sra_to_bpuid, elink_url = sra_uids_to_bioproject_uids(list(summaries.keys()) or sra_ids[:500])
     inc(counters, "elink_mapped", len(sra_to_bpuid))
-    write_json_if(debug, debug_path("linkmap", day, "json"), {"day": day, "count": len(sra_to_bpuid), "sra_to_bioproject_uid": sra_to_bpuid})
 
-    # 4) resolve unique bp uids -> PRJ accessions
+    # 4) Resolve BioProject UID -> PRJ accession (collapse key)
     bpuid_to_acc: Dict[str, str] = {}
     for bpuid in sorted(set(sra_to_bpuid.values())):
         acc = bioproject_uid_to_accession(bpuid)
@@ -488,69 +502,92 @@ def run_day(day: str,
             bpuid_to_acc[bpuid] = acc
     inc(counters, "bpuid_resolved_to_accession", len(bpuid_to_acc))
 
-    # 5) evaluate candidates + explain drops
-    for uid, s in summaries.items():
-        title = (s.get("title") or "").strip()
-        bp = (s.get("bioproject") or "").upper()
-        bp_method = "esummary"
+    # Save “what came back initially”
+    if debug:
+        write_json(paths["initial"], {
+            "day": day,
+            "query": query,
+            "esearch_url": esearch_url,
+            "esummary_url": esummary_url,
+            "elink_sra_to_bioproject_url": elink_url,
+            "sra_ids_initial_count": len(sra_ids),
+            "sra_ids_initial_sample": sra_ids[:50],
+            "summaries_initial_count": len(summaries),
+            "summaries_initial_sample": list(summaries.values())[:10],
+            "sra_to_bpuid_mapped_count": len(sra_to_bpuid),
+            "sra_to_bpuid_sample": dict(list(sra_to_bpuid.items())[:10]),
+            "bpuid_to_accession_count": len(bpuid_to_acc),
+            "bpuid_to_accession_sample": dict(list(bpuid_to_acc.items())[:10]),
+        })
 
+    # 5) Collapse: group SRA UIDs into BioProjects
+    bp_groups: Dict[str, List[str]] = {}   # accession -> [sra_uid,...]
+    unmapped_sra: List[str] = []
+
+    # iterate over the SRA UIDs we have summaries for; if summaries empty, fall back to raw IDs
+    candidate_uids = list(summaries.keys()) if summaries else sra_ids
+    for uid in candidate_uids:
+        bp = ""
+        method = ""
+        # esummary best-effort
+        if uid in summaries and summaries[uid].get("bioproject"):
+            bp = summaries[uid]["bioproject"].upper()
+            method = "esummary"
+        # elink path
         if not bp:
             bpuid = sra_to_bpuid.get(uid, "")
-            if bpuid and bpuid in bpuid_to_acc:
-                bp = bpuid_to_acc[bpuid].upper()
-                bp_method = "elink"
-            else:
-                bp_method = "elink_missing"
-
+            if bpuid:
+                bp = bpuid_to_acc.get(bpuid, "").upper()
+                method = "elink"
+        # runinfo fallback
+        runinfo_debug = {}
         if not bp:
-            bp = bioproject_from_runinfo(uid)
+            bp, runinfo_debug = bioproject_from_runinfo(uid)
             if bp:
-                bp_method = "runinfo"
-            else:
-                bp_method = "runinfo_missing"
-
-        # Decide + log
-        if not title:
-            inc(counters, "drop_no_title")
-            append_jsonl_if(debug, decisions_path, {
-                "day": day, "uid": uid, "decision": "drop", "reason": "no_title",
-                "title": title, "bp": bp, "bp_method": bp_method
-            })
-            continue
+                method = "runinfo"
 
         if not bp:
+            unmapped_sra.append(uid)
             inc(counters, "drop_no_bioproject")
-            append_jsonl_if(debug, decisions_path, {
-                "day": day, "uid": uid, "decision": "drop", "reason": "no_bioproject",
-                "title": title[:200], "bp": "", "bp_method": bp_method
-            })
+            if debug:
+                append_jsonl_one(paths["decision"], {
+                    "day": day, "uid": uid, "decision": "drop",
+                    "reason": "no_bioproject", "bp_method": method or runinfo_debug.get("source", ""),
+                    "runinfo_url": runinfo_debug.get("url","")
+                })
             continue
 
+        bp_groups.setdefault(bp, []).append(uid)
+        inc(counters, f"bp_method_{method or 'unknown'}")
+
+    inc(counters, "collapsed_bioprojects_total", len(bp_groups))
+    inc(counters, "unmapped_sra_uids", len(unmapped_sra))
+
+    # 6) Emit records for NEW BioProjects only (append-only), but still log SEEN ones.
+    added_records: List[Dict] = []
+    new_projects: Set[str] = set()
+
+    for bp, uids in sorted(bp_groups.items(), key=lambda kv: len(kv[1]), reverse=True):
         if bp in seen_projects:
-            inc(counters, "drop_seen_bioproject")
-            append_jsonl_if(debug, decisions_path, {
-                "day": day, "uid": uid, "decision": "drop", "reason": "seen_bioproject",
-                "title": title[:200], "bp": bp, "bp_method": bp_method
-            })
+            inc(counters, "seen_bioproject_groups")
+            if debug:
+                append_jsonl_one(paths["decision"], {
+                    "day": day, "decision": "seen",
+                    "bp": bp, "group_size": len(uids),
+                    "representative_uid": uids[0],
+                })
             continue
 
-        if bp in new_projects:
-            inc(counters, "drop_duplicate_within_day")
-            append_jsonl_if(debug, decisions_path, {
-                "day": day, "uid": uid, "decision": "drop", "reason": "duplicate_within_day",
-                "title": title[:200], "bp": bp, "bp_method": bp_method
-            })
-            continue
-
-        # Passed filters → enrich + add record
-        runinfo = efetch_runinfo(uid)
-        bp_details = fetch_bioproject_details(bp, bp_cache, uid_cache, pubmed=True)
+        # NEW bioproject: enrich + add record
+        rep_uid = uids[0]
+        runinfo = efetch_runinfo(rep_uid)
+        bp_details, pubmed_dbg = fetch_bioproject_details(bp, bp_cache, uid_cache, pubmed_limit=pubmed_limit)
 
         rec = {
             "bioproject": {
                 "accession": bp,
                 "uid": bp_details.get("uid", ""),
-                "title": bp_details.get("title", "") or title,
+                "title": bp_details.get("title", "") or (summaries.get(rep_uid, {}).get("title","") if summaries else ""),
                 "description": bp_details.get("description", ""),
                 "organism": bp_details.get("organism", ""),
                 "data_type": bp_details.get("data_type", ""),
@@ -559,50 +596,61 @@ def run_day(day: str,
                 "center_name": bp_details.get("center_name", ""),
                 "linked_pubmed_ids": bp_details.get("linked_pubmed_ids", []),
                 "url": bp_details.get("ncbi", {}).get("bioproject_url", ""),
-                "resolution": {"bp_method": bp_method, "source_sra_uid": uid},
+                "pubmed_debug": pubmed_dbg,   # <-- "what pubmed search is" + "what returned initially"
+            },
+            "collapsed": {
+                "group_size_sra_uids": len(uids),
+                "sra_uid_sample": uids[:keep_sra_uid_sample],
             },
             "representative_sra": {
-                "uid": uid,
-                "title": title,
-                "url": f"https://www.ncbi.nlm.nih.gov/sra/?term={uid}",
+                "uid": rep_uid,
+                "title": summaries.get(rep_uid, {}).get("title", "") if summaries else "",
+                "url": f"https://www.ncbi.nlm.nih.gov/sra/?term={rep_uid}",
             },
             "run_summary": runinfo,
-            "provenance": {
-                "source": "sra",
-                "day": day,
-                "ingested_utc": utc_now(),
-                "query": query,
-            },
+            "provenance": {"source": "sra", "day": day, "ingested_utc": utc_now(), "query": query},
         }
 
-        inc(counters, "added")
-        append_jsonl_if(debug, decisions_path, {
-            "day": day, "uid": uid, "decision": "add", "reason": "ok",
-            "title": title[:200], "bp": bp, "bp_method": bp_method
-        })
-
-        added.append(rec)
+        added_records.append(rec)
         new_projects.add(bp)
-        new_ids.add(f"sra:{uid}")
+        inc(counters, "added_bioprojects")
+
+        if debug:
+            append_jsonl_one(paths["decision"], {
+                "day": day, "decision": "add",
+                "bp": bp, "group_size": len(uids),
+                "representative_uid": rep_uid,
+                "pubmed_elink_url": pubmed_dbg.get("pubmed_elink_url",""),
+                "pmid_count": pubmed_dbg.get("pmid_count", 0),
+                "pmids_initial": pubmed_dbg.get("pmids_initial", []),
+            })
 
     report = {
         "day": day,
         "generated_utc": utc_now(),
         "query": query,
         "retmax": retmax,
+        "urls": {
+            "sra_esearch": esearch_url,
+            "sra_esummary": esummary_url,
+            "sra_to_bioproject_elink": elink_url,
+        },
         "counters": counters,
-        "notes": {
-            "decision_log": decisions_path if debug else "",
-            "sra_ids_file": debug_path("sra_ids", day, "json") if debug else "",
-            "summaries_file": debug_path("summaries", day, "json") if debug else "",
-            "linkmap_file": debug_path("linkmap", day, "json") if debug else "",
-        }
+        "top_bioproject_groups_sample": [
+            {"bioproject": bp, "group_size": len(uids), "representative_uid": uids[0]}
+            for bp, uids in list(sorted(bp_groups.items(), key=lambda kv: len(kv[1]), reverse=True))[:20]
+        ],
+        "unmapped_sra_uid_sample": unmapped_sra[:25],
+        "debug_files": paths if debug else {},
     }
-    write_json_if(debug, debug_path("report", day, "json"), report)
-    return added, new_ids, new_projects, report
+
+    if debug:
+        write_json(paths["report"], report)
+
+    return added_records, new_projects, report
 
 # ------------------------
-# Exports
+# Exports + latest files
 # ------------------------
 def rebuild_exports():
     years = sorted(
@@ -653,61 +701,65 @@ def main():
     b.add_argument("--year", type=int, required=True)
     b.add_argument("--query", default=DEFAULT_QUERY)
     b.add_argument("--max-per-day", type=int, default=200)
-    b.add_argument("--debug", action="store_true", help="Save per-day debug artifacts and decision logs")
+    b.add_argument("--debug", action="store_true")
+    b.add_argument("--pubmed-limit", type=int, default=25)
 
     d = sub.add_parser("daily")
     d.add_argument("--days", type=int, default=1)
     d.add_argument("--query", default=DEFAULT_QUERY)
     d.add_argument("--max-per-day", type=int, default=200)
-    d.add_argument("--debug", action="store_true", help="Save per-day debug artifacts and decision logs")
+    d.add_argument("--debug", action="store_true")
+    d.add_argument("--pubmed-limit", type=int, default=25)
 
     args = ap.parse_args()
     ensure_dirs()
 
-    seen_ids = load_set(SEEN_IDS)
     seen_projects = load_set(SEEN_PROJECTS)
+    seen_ids = load_set(SEEN_IDS)
 
     bp_cache = read_json(BIOPROJECT_CACHE, {})
     uid_cache = read_json(BIOPROJECT_UID_CACHE, {})
 
     latest_added: List[Dict[str, Any]] = []
-    latest_reports: List[Dict[str, Any]] = []
+    reports: List[Dict[str, Any]] = []
 
     try:
         if args.cmd == "backfill-year":
             year = args.year
             for day in (dt.date(year, 1, 1) + dt.timedelta(n) for n in range(365)):
                 ds = day.isoformat()
-                added, ids, projs, report = run_day(
+                added, new_projects, report = run_day(
                     ds, args.query, args.max_per_day,
-                    seen_ids, seen_projects, bp_cache, uid_cache,
-                    debug=args.debug
+                    seen_projects, bp_cache, uid_cache,
+                    debug=args.debug, pubmed_limit=args.pubmed_limit
                 )
 
                 if added:
                     append_jsonl(f"{DATA_DIR}/catalog_{year}.jsonl", added)
 
-                append_lines(SEEN_IDS, ids)
-                append_lines(SEEN_PROJECTS, projs)
-                seen_ids |= ids
-                seen_projects |= projs
+                # Update seen
+                if new_projects:
+                    append_lines(SEEN_PROJECTS, sorted(new_projects))
+                    seen_projects |= new_projects
 
-                latest_reports.append(report)
-                print(ds, f"added={len(added)}", f"sra_ids={report['counters'].get('sra_ids',0)}")
+                # We still mark that we processed “day”
+                reports.append(report)
+                print(ds, f"added_bioprojects={report['counters'].get('added_bioprojects',0)}",
+                      f"sra_ids={report['counters'].get('sra_ids',0)}",
+                      f"collapsed_total={report['counters'].get('collapsed_bioprojects_total',0)}")
 
         else:
             end = dt.date.today()
             for i in range(args.days):
                 ds = (end - dt.timedelta(i)).isoformat()
-                added, ids, projs, report = run_day(
+                added, new_projects, report = run_day(
                     ds, args.query, args.max_per_day,
-                    seen_ids, seen_projects, bp_cache, uid_cache,
-                    debug=args.debug
+                    seen_projects, bp_cache, uid_cache,
+                    debug=args.debug, pubmed_limit=args.pubmed_limit
                 )
 
                 if added:
                     append_jsonl(f"{DATA_DIR}/catalog_{end.year}.jsonl", added)
-                    # keep a small list for docs/latest.json
                     for r in added:
                         bp = r.get("bioproject", {})
                         latest_added.append({
@@ -718,34 +770,31 @@ def main():
                             "data_type": bp.get("data_type",""),
                             "center_name": bp.get("center_name",""),
                             "url": bp.get("url",""),
+                            "pubmed_elink_url": (bp.get("pubmed_debug") or {}).get("pubmed_elink_url",""),
+                            "pmid_count": (bp.get("pubmed_debug") or {}).get("pmid_count", 0),
+                            "pmids_initial": (bp.get("pubmed_debug") or {}).get("pmids_initial", []),
                         })
 
-                append_lines(SEEN_IDS, ids)
-                append_lines(SEEN_PROJECTS, projs)
-                seen_ids |= ids
-                seen_projects |= projs
+                if new_projects:
+                    append_lines(SEEN_PROJECTS, sorted(new_projects))
+                    seen_projects |= new_projects
 
-                latest_reports.append(report)
-                print(ds, f"added={len(added)}", f"sra_ids={report['counters'].get('sra_ids',0)}")
+                reports.append(report)
+                print(ds, f"added_bioprojects={report['counters'].get('added_bioprojects',0)}",
+                      f"sra_ids={report['counters'].get('sra_ids',0)}",
+                      f"collapsed_total={report['counters'].get('collapsed_bioprojects_total',0)}")
 
-        # Write “latest” outputs (useful for your UI + sanity checks)
-        if latest_added:
-            write_json(DOCS_LATEST, {
-                "generated_utc": utc_now(),
-                "count": len(latest_added),
-                "items": latest_added[:500]
-            })
-        else:
-            # still write a file so the UI doesn’t break
-            write_json(DOCS_LATEST, {"generated_utc": utc_now(), "count": 0, "items": []})
-
-        # Always write the latest debug report (even if debug=False; it still has counters)
+        # Always write latest files so UI/debug has something to read
+        write_json(DOCS_LATEST, {
+            "generated_utc": utc_now(),
+            "count": len(latest_added),
+            "items": latest_added[:500],
+        })
         write_json(DOCS_LATEST_DEBUG, {
             "generated_utc": utc_now(),
-            "reports": latest_reports[-max(1, len(latest_reports)) :],  # keep all for this run
+            "reports": reports,
         })
 
-        # Rebuild DB exports
         rebuild_exports()
 
     finally:
