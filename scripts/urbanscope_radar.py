@@ -6,11 +6,27 @@ Append-only discovery + enrichment pipeline for UNIQUE BioProjects (PRJ*),
 built to run entirely on GitHub Actions and publish a static, exploreable
 database via GitHub Pages.
 
+Key guarantees:
+- Discovers SRA records by day, then resolves BioProject reliably via:
+  (1) elink(sra -> bioproject) + esummary(bioproject -> accession)
+  (2) fallback: efetch(runinfo) BioProject column (PRJ* accession)
+- Enriches each BioProject with stable metadata + linked PubMed IDs.
+- Uses local JSON caches in data/cache/ to minimize NCBI calls.
+
 Author: Alexander G. Lucaci
 """
 
 from __future__ import annotations
-import argparse, csv, json, os, re, time, random, urllib.request, urllib.parse
+
+import argparse
+import csv
+import json
+import os
+import re
+import time
+import random
+import urllib.request
+import urllib.parse
 import datetime as dt
 import xml.etree.ElementTree as ET
 from typing import Dict, List, Set, Tuple, Iterable, Any, Optional
@@ -32,7 +48,6 @@ DEFAULT_QUERY = (
 DATA_DIR = "data"
 DOCS_DIR = "docs"
 DB_DIR = f"{DOCS_DIR}/db"
-DB_YEAR_DIR = f"{DB_DIR}/year"
 ARCHIVE_DIR = f"{DOCS_DIR}/archive"
 ARCHIVE_CSV_DIR = f"{ARCHIVE_DIR}/csv"
 
@@ -40,7 +55,7 @@ SEEN_IDS = f"{DATA_DIR}/seen_ids.txt"
 SEEN_PROJECTS = f"{DATA_DIR}/seen_bioprojects.txt"
 
 CACHE_DIR = f"{DATA_DIR}/cache"
-BIOPROJECT_CACHE = f"{CACHE_DIR}/bioproject.json"   # accession -> details dict
+BIOPROJECT_CACHE = f"{CACHE_DIR}/bioproject.json"          # accession -> details dict
 BIOPROJECT_UID_CACHE = f"{CACHE_DIR}/bioproject_uid.json"  # accession -> uid (numeric)
 
 BIOPROJECT_RE = re.compile(r"\bPRJ(?:NA|EB|DB)\d+\b", re.I)
@@ -49,17 +64,16 @@ BIOPROJECT_RE = re.compile(r"\bPRJ(?:NA|EB|DB)\d+\b", re.I)
 # Utilities
 # ------------------------
 def ensure_dirs():
-    for p in [DATA_DIR, DOCS_DIR, DB_DIR, DB_YEAR_DIR, ARCHIVE_DIR, ARCHIVE_CSV_DIR, CACHE_DIR]:
+    for p in [DATA_DIR, DOCS_DIR, DB_DIR, ARCHIVE_DIR, ARCHIVE_CSV_DIR, CACHE_DIR]:
         os.makedirs(p, exist_ok=True)
 
-def utc_now():
+def utc_now() -> str:
     return dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
 
 def _sleep_backoff(i: int):
     time.sleep(0.6 * (2 ** i) + random.random() * 0.25)
 
 def http_get(url: str, retries: int = 6) -> bytes:
-    # NCBI likes a User-Agent; include tool/email if available.
     headers = {"User-Agent": f"{TOOL_NAME}/1.0 ({NCBI_EMAIL or 'no-email'})"}
     req = urllib.request.Request(url, headers=headers)
     for i in range(retries):
@@ -125,7 +139,6 @@ def chunked(xs: List[str], n: int) -> Iterable[List[str]]:
 # ------------------------
 def _eutils_params(extra: Dict[str, str]) -> Dict[str, str]:
     p = dict(extra)
-    # Optional but recommended by NCBI
     if NCBI_API_KEY:
         p["api_key"] = NCBI_API_KEY
     if TOOL_NAME:
@@ -134,14 +147,17 @@ def _eutils_params(extra: Dict[str, str]) -> Dict[str, str]:
         p["email"] = NCBI_EMAIL
     return p
 
-def esearch(db: str, term: str, day: str, retmax: int) -> List[str]:
+def esearch(db: str, term: str, day: str, retmax: int, datetype: str = "edat") -> List[str]:
+    """
+    SRA is often more consistent with edat than pdat.
+    """
     params = _eutils_params({
         "db": db,
         "term": term,
         "retmode": "xml",
         "mindate": day,
         "maxdate": day,
-        "datetype": "pdat",
+        "datetype": datetype,
         "retmax": str(retmax),
     })
     url = EUTILS + "esearch.fcgi?" + urllib.parse.urlencode(params)
@@ -169,25 +185,25 @@ def esummary(db: str, ids: List[str]) -> ET.Element:
 def elink(dbfrom: str, db: str, ids: List[str], linkname: Optional[str] = None) -> ET.Element:
     if not ids:
         return ET.Element("EMPTY")
-    params = {"dbfrom": dbfrom, "db": db, "id": ",".join(ids), "retmode": "xml"}
+    params: Dict[str, str] = {"dbfrom": dbfrom, "db": db, "id": ",".join(ids), "retmode": "xml"}
     if linkname:
         params["linkname"] = linkname
-    params = _eutils_params({k: str(v) for k, v in params.items()})
+    params = _eutils_params(params)
     url = EUTILS + "elink.fcgi?" + urllib.parse.urlencode(params)
     return parse_xml(http_get(url))
 
 def esummary_sra(uids: List[str]) -> Dict[str, Dict]:
     """
-    Return per-SRA UID: title + first BioProject accession discovered in the summary.
+    Return per-SRA UID: title (BioProject accession in esummary is unreliable; we still attempt).
     """
     if not uids:
         return {}
     root = esummary("sra", uids)
     out: Dict[str, Dict] = {}
     for d in root.findall(".//DocSum"):
-        uid = d.findtext("Id") or ""
+        uid = (d.findtext("Id") or "").strip()
         title = ""
-        bioproject = ""
+        bioproject = ""  # best-effort only
         for it in d.findall("Item"):
             name = it.attrib.get("Name", "")
             if name == "Title":
@@ -206,9 +222,11 @@ def efetch_runinfo(uid: str) -> Dict[str, Any]:
     )
     text = http_get(url).decode(errors="replace")
     rows = list(csv.DictReader(text.splitlines()))
+
     biosamples = sorted({r.get("BioSample") for r in rows if r.get("BioSample")})
     platforms: Dict[str, int] = {}
     lib_strategies: Dict[str, int] = {}
+
     for r in rows:
         p = r.get("Platform")
         if p:
@@ -217,16 +235,13 @@ def efetch_runinfo(uid: str) -> Dict[str, Any]:
         if ls:
             lib_strategies[ls] = lib_strategies.get(ls, 0) + 1
 
-    # Some useful “preview” columns (keeps the JSON smaller + stable for the UI)
     keep_cols = [
         "Run", "BioProject", "BioSample", "SampleName",
         "LibraryStrategy", "LibrarySource", "LibrarySelection",
         "Platform", "Model", "spots", "bases", "avgLength",
         "ReleaseDate",
     ]
-    preview = []
-    for r in rows[:25]:
-        preview.append({k: r.get(k, "") for k in keep_cols})
+    preview = [{k: (r.get(k, "") or "") for k in keep_cols} for r in rows[:25]]
 
     return {
         "rows": len(rows),
@@ -236,6 +251,61 @@ def efetch_runinfo(uid: str) -> Dict[str, Any]:
         "library_strategy_counts": lib_strategies,
         "preview": preview,
     }
+
+# ------------------------
+# Robust BioProject resolution from SRA UIDs
+# ------------------------
+def sra_uids_to_bioproject_uids(sra_uids: List[str]) -> Dict[str, str]:
+    """
+    Map SRA UID -> BioProject UID using elink. Returns {sra_uid: bioproject_uid}.
+    """
+    if not sra_uids:
+        return {}
+
+    out: Dict[str, str] = {}
+    # elink can take many IDs; still chunk to be safe.
+    for chunk in chunked(sra_uids, 200):
+        root = elink("sra", "bioproject", chunk)
+        for linkset in root.findall(".//LinkSet"):
+            sra_id = (linkset.findtext("./IdList/Id") or "").strip()
+            bp_id = (linkset.findtext(".//LinkSetDb/Link/Id") or "").strip()
+            if sra_id and bp_id:
+                out[sra_id] = bp_id
+    return out
+
+def bioproject_uid_to_accession(uid: str) -> str:
+    """
+    BioProject UID -> accession (PRJNA/PRJEB/PRJDB) via esummary.
+    """
+    uid = (uid or "").strip()
+    if not uid:
+        return ""
+    root = esummary("bioproject", [uid])
+    doc = root.find(".//DocSum")
+    if doc is None:
+        return ""
+    for it in doc.findall("Item"):
+        name = it.attrib.get("Name", "")
+        if name in ("Project_Acc", "Accession"):
+            acc = (it.text or "").strip()
+            if acc:
+                return acc.upper()
+    return ""
+
+def bioproject_from_runinfo(sra_uid: str) -> str:
+    """
+    Fallback: parse PRJ accession from SRA runinfo CSV's BioProject column.
+    """
+    url = EUTILS + "efetch.fcgi?" + urllib.parse.urlencode(
+        _eutils_params({"db": "sra", "id": sra_uid, "rettype": "runinfo", "retmode": "text"})
+    )
+    text = http_get(url).decode(errors="replace")
+    rows = list(csv.DictReader(text.splitlines()))
+    for r in rows:
+        m = BIOPROJECT_RE.search((r.get("BioProject") or ""))
+        if m:
+            return m.group(0).upper()
+    return ""
 
 # ------------------------
 # BioProject enrichment (cached)
@@ -252,44 +322,32 @@ def _save_bioproject_cache(cache: Dict[str, Any]):
 def _save_bioproject_uid_cache(cache: Dict[str, str]):
     write_json(BIOPROJECT_UID_CACHE, cache)
 
-def bioproject_accession_to_uid(accession: str,
-                                uid_cache: Dict[str, str]) -> Optional[str]:
+def bioproject_accession_to_uid(accession: str, uid_cache: Dict[str, str]) -> Optional[str]:
     """
-    BioProject esummary/efetch uses numeric UIDs. We resolve PRJNA... -> UID via esearch.
-    Cached to avoid repeated lookups.
+    Resolve PRJ accession -> BioProject numeric UID via esearch, cached.
     """
     accession = accession.upper()
     if accession in uid_cache:
         return uid_cache[accession] or None
 
-    # Use [Accession] query to resolve reliably
-    term = f"{accession}[Accession]"
-    ids = esearch_any("bioproject", term, retmax=5)
+    ids = esearch_any("bioproject", f"{accession}[Accession]", retmax=5)
     uid = ids[0] if ids else None
     uid_cache[accession] = uid or ""
     return uid
 
 def parse_bioproject_esummary_docsum(docsum: ET.Element) -> Dict[str, Any]:
-    """
-    Extract useful BioProject metadata from esummary DocSum.
-    Fields vary a bit; we keep it resilient.
-    """
-    uid = docsum.findtext("Id") or ""
-    items = {}
+    uid = (docsum.findtext("Id") or "").strip()
+
+    items: Dict[str, str] = {}
     for it in docsum.findall("Item"):
         name = it.attrib.get("Name", "")
         val = it.text or ""
-        # Some values are nested lists; attempt to flatten a few cases
         if list(it):
-            # join nested Items' text where applicable
             subvals = [x.text for x in it.findall(".//Item") if x.text]
             if subvals:
                 val = "; ".join(subvals)
         items[name] = val
 
-    # Commonly present in BioProject esummary:
-    # Project_Acc, Project_Title, Project_Description, Organism_Name, Project_Data_Type,
-    # Submission_Date, Last_Update, Center_Name, Accession (sometimes), etc.
     acc = (items.get("Project_Acc") or items.get("Accession") or "").strip()
     title = (items.get("Project_Title") or items.get("Title") or "").strip()
     desc = (items.get("Project_Description") or items.get("Description") or "").strip()
@@ -320,10 +378,6 @@ def fetch_bioproject_details(accession: str,
                              bp_cache: Dict[str, Any],
                              uid_cache: Dict[str, str],
                              pubmed: bool = True) -> Dict[str, Any]:
-    """
-    Return a stable, UI-friendly BioProject details dict, cached by accession.
-    Optionally add linked PubMed IDs (lightweight and useful in the UI).
-    """
     accession = accession.upper()
     if accession in bp_cache:
         return bp_cache[accession]
@@ -350,16 +404,13 @@ def fetch_bioproject_details(accession: str,
         bp_cache[accession] = details
         return details
 
-    # esummary gives the most consistent structured fields for BioProject
     root = esummary("bioproject", [uid])
     docsum = root.find(".//DocSum")
     if docsum is not None:
         parsed = parse_bioproject_esummary_docsum(docsum)
-        # ensure accession field is set even if esummary omits it
         parsed["accession"] = parsed.get("accession") or accession
         details.update(parsed)
 
-    # Optional: linked PubMed IDs (helps your database “evidence” layer)
     if pubmed:
         try:
             link_root = elink("bioproject", "pubmed", [uid])
@@ -386,11 +437,37 @@ def run_day(day: str,
     new_ids: Set[str] = set()
     new_projects: Set[str] = set()
 
-    sra_ids = esearch("sra", query, day, retmax)
+    sra_ids = esearch("sra", query, day, retmax, datetype="edat")
+    if not sra_ids:
+        return added, new_ids, new_projects
+
     summaries = esummary_sra(sra_ids)
+    if not summaries:
+        return added, new_ids, new_projects
+
+    # Robust linkage: SRA UID -> BioProject UID
+    sra_to_bpuid = sra_uids_to_bioproject_uids(list(summaries.keys()))
+
+    # Convert unique bp uids -> PRJ accession
+    bpuid_to_acc: Dict[str, str] = {}
+    for bpuid in set(sra_to_bpuid.values()):
+        acc = bioproject_uid_to_accession(bpuid)
+        if acc:
+            bpuid_to_acc[bpuid] = acc
 
     for uid, s in summaries.items():
+        # Try (best-effort): esummary-supplied PRJ accession
         bp = (s.get("bioproject") or "").upper()
+
+        # Try: elink-derived BioProject UID -> accession
+        if not bp:
+            bpuid = sra_to_bpuid.get(uid, "")
+            bp = bpuid_to_acc.get(bpuid, "").upper()
+
+        # Fallback: parse PRJ from runinfo CSV
+        if not bp:
+            bp = bioproject_from_runinfo(uid)
+
         if not bp:
             continue
         if bp in seen_projects or bp in new_projects:
@@ -398,16 +475,14 @@ def run_day(day: str,
         if not (s.get("title") or "").strip():
             continue
 
-        # Enrich: run-level overview + BioProject-level metadata
         runinfo = efetch_runinfo(uid)
         bp_details = fetch_bioproject_details(bp, bp_cache, uid_cache, pubmed=True)
 
         rec = {
-            # Primary key for your database
             "bioproject": {
                 "accession": bp,
                 "uid": bp_details.get("uid", ""),
-                "title": bp_details.get("title", "") or s["title"],  # fallback to SRA title
+                "title": bp_details.get("title", "") or s["title"],
                 "description": bp_details.get("description", ""),
                 "organism": bp_details.get("organism", ""),
                 "data_type": bp_details.get("data_type", ""),
@@ -417,18 +492,12 @@ def run_day(day: str,
                 "linked_pubmed_ids": bp_details.get("linked_pubmed_ids", []),
                 "url": bp_details.get("ncbi", {}).get("bioproject_url", ""),
             },
-
-            # A “handle” back to how we found it
             "representative_sra": {
                 "uid": uid,
                 "title": s["title"],
                 "url": f"https://www.ncbi.nlm.nih.gov/sra/?term={uid}",
             },
-
-            # Aggregated quick facts (useful for cards + faceting)
             "run_summary": runinfo,
-
-            # Provenance for append-only tracking
             "provenance": {
                 "source": "sra",
                 "day": day,
@@ -457,28 +526,20 @@ def rebuild_exports():
     for y in years:
         all_records.extend(list(iter_jsonl(f"{DATA_DIR}/catalog_{y}.jsonl")))
 
-    # records.json: full append-only record list (what your UI can render)
     with open(f"{DB_DIR}/records.json", "w", encoding="utf-8") as f:
         json.dump(all_records, f, ensure_ascii=False, indent=2)
 
-    # bioprojects.json: a convenient keyed map for fast lookup in the UI
     bp_map: Dict[str, Any] = {}
     for r in all_records:
-        bp = (r.get("bioproject") or {}).get("accession") or (r.get("bioproject", {}).get("accession") if isinstance(r.get("bioproject"), dict) else None)
-        if not bp and isinstance(r.get("bioproject"), dict):
-            bp = r["bioproject"].get("accession")
-        if not bp and isinstance(r.get("bioproject"), str):
-            bp = r.get("bioproject")
-        # In the new schema bp is nested dict; handle robustly:
-        if isinstance(r.get("bioproject"), dict):
-            bp = r["bioproject"].get("accession") or bp
-            if bp:
-                bp_map[bp] = r["bioproject"]
+        bp = r.get("bioproject")
+        if isinstance(bp, dict):
+            acc = (bp.get("accession") or "").upper()
+            if acc and acc not in bp_map:
+                bp_map[acc] = bp
 
     with open(f"{DB_DIR}/bioprojects.json", "w", encoding="utf-8") as f:
         json.dump(bp_map, f, ensure_ascii=False, indent=2)
 
-    # index.json: small metadata file your UI can fetch first
     with open(f"{DB_DIR}/index.json", "w", encoding="utf-8") as f:
         json.dump(
             {
@@ -515,51 +576,40 @@ def main():
     seen_ids = load_set(SEEN_IDS)
     seen_projects = load_set(SEEN_PROJECTS)
 
-    # Load caches once; write back at end (fast + fewer writes)
     bp_cache = _load_bioproject_cache()
     uid_cache = _load_bioproject_uid_cache()
 
     try:
         if args.cmd == "backfill-year":
             year = args.year
-            # NOTE: naive 365-day loop (keeps your original behavior).
-            # If you care about leap years, swap to a proper year-day iterator.
+            # Simple 365-day iterator (keeps your original behavior)
             for day in (dt.date(year, 1, 1) + dt.timedelta(n) for n in range(365)):
                 ds = day.isoformat()
-                added, ids, projs = run_day(
-                    ds, args.query, args.max_per_day,
-                    seen_ids, seen_projects,
-                    bp_cache, uid_cache
-                )
+                added, ids, projs = run_day(ds, args.query, args.max_per_day, seen_ids, seen_projects, bp_cache, uid_cache)
                 if added:
                     append_jsonl(f"{DATA_DIR}/catalog_{year}.jsonl", added)
                 append_lines(SEEN_IDS, ids)
                 append_lines(SEEN_PROJECTS, projs)
                 seen_ids |= ids
                 seen_projects |= projs
-                print(ds, len(added))
+                print(ds, f"added={len(added)}")
 
         else:
             end = dt.date.today()
             for i in range(args.days):
                 ds = (end - dt.timedelta(i)).isoformat()
-                added, ids, projs = run_day(
-                    ds, args.query, args.max_per_day,
-                    seen_ids, seen_projects,
-                    bp_cache, uid_cache
-                )
+                added, ids, projs = run_day(ds, args.query, args.max_per_day, seen_ids, seen_projects, bp_cache, uid_cache)
                 if added:
                     append_jsonl(f"{DATA_DIR}/catalog_{end.year}.jsonl", added)
                 append_lines(SEEN_IDS, ids)
                 append_lines(SEEN_PROJECTS, projs)
                 seen_ids |= ids
                 seen_projects |= projs
-                print(ds, len(added))
+                print(ds, f"added={len(added)}")
 
         rebuild_exports()
 
     finally:
-        # Persist caches even if a day fails mid-run (helps long backfills)
         _save_bioproject_cache(bp_cache)
         _save_bioproject_uid_cache(uid_cache)
 
