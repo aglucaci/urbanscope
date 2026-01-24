@@ -45,7 +45,7 @@ jobs:
           # - The script skips already-seen SRA UIDs + SRR runs using data/seen_sra_uids.txt and data/seen_srr_runs.txt.
           # - This job is append-only: it only adds NEW records to data/srr_catalog_<YEAR>.jsonl and refreshes docs/db exports.
 
-          python urbanscope_srr_harvester.py crawl \
+          python scripts/urbanscope_srr_harvester.py crawl \
             --page-size 200 \
             --stop-after-new-srr 500 \
             --fetch-biosample \
