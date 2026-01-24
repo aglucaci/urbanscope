@@ -1,0 +1,337 @@
+{
+  "PRJNA1107201": {
+    "uid": "1107201",
+    "accession": "PRJNA1107201"
+  },
+  "PRJNA1411195": {
+    "uid": "1411195",
+    "accession": "PRJNA1411195"
+  },
+  "PRJNA812604": {
+    "uid": "812604",
+    "accession": "PRJNA812604"
+  },
+  "PRJNA1412536": {
+    "uid": "1412536",
+    "accession": "PRJNA1412536"
+  },
+  "PRJNA1411669": {
+    "uid": "1411669",
+    "accession": "PRJNA1411669"
+  },
+  "PRJNA889839": {
+    "uid": "889839",
+    "accession": "PRJNA889839"
+  },
+  "PRJNA1400247": {
+    "uid": "1400247",
+    "accession": "PRJNA1400247"
+  },
+  "PRJNA989177": {
+    "uid": "989177",
+    "accession": "PRJNA989177"
+  },
+  "PRJNA1406807": {
+    "uid": "1406807",
+    "accession": "PRJNA1406807"
+  },
+  "PRJNA907019": {
+    "uid": "907019",
+    "accession": "PRJNA907019"
+  },
+  "PRJNA1206175": {
+    "uid": "1206175",
+    "accession": "PRJNA1206175"
+  },
+  "PRJNA1027353": {
+    "uid": "1027353",
+    "accession": "PRJNA1027353"
+  },
+  "PRJNA1406355": {
+    "uid": "1406355",
+    "accession": "PRJNA1406355"
+  },
+  "PRJNA1406345": {
+    "uid": "1406345",
+    "accession": "PRJNA1406345"
+  },
+  "PRJEB106897": {
+    "accession": "PRJEB106897",
+    "uid": "",
+    "error": "uid_not_found"
+  },
+  "PRJNA1405282": {
+    "uid": "1405282",
+    "accession": "PRJNA1405282"
+  },
+  "PRJNA1406361": {
+    "uid": "1406361",
+    "accession": "PRJNA1406361"
+  },
+  "PRJNA1336326": {
+    "uid": "1336326",
+    "accession": "PRJNA1336326"
+  },
+  "PRJNA1076210": {
+    "uid": "1076210",
+    "accession": "PRJNA1076210"
+  },
+  "PRJNA1402973": {
+    "uid": "1402973",
+    "accession": "PRJNA1402973"
+  },
+  "PRJNA1404137": {
+    "uid": "1404137",
+    "accession": "PRJNA1404137"
+  },
+  "PRJNA1404139": {
+    "uid": "1404139",
+    "accession": "PRJNA1404139"
+  },
+  "PRJNA1404330": {
+    "uid": "1404330",
+    "accession": "PRJNA1404330"
+  },
+  "PRJNA1406231": {
+    "uid": "1406231",
+    "accession": "PRJNA1406231"
+  },
+  "PRJNA1404420": {
+    "uid": "1404420",
+    "accession": "PRJNA1404420"
+  },
+  "PRJNA1406080": {
+    "uid": "1406080",
+    "accession": "PRJNA1406080"
+  },
+  "PRJNA1405822": {
+    "uid": "1405822",
+    "accession": "PRJNA1405822"
+  },
+  "PRJNA1247874": {
+    "uid": "1247874",
+    "accession": "PRJNA1247874"
+  },
+  "PRJNA1405798": {
+    "uid": "1405798",
+    "accession": "PRJNA1405798"
+  },
+  "PRJNA1404837": {
+    "uid": "1404837",
+    "accession": "PRJNA1404837"
+  },
+  "PRJNA1405309": {
+    "uid": "1405309",
+    "accession": "PRJNA1405309"
+  },
+  "PRJNA1403038": {
+    "uid": "1403038",
+    "accession": "PRJNA1403038"
+  },
+  "PRJNA1399390": {
+    "uid": "1399390",
+    "accession": "PRJNA1399390"
+  },
+  "PRJNA1397491": {
+    "uid": "1397491",
+    "accession": "PRJNA1397491"
+  },
+  "PRJEB105545": {
+    "accession": "PRJEB105545",
+    "uid": "",
+    "error": "uid_not_found"
+  },
+  "PRJNA1401303": {
+    "uid": "1401303",
+    "accession": "PRJNA1401303"
+  },
+  "PRJNA1405126": {
+    "uid": "1405126",
+    "accession": "PRJNA1405126"
+  },
+  "PRJNA1404908": {
+    "uid": "1404908",
+    "accession": "PRJNA1404908"
+  },
+  "PRJNA1404840": {
+    "uid": "1404840",
+    "accession": "PRJNA1404840"
+  },
+  "PRJNA1404653": {
+    "uid": "1404653",
+    "accession": "PRJNA1404653"
+  },
+  "PRJNA896645": {
+    "uid": "896645",
+    "accession": "PRJNA896645"
+  },
+  "PRJEB106346": {
+    "uid": "1403880",
+    "accession": "PRJEB106346"
+  },
+  "PRJNA1403654": {
+    "uid": "1403654",
+    "accession": "PRJNA1403654"
+  },
+  "PRJNA1403741": {
+    "uid": "1403741",
+    "accession": "PRJNA1403741"
+  },
+  "PRJNA1403729": {
+    "uid": "1403729",
+    "accession": "PRJNA1403729"
+  },
+  "PRJNA957477": {
+    "uid": "957477",
+    "accession": "PRJNA957477"
+  },
+  "PRJNA1403514": {
+    "uid": "1403514",
+    "accession": "PRJNA1403514"
+  },
+  "PRJNA1313157": {
+    "uid": "1313157",
+    "accession": "PRJNA1313157"
+  },
+  "PRJNA1403165": {
+    "uid": "1403165",
+    "accession": "PRJNA1403165"
+  },
+  "PRJNA1403057": {
+    "uid": "1403057",
+    "accession": "PRJNA1403057"
+  },
+  "PRJNA1402099": {
+    "uid": "1402099",
+    "accession": "PRJNA1402099"
+  },
+  "PRJNA1402763": {
+    "uid": "1402763",
+    "accession": "PRJNA1402763"
+  },
+  "PRJNA1402324": {
+    "uid": "1402324",
+    "accession": "PRJNA1402324"
+  },
+  "PRJNA1005766": {
+    "uid": "1005766",
+    "accession": "PRJNA1005766"
+  },
+  "PRJNA1402121": {
+    "uid": "1402121",
+    "accession": "PRJNA1402121"
+  },
+  "PRJNA1401484": {
+    "uid": "1401484",
+    "accession": "PRJNA1401484"
+  },
+  "PRJNA1401318": {
+    "uid": "1401318",
+    "accession": "PRJNA1401318"
+  },
+  "PRJNA1400135": {
+    "accession": "PRJNA1400135",
+    "uid": "",
+    "error": "uid_not_found"
+  },
+  "PRJNA1401464": {
+    "uid": "1401464",
+    "accession": "PRJNA1401464"
+  },
+  "PRJNA850375": {
+    "uid": "850375",
+    "accession": "PRJNA850375"
+  },
+  "PRJNA1399168": {
+    "uid": "1399168",
+    "accession": "PRJNA1399168"
+  },
+  "PRJNA1356873": {
+    "uid": "1356873",
+    "accession": "PRJNA1356873"
+  },
+  "PRJNA1401705": {
+    "uid": "1401705",
+    "accession": "PRJNA1401705"
+  },
+  "PRJDB17351": {
+    "uid": "1401571",
+    "accession": "PRJDB17351"
+  },
+  "PRJNA1400757": {
+    "uid": "1400757",
+    "accession": "PRJNA1400757"
+  },
+  "PRJNA1401002": {
+    "uid": "1401002",
+    "accession": "PRJNA1401002"
+  },
+  "PRJNA1400783": {
+    "uid": "1400783",
+    "accession": "PRJNA1400783"
+  },
+  "PRJNA1400762": {
+    "uid": "1400762",
+    "accession": "PRJNA1400762"
+  },
+  "PRJNA1288213": {
+    "uid": "1288213",
+    "accession": "PRJNA1288213"
+  },
+  "PRJNA1002991": {
+    "uid": "1002991",
+    "accession": "PRJNA1002991"
+  },
+  "PRJNA1400283": {
+    "uid": "1400283",
+    "accession": "PRJNA1400283"
+  },
+  "PRJNA1399619": {
+    "uid": "1399619",
+    "accession": "PRJNA1399619"
+  },
+  "PRJNA1400493": {
+    "uid": "1400493",
+    "accession": "PRJNA1400493"
+  },
+  "PRJNA1288212": {
+    "uid": "1288212",
+    "accession": "PRJNA1288212"
+  },
+  "PRJNA1400284": {
+    "uid": "1400284",
+    "accession": "PRJNA1400284"
+  },
+  "PRJEB51893": {
+    "uid": "820254",
+    "accession": "PRJEB51893"
+  },
+  "PRJNA1400240": {
+    "uid": "1400240",
+    "accession": "PRJNA1400240"
+  },
+  "PRJNA1399952": {
+    "uid": "1399952",
+    "accession": "PRJNA1399952"
+  },
+  "PRJNA1399931": {
+    "uid": "1399931",
+    "accession": "PRJNA1399931"
+  },
+  "PRJNA1399751": {
+    "uid": "1399751",
+    "accession": "PRJNA1399751"
+  },
+  "PRJNA1398875": {
+    "uid": "1398875",
+    "accession": "PRJNA1398875"
+  },
+  "PRJNA1397045": {
+    "uid": "1397045",
+    "accession": "PRJNA1397045"
+  },
+  "PRJDB40034": {
+    "uid": "1399737",
+    "accession": "PRJDB40034"
+  }
+}
