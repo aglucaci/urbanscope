@@ -46,8 +46,8 @@ jobs:
           # - This job is append-only: it only adds NEW records to data/srr_catalog_<YEAR>.jsonl and refreshes docs/db exports.
 
           python scripts/urbanscope_srr_harvester.py crawl \
-            --page-size 200 \
-            --stop-after-new-srr 500 \
+            --page-size 100 \
+            --stop-after-new-srr 100 \
             --fetch-biosample \
             --fetch-bioproject
 
