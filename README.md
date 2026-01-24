@@ -12,7 +12,7 @@ and publishes a live, searchable dashboard and downloadable archives — all at 
 ## 🌍 Live Dashboard
 
 ```
-https://<your-username>.github.io/urbanscope/
+https://aglucaci.github.io/urbanscope/
 ```
 
 Includes:
