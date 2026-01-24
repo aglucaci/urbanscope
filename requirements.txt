@@ -1,7 +1,0 @@
-# Core scientific stack
-numpy>=1.26
-pandas>=2.1
-matplotlib>=3.8
-
-# Quality-of-life / robustness
-python-dateutil>=2.9
