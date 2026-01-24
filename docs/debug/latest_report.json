@@ -1,13 +1,13 @@
 {
-  "generated_utc": "2026-01-23T13:13:23+00:00",
+  "generated_utc": "2026-01-24T13:05:27+00:00",
   "reports": [
     {
-      "day": "2026-01-23",
-      "generated_utc": "2026-01-23T13:13:23+00:00",
+      "day": "2026-01-24",
+      "generated_utc": "2026-01-24T13:05:27+00:00",
       "query": "(urban OR city OR cities OR metropolis OR megacity OR subway OR transit OR \"built environment\" OR wastewater OR sewage OR stormwater) AND (metagenomics OR metatranscriptomics OR \"shotgun metagenomic\" OR RNA-seq)",
       "retmax": 200,
       "urls": {
-        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2026-01-23&maxdate=2026-01-23&datetype=edat&retmax=200&tool=urbanscope-radar",
+        "sra_esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28urban+OR+city+OR+cities+OR+metropolis+OR+megacity+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater%29+AND+%28metagenomics+OR+metatranscriptomics+OR+%22shotgun+metagenomic%22+OR+RNA-seq%29&retmode=xml&mindate=2026-01-24&maxdate=2026-01-24&datetype=edat&retmax=200&tool=urbanscope-radar",
         "sra_esummary": "",
         "sra_to_bioproject_elink": ""
       },
