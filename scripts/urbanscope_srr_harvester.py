@@ -795,13 +795,8 @@ def main():
     c.add_argument("--fetch-biosample", action="store_true")
     c.add_argument("--fetch-bioproject", action="store_true")
     c.add_argument("--runinfo-max-rows", type=int, default=200000)
-    c.add_argument("--stop-after-new-srr",
-                    type=int,
-                    default=0,
-                    help="Stop crawling after N new SRR records have been added (0 = disabled)."
-                )
+    c.add_argument("--stop-after-new-srr", type=int, default=0, help="Stop crawling after N new SRR records have been added (0 = disabled).")
 
-     
     args = ap.parse_args()
     ensure_dirs()
 
@@ -963,10 +958,8 @@ def main():
                     new_srr_total += new_srr_count
                     
                     if args.stop_after_new_srr and new_srr_total >= args.stop_after_new_srr:
-                        print(
-                            f"Stopping crawl: reached {new_srr_total} new SRRs "
-                            f"(limit={args.stop_after_new_srr})"
-                        )
+                        print(f"Stopping crawl: reached {new_srr_total} new SRRs "
+                              f"(limit={args.stop_after_new_srr})")
                         break
 
                     print(tag,
@@ -977,40 +970,41 @@ def main():
                         f"processed_uids={total_seen}",
                     )
 
-                this_year = dt.date.today().year
-                if added_srr:
-                    append_jsonl(f"{DATA_DIR}/srr_catalog_{this_year}.jsonl", added_srr)
-                    for r in added_srr[:800]:
-                        bp = r.get("bioproject", {}) if isinstance(r.get("bioproject", {}), dict) else {}
-                        latest_added.append({
-                            "tag": tag,
-                            "srr": r.get("srr", ""),
-                            "sra_uid": r.get("sra_uid", ""),
-                            "title": r.get("title", ""),
-                            "assay_class": (r.get("assay") or {}).get("assay_class", ""),
-                            "country": (r.get("geo") or {}).get("country", ""),
-                            "city": (r.get("geo") or {}).get("city", ""),
-                            "bioproject": (r.get("runinfo_row") or {}).get("BioProject", ""),
-                            "bioproject_title": bp.get("title", ""),
-                            "url": (r.get("ncbi") or {}).get("srr_url", ""),
-                        })
+                    this_year = dt.date.today().year
+                
+                    if added_srr:
+                        append_jsonl(f"{DATA_DIR}/srr_catalog_{this_year}.jsonl", added_srr)
+                        for r in added_srr[:800]:
+                            bp = r.get("bioproject", {}) if isinstance(r.get("bioproject", {}), dict) else {}
+                            latest_added.append({
+                                "tag": tag,
+                                "srr": r.get("srr", ""),
+                                "sra_uid": r.get("sra_uid", ""),
+                                "title": r.get("title", ""),
+                                "assay_class": (r.get("assay") or {}).get("assay_class", ""),
+                                "country": (r.get("geo") or {}).get("country", ""),
+                                "city": (r.get("geo") or {}).get("city", ""),
+                                "bioproject": (r.get("runinfo_row") or {}).get("BioProject", ""),
+                                "bioproject_title": bp.get("title", ""),
+                                "url": (r.get("ncbi") or {}).get("srr_url", ""),
+                            })
 
-                reports.append(report)
+                    reports.append(report)
 
-                total_seen += len(ids)
-                print(tag,
-                      f"page_ids={len(ids)}",
-                      f"count_total={count_total}",
-                      f"new_uids={report['counters'].get('uids_new',0)}",
-                      f"srr_emitted={report['counters'].get('srr_emitted',0)}",
-                      f"processed={total_seen}")
+                    total_seen += len(ids)
+                    print(tag,
+                          f"page_ids={len(ids)}",
+                          f"count_total={count_total}",
+                          f"new_uids={report['counters'].get('uids_new',0)}",
+                          f"srr_emitted={report['counters'].get('srr_emitted',0)}",
+                          f"processed={total_seen}")
 
-                retstart += args.page_size
-                page += 1
-                if retstart >= count_total:
-                    break
-                if max_total and total_seen >= max_total:
-                    break
+                    retstart += args.page_size
+                    page += 1
+                    if retstart >= count_total:
+                        break
+                    if max_total and total_seen >= max_total:
+                        break
 
         # Latest + reports for UI
         write_json(DOCS_LATEST_SRR, {
@@ -1033,4 +1027,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
