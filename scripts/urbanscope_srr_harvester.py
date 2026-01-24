@@ -795,7 +795,13 @@ def main():
     c.add_argument("--fetch-biosample", action="store_true")
     c.add_argument("--fetch-bioproject", action="store_true")
     c.add_argument("--runinfo-max-rows", type=int, default=200000)
+    c.add_argument("--stop-after-new-srr",
+                    type=int,
+                    default=0,
+                    help="Stop crawling after N new SRR records have been added (0 = disabled)."
+                )
 
+     
     args = ap.parse_args()
     ensure_dirs()
 
@@ -915,7 +921,8 @@ def main():
             page = 0
             total_seen = 0
             max_total = int(args.max_total or 0)
-
+            new_srr_total = 0
+            
             while True:
                 ids, count_total, esearch_url = esearch_history("sra", args.query, retstart=retstart, retmax=args.page_size)
                 if not ids:
@@ -937,20 +944,38 @@ def main():
                         "ids_sample": ids[:25],
                     })
 
-                added_srr, report = ingest_uids_to_srr(
-                    tag=tag,
-                    uids=ids,
-                    summaries=summaries,
-                    biosample_cache=biosample_cache,
-                    bp_cache=bp_cache,
-                    bp_uid_cache=bp_uid_cache,
-                    seen_sra=seen_sra,
-                    seen_srr=seen_srr,
-                    fetch_biosample=args.fetch_biosample,
-                    fetch_bioproject=args.fetch_bioproject,
-                    debug=args.debug,
-                    runinfo_max_rows=args.runinfo_max_rows,
-                )
+                    added_srr, report = ingest_uids_to_srr(
+                        tag=tag,
+                        uids=ids,
+                        summaries=summaries,
+                        biosample_cache=biosample_cache,
+                        bp_cache=bp_cache,
+                        bp_uid_cache=bp_uid_cache,
+                        seen_sra=seen_sra,
+                        seen_srr=seen_srr,
+                        fetch_biosample=args.fetch_biosample,
+                        fetch_bioproject=args.fetch_bioproject,
+                        debug=args.debug,
+                        runinfo_max_rows=args.runinfo_max_rows,
+                    )
+                    
+                    new_srr_count = report["counters"].get("srr_emitted", 0)
+                    new_srr_total += new_srr_count
+                    
+                    if args.stop_after_new_srr and new_srr_total >= args.stop_after_new_srr:
+                        print(
+                            f"Stopping crawl: reached {new_srr_total} new SRRs "
+                            f"(limit={args.stop_after_new_srr})"
+                        )
+                        break
+
+                    print(tag,
+                        f"page_ids={len(ids)}",
+                        f"count_total={count_total}",
+                        f"new_srr_page={new_srr_count}",
+                        f"new_srr_total={new_srr_total}",
+                        f"processed_uids={total_seen}",
+                    )
 
                 this_year = dt.date.today().year
                 if added_srr:
@@ -1008,3 +1033,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
