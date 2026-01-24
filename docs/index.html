@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>UrbanScope — SRR Browser</title>
+  <style>
+    :root { --fg:#111; --muted:#666; --bg:#fff; --card:#f6f6f6; --line:#e6e6e6; }
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;max-width:1200px;margin:28px auto;padding:0 16px;line-height:1.45;color:var(--fg);background:var(--bg)}
+    h1{margin:0 0 8px 0}
+    .muted{color:var(--muted)}
+    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+    input,select,button{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+    input{min-width:320px;flex:1}
+    button{cursor:pointer}
+    button:disabled{opacity:.5;cursor:not-allowed}
+    table{width:100%;border-collapse:collapse;margin-top:14px}
+    th,td{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+    th{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);text-align:left}
+    .pill{display:inline-block;padding:2px 8px;border:1px solid var(--line);border-radius:999px;font-size:12px;color:var(--muted);background:#fff}
+    .right{margin-left:auto}
+    a{color:inherit;text-decoration:none}
+    a:hover{text-decoration:underline}
+    .small{font-size:12px}
+    .nowrap{white-space:nowrap}
+    .grid{display:grid;grid-template-columns:1fr;gap:10px}
+    @media (min-width: 900px){ .grid{grid-template-columns: 1fr auto} }
+    details{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px}
+    details summary{list-style:none}
+    details summary::-webkit-details-marker{display:none}
+    .kvs{display:grid;grid-template-columns:160px 1fr;gap:6px 10px;margin-top:8px}
+    .kvk{color:var(--muted);font-size:12px}
+    .kvv{font-size:12px}
+    .clip{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  </style>
+</head>
+<body>
+  <div class="grid">
+    <div>
+      <h1>UrbanScope — SRR Browser</h1>
+      <div class="muted small" id="meta">Loading…</div>
+    </div>
+    <div class="card">
+      <div class="row">
+        <span class="pill">Static HTML</span>
+        <span class="pill" id="countPill">0</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:12px">
+    <div class="row">
+      <input id="q" placeholder="Search: SRR, title, assay, geo, platform/model, BioProject, Study, BioProject title…" />
+      <select id="groupBy">
+        <option value="bioproject" selected>Group by BioProject (PRJ)</option>
+        <option value="study">Group by SRA Study (SRP)</option>
+        <option value="none">No grouping (flat SRR)</option>
+      </select>
+      <select id="assay">
+        <option value="">All assays</option>
+      </select>
+      <select id="country">
+        <option value="">All countries</option>
+      </select>
+      <select id="city">
+        <option value="">All cities</option>
+      </select>
+      <select id="pageSize">
+        <option value="10">10 / page</option>
+        <option value="25" selected>25 / page</option>
+        <option value="50">50 / page</option>
+        <option value="100">100 / page</option>
+      </select>
+      <button id="reset">Reset</button>
+      <div class="right row">
+        <button id="prev">Prev</button>
+        <span class="small muted" id="pageInfo">Page 1</span>
+        <button id="next">Next</button>
+      </div>
+    </div>
+    <div class="small muted" style="margin-top:8px">
+      Filters use <code>geo.country</code> and <code>geo.city</code> from the SRR records (best when you ran with <code>--fetch-biosample</code>).
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th class="nowrap">SRR</th>
+        <th>Title</th>
+        <th class="nowrap">Assay</th>
+        <th>Geo</th>
+        <th class="nowrap">Platform</th>
+        <th class="nowrap">Release</th>
+      </tr>
+    </thead>
+    <tbody id="rows">
+      <tr><td colspan="6" class="muted">Loading…</td></tr>
+    </tbody>
+  </table>
+
+<script>
+  // Outputs:
+  // - docs/db/srr_records.json
+  // - docs/db/srr_index.json
+  // - (optional) docs/db/bioprojects.json
+  const base = new URL(".", window.location.href);
+  const INDEX_URL = new URL("db/srr_index.json", base);
+  const DATA_URL  = new URL("db/srr_records.json", base);
+  const BIOPROJECTS_URL = new URL("db/bioprojects.json", base); // may 404 if absent
+
+  let ALL = [];
+  let FILTERED = [];
+  let page = 1;
+  let BP = null;
+
+  const el = (id) => document.getElementById(id);
+
+  function safeGet(obj, path, fallback="") {
+    try {
+      const v = path.split(".").reduce((o,k)=> (o && o[k] !== undefined) ? o[k] : undefined, obj);
+      return (v === undefined || v === null) ? fallback : v;
+    } catch(e) { return fallback; }
+  }
+
+  function normalize(s){ return (s ?? "").toString().toLowerCase().replace(/\s+/g," ").trim(); }
+
+  function pickBioProjectAcc(r){
+    const a = (safeGet(r, "runinfo_row.BioProject", "") || "").toString().trim();
+    if (a) return a;
+    return (safeGet(r, "bioproject.accession", "") || "").toString().trim();
+  }
+
+  function getBioProjectDetails(prj){
+    if (!prj) return null;
+    return (BP && BP[prj]) ? BP[prj] : null;
+  }
+
+  function bestBioProjectTitle(r){
+    const embedded = safeGet(r, "bioproject.title", "");
+    if (embedded) return embedded;
+    const prj = pickBioProjectAcc(r);
+    const d = getBioProjectDetails(prj);
+    return d ? (d.title || "") : "";
+  }
+
+  function bestBioProjectDesc(r){
+    const embedded = safeGet(r, "bioproject.description", "");
+    if (embedded) return embedded;
+    const prj = pickBioProjectAcc(r);
+    const d = getBioProjectDetails(prj);
+    return d ? (d.description || "") : "";
+  }
+
+  function buildSearchBlob(r){
+    const prj = pickBioProjectAcc(r);
+    const bpTitle = bestBioProjectTitle(r);
+    const bpDesc  = bestBioProjectDesc(r);
+
+    const parts = [
+      r.srr,
+      r.sra_uid,
+      r.title,
+
+      safeGet(r, "assay.assay_class"),
+      safeGet(r, "assay.confidence"),
+
+      safeGet(r, "geo.country"),
+      safeGet(r, "geo.region"),
+      safeGet(r, "geo.city"),
+      safeGet(r, "geo.raw"),
+
+      safeGet(r, "runinfo_row.Platform"),
+      safeGet(r, "runinfo_row.Model"),
+      safeGet(r, "runinfo_row.LibraryStrategy"),
+      safeGet(r, "runinfo_row.LibrarySource"),
+      safeGet(r, "runinfo_row.LibrarySelection"),
+      prj,
+      safeGet(r, "runinfo_row.BioSample"),
+      safeGet(r, "runinfo_row.Study"),
+      safeGet(r, "runinfo_row.SampleName"),
+      safeGet(r, "runinfo_row.Sample"),
+      safeGet(r, "runinfo_row.Experiment"),
+
+      bpTitle,
+      bpDesc,
+      safeGet(r, "bioproject.center_name"),
+      safeGet(r, "bioproject.data_type"),
+    ].filter(Boolean);
+
+    return normalize(parts.join(" | "));
+  }
+
+  function uniqSorted(arr){
+    return Array.from(new Set(arr
+      .map(x => (x ?? "").toString().trim())
+      .filter(x => x.length > 0)))
+      .sort((a,b)=>a.localeCompare(b));
+  }
+
+  function populateFilters(){
+    const assays = uniqSorted(ALL.map(r => safeGet(r, "assay.assay_class")));
+    const countries = uniqSorted(ALL.map(r => safeGet(r, "geo.country")));
+    const cities = uniqSorted(ALL.map(r => safeGet(r, "geo.city")));
+
+    const assaySel = el("assay");
+    for (const a of assays){
+      const opt=document.createElement("option");
+      opt.value=a; opt.textContent=a;
+      assaySel.appendChild(opt);
+    }
+
+    const countrySel = el("country");
+    for (const c of countries){
+      const opt=document.createElement("option");
+      opt.value=c; opt.textContent=c;
+      countrySel.appendChild(opt);
+    }
+
+    const citySel = el("city");
+    for (const c of cities){
+      const opt=document.createElement("option");
+      opt.value=c; opt.textContent=c;
+      citySel.appendChild(opt);
+    }
+  }
+
+  function groupKey(r, mode){
+    if (mode === "study") return safeGet(r, "runinfo_row.Study", "") || "NO_STUDY";
+    if (mode === "bioproject") return pickBioProjectAcc(r) || "NO_BIOPROJECT";
+    return "__FLAT__";
+  }
+
+  function groupLabel(key, mode){
+    if (key === "NO_STUDY") return "No Study (SRP missing)";
+    if (key === "NO_BIOPROJECT") return "No BioProject (PRJ missing)";
+    if (mode === "study") return `Study: ${key}`;
+
+    const bp = (BP && BP[key]) ? BP[key] : null;
+    const suffix = bp && bp.title ? ` — ${bp.title}` : "";
+    return `BioProject: ${key}${suffix}`;
+  }
+
+  function summarizeGroup(items){
+    const assayCounts = {};
+    const countryCounts = {};
+    const platformCounts = {};
+
+    for (const r of items){
+      const a = safeGet(r, "assay.assay_class", "Unknown") || "Unknown";
+      assayCounts[a] = (assayCounts[a]||0)+1;
+
+      const c = safeGet(r, "geo.country", "") || "";
+      if (c) countryCounts[c] = (countryCounts[c]||0)+1;
+
+      const p = safeGet(r, "runinfo_row.Platform", "") || "";
+      if (p) platformCounts[p] = (platformCounts[p]||0)+1;
+    }
+
+    function topK(map, k=3){
+      return Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,k);
+    }
+
+    return {
+      n: items.length,
+      assaysTop: topK(assayCounts, 4),
+      countriesTop: topK(countryCounts, 3),
+      platformsTop: topK(platformCounts, 3),
+    };
+  }
+
+  function applyFilters(){
+    const q = normalize(el("q").value);
+    const assay = el("assay").value;
+    const country = el("country").value;
+    const city = el("city").value;
+
+    FILTERED = ALL.filter(r=>{
+      if (assay && safeGet(r, "assay.assay_class") !== assay) return false;
+      if (country && safeGet(r, "geo.country") !== country) return false;
+      if (city && safeGet(r, "geo.city") !== city) return false;
+
+      if (q){
+        const blob = r.__blob || (r.__blob = buildSearchBlob(r));
+        if (!blob.includes(q)) return false;
+      }
+      return true;
+    });
+
+    page = 1;
+    render();
+  }
+
+  function renderFlat(pageSize){
+    const total = FILTERED.length;
+    const pages = Math.max(1, Math.ceil(total / pageSize));
+    page = Math.min(page, pages);
+
+    el("countPill").textContent = `${total.toLocaleString()} runs`;
+    el("prev").disabled = page <= 1;
+    el("next").disabled = page >= pages;
+    el("pageInfo").textContent = `Page ${page} / ${pages}`;
+
+    const start = (page - 1) * pageSize;
+    const slice = FILTERED.slice(start, start + pageSize);
+
+    const tbody = el("rows");
+    tbody.innerHTML = "";
+
+    if (!slice.length){
+      tbody.innerHTML = `<tr><td colspan="6" class="muted">No results.</td></tr>`;
+      return;
+    }
+
+    for (const r of slice){
+      const srr = r.srr || "";
+      const srrUrl = safeGet(r, "ncbi.srr_url", "");
+      const title = r.title || "";
+
+      const prj = pickBioProjectAcc(r);
+      const bpTitle = bestBioProjectTitle(r);
+
+      const assay = safeGet(r, "assay.assay_class", "Unknown");
+      const conf = safeGet(r, "assay.confidence", "");
+      const country = safeGet(r, "geo.country", "");
+      const city = safeGet(r, "geo.city", "");
+      const lat = safeGet(r, "geo.lat", "");
+      const lon = safeGet(r, "geo.lon", "");
+      const geo = [city, country].filter(Boolean).join(", ") || "—";
+      const geoExtra = (lat && lon) ? ` <span class="small muted">(${lat}, ${lon})</span>` : "";
+
+      const platform = safeGet(r, "runinfo_row.Platform", "");
+      const model = safeGet(r, "runinfo_row.Model", "");
+      const release = safeGet(r, "runinfo_row.ReleaseDate", "");
+
+      const bpLine = prj ? `<div class="small muted">BioProject: <b>${prj}</b>${bpTitle ? ` — ${bpTitle}` : ""}</div>` : "";
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td class="nowrap">
+          ${srrUrl ? `<a href="${srrUrl}" target="_blank" rel="noreferrer">${srr}</a>` : srr}
+          <div class="small muted nowrap">${r.sra_uid ? `UID ${r.sra_uid}` : ""}</div>
+        </td>
+        <td>
+          ${title ? title : `<span class="muted">—</span>`}
+          ${bpLine}
+        </td>
+        <td class="nowrap">
+          <span class="pill">${assay}</span>
+          ${conf ? `<div class="small muted">${conf}</div>` : ""}
+        </td>
+        <td>${geo}${geoExtra}</td>
+        <td class="nowrap">
+          ${platform || "—"}${model ? `<div class="small muted">${model}</div>` : ""}
+        </td>
+        <td class="nowrap">${release || "—"}</td>
+      `;
+      tbody.appendChild(tr);
+    }
+  }
+
+  function renderGrouped(pageSize, mode){
+    const groups = new Map();
+    for (const r of FILTERED){
+      const key = groupKey(r, mode);
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(r);
+    }
+
+    const groupList = Array.from(groups.entries())
+      .map(([key, items]) => ({key, items}))
+      .sort((a,b)=>b.items.length - a.items.length);
+
+    const totalRuns = FILTERED.length;
+    el("countPill").textContent = `${totalRuns.toLocaleString()} runs • ${groupList.length.toLocaleString()} groups`;
+
+    const totalGroups = groupList.length;
+    const pages = Math.max(1, Math.ceil(totalGroups / pageSize));
+    page = Math.min(page, pages);
+
+    el("prev").disabled = page <= 1;
+    el("next").disabled = page >= pages;
+    el("pageInfo").textContent = `Page ${page} / ${pages}`;
+
+    const start = (page - 1) * pageSize;
+    const slice = groupList.slice(start, start + pageSize);
+
+    const tbody = el("rows");
+    tbody.innerHTML = "";
+
+    if (!slice.length){
+      tbody.innerHTML = `<tr><td colspan="6" class="muted">No results.</td></tr>`;
+      return;
+    }
+
+    for (const g of slice){
+      const summary = summarizeGroup(g.items);
+      const label = groupLabel(g.key, mode);
+
+      // BioProject details for grouped-by-bioProject
+      let bpDetails = null;
+      if (mode === "bioproject") {
+        // if not present in BP snapshot, try grabbing from first record's embedded field
+        bpDetails = (BP && BP[g.key]) ? BP[g.key] : (g.items[0].bioproject || null);
+      }
+
+      const topRuns = g.items.slice(0, 20);
+
+      const assays = summary.assaysTop.map(([k,v])=>`${k} (${v})`).join(", ") || "—";
+      const countries = summary.countriesTop.map(([k,v])=>`${k} (${v})`).join(", ") || "—";
+      const platforms = summary.platformsTop.map(([k,v])=>`${k} (${v})`).join(", ") || "—";
+
+      const runLines = topRuns.map(r=>{
+        const srr = r.srr || "";
+        const url = safeGet(r, "ncbi.srr_url", "");
+        const a = safeGet(r, "assay.assay_class", "Unknown");
+        const c = safeGet(r, "geo.country", "");
+        const city = safeGet(r, "geo.city", "");
+        const geo = [city, c].filter(Boolean).join(", ");
+        const rel = safeGet(r, "runinfo_row.ReleaseDate", "");
+        const plat = safeGet(r, "runinfo_row.Platform", "");
+        const model = safeGet(r, "runinfo_row.Model", "");
+        return `<div class="small" style="margin:4px 0">
+          ${url ? `<a href="${url}" target="_blank" rel="noreferrer"><b>${srr}</b></a>` : `<b>${srr}</b>`}
+          <span class="muted"> — ${a}${geo ? ` — ${geo}` : ""}${plat ? ` — ${plat}` : ""}${model ? `/${model}` : ""}${rel ? ` — ${rel}` : ""}</span>
+        </div>`;
+      }).join("");
+
+      const bpBox = (mode === "bioproject" && bpDetails && (bpDetails.title || bpDetails.description)) ? `
+        <div class="kvs">
+          <div class="kvk">BioProject title</div><div class="kvv">${bpDetails.title || "—"}</div>
+          <div class="kvk">Center</div><div class="kvv">${bpDetails.center_name || "—"}</div>
+          <div class="kvk">Data type</div><div class="kvv">${bpDetails.data_type || "—"}</div>
+          <div class="kvk">Submission</div><div class="kvv">${bpDetails.submission_date || "—"}</div>
+          <div class="kvk">Last update</div><div class="kvv">${bpDetails.last_update || "—"}</div>
+          <div class="kvk">Description</div><div class="kvv"><div class="clip">${bpDetails.description || "—"}</div></div>
+        </div>
+      ` : "";
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td colspan="6">
+          <details>
+            <summary style="cursor:pointer; padding:6px 0">
+              <b>${label}</b>
+              <span class="pill" style="margin-left:8px">${summary.n.toLocaleString()} runs</span>
+              <span class="small muted" style="margin-left:10px">
+                Assays: ${assays} • Countries: ${countries} • Platforms: ${platforms}
+              </span>
+            </summary>
+            <div style="margin-top:10px; padding-left:2px">
+              ${bpBox}
+              <div style="margin-top:10px">${runLines}</div>
+              ${g.items.length > topRuns.length ? `<div class="small muted">…and ${(g.items.length - topRuns.length).toLocaleString()} more runs in this group (refine search/filters to narrow).</div>` : ""}
+            </div>
+          </details>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    }
+  }
+
+  function render(){
+    const mode = el("groupBy").value || "bioproject";
+    const pageSize = parseInt(el("pageSize").value, 10);
+    if (mode === "none") return renderFlat(pageSize);
+    return renderGrouped(pageSize, mode);
+  }
+
+  async function boot(){
+    // index
+    try {
+      const idx = await (await fetch(INDEX_URL, {cache:"no-store"})).json();
+      el("meta").textContent = `Generated: ${idx.generated || "?"} • Total SRR records: ${(idx.total_srr_records || 0).toLocaleString()} • Years: ${(idx.years || []).join(", ")}`;
+    } catch(e) {
+      el("meta").textContent = "Loaded dataset.";
+    }
+
+    // optional bioprojects map
+    try { BP = await (await fetch(BIOPROJECTS_URL, {cache:"no-store"})).json(); }
+    catch(e) { BP = null; }
+
+    // records
+    const data = await (await fetch(DATA_URL, {cache:"no-store"})).json();
+    ALL = Array.isArray(data) ? data : (data.items || []);
+    FILTERED = ALL;
+
+    populateFilters();
+    applyFilters();
+  }
+
+  // listeners
+  el("q").addEventListener("input", () => applyFilters());
+  el("assay").addEventListener("change", () => applyFilters());
+  el("country").addEventListener("change", () => applyFilters());
+  el("city").addEventListener("change", () => applyFilters());
+  el("groupBy").addEventListener("change", () => { page = 1; render(); });
+  el("pageSize").addEventListener("change", () => { page = 1; render(); });
+
+  el("reset").addEventListener("click", () => {
+    el("q").value = "";
+    el("assay").value = "";
+    el("country").value = "";
+    el("city").value = "";
+    el("groupBy").value = "bioproject";
+    page = 1;
+    applyFilters();
+  });
+
+  el("prev").addEventListener("click", () => { page -= 1; render(); });
+  el("next").addEventListener("click", () => { page += 1; render(); });
+
+  boot().catch(err=>{
+    el("rows").innerHTML = `<tr><td colspan="6" class="muted">Failed to load data: ${String(err)}</td></tr>`;
+  });
+</script>
+</body>
+</html>

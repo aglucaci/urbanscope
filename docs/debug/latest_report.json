@@ -1,0 +1,755 @@
+{
+  "generated_utc": "2026-01-24T21:07:21+00:00",
+  "reports": [
+    {
+      "tag": "crawl_000000",
+      "generated_utc": "2026-01-24T19:56:19+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000000.json",
+        "decision": "data/debug/decision_log_crawl_000000.ndjson",
+        "initial": "data/debug/initial_crawl_000000.json"
+      }
+    },
+    {
+      "tag": "crawl_000001",
+      "generated_utc": "2026-01-24T19:57:57+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000001.json",
+        "decision": "data/debug/decision_log_crawl_000001.ndjson",
+        "initial": "data/debug/initial_crawl_000001.json"
+      }
+    },
+    {
+      "tag": "crawl_000002",
+      "generated_utc": "2026-01-24T20:00:30+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000002.json",
+        "decision": "data/debug/decision_log_crawl_000002.ndjson",
+        "initial": "data/debug/initial_crawl_000002.json"
+      }
+    },
+    {
+      "tag": "crawl_000003",
+      "generated_utc": "2026-01-24T20:01:59+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000003.json",
+        "decision": "data/debug/decision_log_crawl_000003.ndjson",
+        "initial": "data/debug/initial_crawl_000003.json"
+      }
+    },
+    {
+      "tag": "crawl_000004",
+      "generated_utc": "2026-01-24T20:03:13+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000004.json",
+        "decision": "data/debug/decision_log_crawl_000004.ndjson",
+        "initial": "data/debug/initial_crawl_000004.json"
+      }
+    },
+    {
+      "tag": "crawl_000005",
+      "generated_utc": "2026-01-24T20:04:22+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000005.json",
+        "decision": "data/debug/decision_log_crawl_000005.ndjson",
+        "initial": "data/debug/initial_crawl_000005.json"
+      }
+    },
+    {
+      "tag": "crawl_000006",
+      "generated_utc": "2026-01-24T20:05:42+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000006.json",
+        "decision": "data/debug/decision_log_crawl_000006.ndjson",
+        "initial": "data/debug/initial_crawl_000006.json"
+      }
+    },
+    {
+      "tag": "crawl_000007",
+      "generated_utc": "2026-01-24T20:06:55+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000007.json",
+        "decision": "data/debug/decision_log_crawl_000007.ndjson",
+        "initial": "data/debug/initial_crawl_000007.json"
+      }
+    },
+    {
+      "tag": "crawl_000008",
+      "generated_utc": "2026-01-24T20:08:04+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000008.json",
+        "decision": "data/debug/decision_log_crawl_000008.ndjson",
+        "initial": "data/debug/initial_crawl_000008.json"
+      }
+    },
+    {
+      "tag": "crawl_000009",
+      "generated_utc": "2026-01-24T20:09:05+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000009.json",
+        "decision": "data/debug/decision_log_crawl_000009.ndjson",
+        "initial": "data/debug/initial_crawl_000009.json"
+      }
+    },
+    {
+      "tag": "crawl_000010",
+      "generated_utc": "2026-01-24T20:09:57+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000010.json",
+        "decision": "data/debug/decision_log_crawl_000010.ndjson",
+        "initial": "data/debug/initial_crawl_000010.json"
+      }
+    },
+    {
+      "tag": "crawl_000011",
+      "generated_utc": "2026-01-24T20:10:59+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000011.json",
+        "decision": "data/debug/decision_log_crawl_000011.ndjson",
+        "initial": "data/debug/initial_crawl_000011.json"
+      }
+    },
+    {
+      "tag": "crawl_000012",
+      "generated_utc": "2026-01-24T20:12:26+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000012.json",
+        "decision": "data/debug/decision_log_crawl_000012.ndjson",
+        "initial": "data/debug/initial_crawl_000012.json"
+      }
+    },
+    {
+      "tag": "crawl_000013",
+      "generated_utc": "2026-01-24T20:13:54+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000013.json",
+        "decision": "data/debug/decision_log_crawl_000013.ndjson",
+        "initial": "data/debug/initial_crawl_000013.json"
+      }
+    },
+    {
+      "tag": "crawl_000014",
+      "generated_utc": "2026-01-24T20:15:27+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000014.json",
+        "decision": "data/debug/decision_log_crawl_000014.ndjson",
+        "initial": "data/debug/initial_crawl_000014.json"
+      }
+    },
+    {
+      "tag": "crawl_000015",
+      "generated_utc": "2026-01-24T20:16:56+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000015.json",
+        "decision": "data/debug/decision_log_crawl_000015.ndjson",
+        "initial": "data/debug/initial_crawl_000015.json"
+      }
+    },
+    {
+      "tag": "crawl_000016",
+      "generated_utc": "2026-01-24T20:18:23+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000016.json",
+        "decision": "data/debug/decision_log_crawl_000016.ndjson",
+        "initial": "data/debug/initial_crawl_000016.json"
+      }
+    },
+    {
+      "tag": "crawl_000017",
+      "generated_utc": "2026-01-24T20:19:50+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000017.json",
+        "decision": "data/debug/decision_log_crawl_000017.ndjson",
+        "initial": "data/debug/initial_crawl_000017.json"
+      }
+    },
+    {
+      "tag": "crawl_000018",
+      "generated_utc": "2026-01-24T20:21:20+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000018.json",
+        "decision": "data/debug/decision_log_crawl_000018.ndjson",
+        "initial": "data/debug/initial_crawl_000018.json"
+      }
+    },
+    {
+      "tag": "crawl_000019",
+      "generated_utc": "2026-01-24T20:22:51+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000019.json",
+        "decision": "data/debug/decision_log_crawl_000019.ndjson",
+        "initial": "data/debug/initial_crawl_000019.json"
+      }
+    },
+    {
+      "tag": "crawl_000020",
+      "generated_utc": "2026-01-24T20:24:21+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000020.json",
+        "decision": "data/debug/decision_log_crawl_000020.ndjson",
+        "initial": "data/debug/initial_crawl_000020.json"
+      }
+    },
+    {
+      "tag": "crawl_000021",
+      "generated_utc": "2026-01-24T20:25:53+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000021.json",
+        "decision": "data/debug/decision_log_crawl_000021.ndjson",
+        "initial": "data/debug/initial_crawl_000021.json"
+      }
+    },
+    {
+      "tag": "crawl_000022",
+      "generated_utc": "2026-01-24T20:27:19+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000022.json",
+        "decision": "data/debug/decision_log_crawl_000022.ndjson",
+        "initial": "data/debug/initial_crawl_000022.json"
+      }
+    },
+    {
+      "tag": "crawl_000023",
+      "generated_utc": "2026-01-24T20:28:48+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000023.json",
+        "decision": "data/debug/decision_log_crawl_000023.ndjson",
+        "initial": "data/debug/initial_crawl_000023.json"
+      }
+    },
+    {
+      "tag": "crawl_000024",
+      "generated_utc": "2026-01-24T20:30:16+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000024.json",
+        "decision": "data/debug/decision_log_crawl_000024.ndjson",
+        "initial": "data/debug/initial_crawl_000024.json"
+      }
+    },
+    {
+      "tag": "crawl_000025",
+      "generated_utc": "2026-01-24T20:31:41+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000025.json",
+        "decision": "data/debug/decision_log_crawl_000025.ndjson",
+        "initial": "data/debug/initial_crawl_000025.json"
+      }
+    },
+    {
+      "tag": "crawl_000026",
+      "generated_utc": "2026-01-24T20:33:11+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000026.json",
+        "decision": "data/debug/decision_log_crawl_000026.ndjson",
+        "initial": "data/debug/initial_crawl_000026.json"
+      }
+    },
+    {
+      "tag": "crawl_000027",
+      "generated_utc": "2026-01-24T20:34:41+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000027.json",
+        "decision": "data/debug/decision_log_crawl_000027.ndjson",
+        "initial": "data/debug/initial_crawl_000027.json"
+      }
+    },
+    {
+      "tag": "crawl_000028",
+      "generated_utc": "2026-01-24T20:36:09+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000028.json",
+        "decision": "data/debug/decision_log_crawl_000028.ndjson",
+        "initial": "data/debug/initial_crawl_000028.json"
+      }
+    },
+    {
+      "tag": "crawl_000029",
+      "generated_utc": "2026-01-24T20:37:39+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000029.json",
+        "decision": "data/debug/decision_log_crawl_000029.ndjson",
+        "initial": "data/debug/initial_crawl_000029.json"
+      }
+    },
+    {
+      "tag": "crawl_000030",
+      "generated_utc": "2026-01-24T20:39:08+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000030.json",
+        "decision": "data/debug/decision_log_crawl_000030.ndjson",
+        "initial": "data/debug/initial_crawl_000030.json"
+      }
+    },
+    {
+      "tag": "crawl_000031",
+      "generated_utc": "2026-01-24T20:40:35+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000031.json",
+        "decision": "data/debug/decision_log_crawl_000031.ndjson",
+        "initial": "data/debug/initial_crawl_000031.json"
+      }
+    },
+    {
+      "tag": "crawl_000032",
+      "generated_utc": "2026-01-24T20:42:05+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000032.json",
+        "decision": "data/debug/decision_log_crawl_000032.ndjson",
+        "initial": "data/debug/initial_crawl_000032.json"
+      }
+    },
+    {
+      "tag": "crawl_000033",
+      "generated_utc": "2026-01-24T20:43:29+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000033.json",
+        "decision": "data/debug/decision_log_crawl_000033.ndjson",
+        "initial": "data/debug/initial_crawl_000033.json"
+      }
+    },
+    {
+      "tag": "crawl_000034",
+      "generated_utc": "2026-01-24T20:44:58+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000034.json",
+        "decision": "data/debug/decision_log_crawl_000034.ndjson",
+        "initial": "data/debug/initial_crawl_000034.json"
+      }
+    },
+    {
+      "tag": "crawl_000035",
+      "generated_utc": "2026-01-24T20:46:30+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000035.json",
+        "decision": "data/debug/decision_log_crawl_000035.ndjson",
+        "initial": "data/debug/initial_crawl_000035.json"
+      }
+    },
+    {
+      "tag": "crawl_000036",
+      "generated_utc": "2026-01-24T20:48:06+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000036.json",
+        "decision": "data/debug/decision_log_crawl_000036.ndjson",
+        "initial": "data/debug/initial_crawl_000036.json"
+      }
+    },
+    {
+      "tag": "crawl_000037",
+      "generated_utc": "2026-01-24T20:49:35+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000037.json",
+        "decision": "data/debug/decision_log_crawl_000037.ndjson",
+        "initial": "data/debug/initial_crawl_000037.json"
+      }
+    },
+    {
+      "tag": "crawl_000038",
+      "generated_utc": "2026-01-24T20:50:58+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000038.json",
+        "decision": "data/debug/decision_log_crawl_000038.ndjson",
+        "initial": "data/debug/initial_crawl_000038.json"
+      }
+    },
+    {
+      "tag": "crawl_000039",
+      "generated_utc": "2026-01-24T20:52:25+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000039.json",
+        "decision": "data/debug/decision_log_crawl_000039.ndjson",
+        "initial": "data/debug/initial_crawl_000039.json"
+      }
+    },
+    {
+      "tag": "crawl_000040",
+      "generated_utc": "2026-01-24T20:53:54+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000040.json",
+        "decision": "data/debug/decision_log_crawl_000040.ndjson",
+        "initial": "data/debug/initial_crawl_000040.json"
+      }
+    },
+    {
+      "tag": "crawl_000041",
+      "generated_utc": "2026-01-24T20:55:24+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000041.json",
+        "decision": "data/debug/decision_log_crawl_000041.ndjson",
+        "initial": "data/debug/initial_crawl_000041.json"
+      }
+    },
+    {
+      "tag": "crawl_000042",
+      "generated_utc": "2026-01-24T20:56:54+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000042.json",
+        "decision": "data/debug/decision_log_crawl_000042.ndjson",
+        "initial": "data/debug/initial_crawl_000042.json"
+      }
+    },
+    {
+      "tag": "crawl_000043",
+      "generated_utc": "2026-01-24T20:58:24+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000043.json",
+        "decision": "data/debug/decision_log_crawl_000043.ndjson",
+        "initial": "data/debug/initial_crawl_000043.json"
+      }
+    },
+    {
+      "tag": "crawl_000044",
+      "generated_utc": "2026-01-24T20:59:56+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000044.json",
+        "decision": "data/debug/decision_log_crawl_000044.ndjson",
+        "initial": "data/debug/initial_crawl_000044.json"
+      }
+    },
+    {
+      "tag": "crawl_000045",
+      "generated_utc": "2026-01-24T21:01:30+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000045.json",
+        "decision": "data/debug/decision_log_crawl_000045.ndjson",
+        "initial": "data/debug/initial_crawl_000045.json"
+      }
+    },
+    {
+      "tag": "crawl_000046",
+      "generated_utc": "2026-01-24T21:03:00+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000046.json",
+        "decision": "data/debug/decision_log_crawl_000046.ndjson",
+        "initial": "data/debug/initial_crawl_000046.json"
+      }
+    },
+    {
+      "tag": "crawl_000047",
+      "generated_utc": "2026-01-24T21:04:25+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000047.json",
+        "decision": "data/debug/decision_log_crawl_000047.ndjson",
+        "initial": "data/debug/initial_crawl_000047.json"
+      }
+    },
+    {
+      "tag": "crawl_000048",
+      "generated_utc": "2026-01-24T21:05:53+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000048.json",
+        "decision": "data/debug/decision_log_crawl_000048.ndjson",
+        "initial": "data/debug/initial_crawl_000048.json"
+      }
+    },
+    {
+      "tag": "crawl_000049",
+      "generated_utc": "2026-01-24T21:07:21+00:00",
+      "counters": {
+        "uids_input": 100,
+        "uids_new": 100,
+        "srr_emitted": 100,
+        "sra_uids_processed_ok": 100
+      },
+      "debug_files": {
+        "report": "data/debug/report_crawl_000049.json",
+        "decision": "data/debug/decision_log_crawl_000049.ndjson",
+        "initial": "data/debug/initial_crawl_000049.json"
+      }
+    }
+  ]
+}
