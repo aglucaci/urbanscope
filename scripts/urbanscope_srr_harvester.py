@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+r"""
 UrbanScope — Urban Microbiome SRA Harvester (SRR-flatten + Geo inference + Assay tagging + BioProject enrichment)
 
 You asked for:
@@ -25,6 +25,38 @@ Outputs (SRR-first):
 - debug files under data/debug/ and docs/debug/ when --debug
 
 Author: Alexander G. Lucaci
+
+
+# VIEW WEBSITE
+python -m http.server 8000
+http://localhost:8000/docs/
+
+# DAILY CRAWl
+python3 scripts/urbanscope_srr_harvester.py crawl --sort date --page-size 100 --stop-after-new-srr 200 --fetch-bioproject --fetch-biosample --debug
+python3 scripts/urbanscope_srr_harvester.py crawl --sort date --page-size 100 --stop-after-new-srr 200 --fetch-bioproject --fetch-biosample
+
+
+# BIG CRAWL 
+python3 scripts\urbanscope_srr_harvester.py crawl --page-size 100 --max-total 50000 --fetch-biosample --fetch-bioproject --debug
+python3 scripts\urbanscope_srr_harvester.py crawl --page-size 100 --max-total 50000 --fetch-biosample --fetch-bioproject
+
+
+
+# DUMP 
+python3 '.\scripts\urbanscope_srr_harvester.py' crawl --page-size 200 --max-total 100000 --fetch-biosample --fetch-bioproject
+python3 scripts\urbanscope_srr_harvester.py crawl --page-size 100 --max-total 50000 --fetch-biosample --fetch-bioproject --debug
+python3 scripts/urbanscope_srr_harvester.py daily --days 30 --max-per-day 500 --fetch-biosample --fetch-bioproject
+python3 scripts/urbanscope_srr_harvester.py daily --recent-days 7 --days 7 --max-per-day 2000 --fetch-biosample --fetch-bioproject
+python3 scripts/urbanscope_srr_harvester.py crawl \
+  --sort date \
+  --page-size 100 \
+  --stop-after-new-srr 200 \
+  --stop-after-empty-pages 10 \
+  --fetch-bioproject --fetch-biosample --debug
+python3 scripts/urbanscope_srr_harvester.py crawl --sort date --page-size 100 --stop-after-new-srr 200 --stop-after-empty-pages 10 --fetch-bioproject --fetch-biosample --debug
+
+
+
 """
 
 from __future__ import annotations
@@ -180,10 +212,7 @@ def esearch_day(db: str, term: str, day: str, retmax: int, datetype: str = "edat
     ids = [x.text for x in root.findall(".//Id") if x.text]
     return ids, url
 
-def esearch_history(db: str, term: str, retstart: int, retmax: int) -> Tuple[List[str], int, str]:
-    """
-    Paginated esearch (no history). Returns (ids, count_total, url_used).
-    """
+def esearch_history(db: str, term: str, retstart: int, retmax: int, sort: str = ""):
     params = _eutils_params({
         "db": db,
         "term": term,
@@ -192,10 +221,15 @@ def esearch_history(db: str, term: str, retstart: int, retmax: int) -> Tuple[Lis
         "retmax": str(retmax),
         "usehistory": "n",
     })
+    if sort:
+        params["sort"] = sort  # <-- THIS is the key line
+
     url = EUTILS + "esearch.fcgi?" + urllib.parse.urlencode(params)
     root = parse_xml(http_get(url))
+
     ids = [x.text for x in root.findall(".//Id") if x.text]
     count_total = int((root.findtext(".//Count") or "0").strip() or "0")
+
     return ids, count_total, url
 
 def esummary(db: str, ids: List[str]) -> Tuple[ET.Element, str]:
@@ -217,6 +251,21 @@ def efetch_runinfo_text(uid: str) -> Tuple[str, str]:
     url = EUTILS + "efetch.fcgi?" + urllib.parse.urlencode(params)
     text = http_get(url).decode(errors="replace")
     return text, url
+
+def esearch_recent(db: str, term: str, reldate_days: int, retmax: int, datetype: str = "edat") -> Tuple[List[str], str]:
+    params = _eutils_params({
+        "db": db,
+        "term": term,
+        "retmode": "xml",
+        "reldate": str(reldate_days),
+        "datetype": datetype,
+        "retmax": str(retmax),
+        "sort": "date",
+    })
+    url = EUTILS + "esearch.fcgi?" + urllib.parse.urlencode(params)
+    root = parse_xml(http_get(url))
+    ids = [x.text for x in root.findall(".//Id") if x.text]
+    return ids, url
 
 def esummary_sra(uids: List[str]) -> Tuple[Dict[str, Dict[str, Any]], str]:
     """
@@ -775,6 +824,13 @@ def main():
     d.add_argument("--fetch-biosample", action="store_true", help="Enrich SRRs with BioSample XML attributes for geo inference.")
     d.add_argument("--fetch-bioproject", action="store_true", help="Enrich SRRs with BioProject esummary details (cached).")
     d.add_argument("--runinfo-max-rows", type=int, default=200000, help="Cap runinfo rows per SRA UID (safety).")
+    d.add_argument("--recent-days", type=int, default=7, help="Search SRA entries from the last N days (Entrez date).")
+    # daily subparser (optional but useful)
+    d.add_argument(
+        "--sort",
+        default="date",
+        help="NCBI esearch sort order (use 'date' for newest-first)."
+    )
 
     # backfill-year
     b = sub.add_parser("backfill-year")
@@ -796,6 +852,12 @@ def main():
     c.add_argument("--fetch-bioproject", action="store_true")
     c.add_argument("--runinfo-max-rows", type=int, default=200000)
     c.add_argument("--stop-after-new-srr", type=int, default=0, help="Stop crawling after N new SRR records have been added (0 = disabled).")
+    # crawl subparser
+    c.add_argument(
+        "--sort",
+        default="date",
+        help="NCBI esearch sort order (use 'date' for newest-first)."
+    )
 
     args = ap.parse_args()
     ensure_dirs()
@@ -812,24 +874,53 @@ def main():
 
     try:
         if args.cmd == "daily":
-            end = dt.date.today()
-            for i in range(args.days):
-                ds = (end - dt.timedelta(i)).isoformat()
-
-                uids, esearch_url = esearch_day("sra", args.query, ds, args.max_per_day, datetype="edat")
-                summaries, esummary_url = esummary_sra(uids[:500])  # cap esummary load
-
-                if args.debug:
-                    append_jsonl_one(debug_paths(ds)["decision"], {
-                        "tag": ds,
-                        "decision": "sra_esearch",
-                        "esearch_url": esearch_url,
-                        "esummary_url": esummary_url,
-                        "uids_count": len(uids),
-                    })
-
+            # One recent-window search (reliable) + dedupe handles "already seen"
+            tag = f"recent_{args.recent_days}d"
+            paths = debug_paths(tag)
+        
+            uids, esearch_url = esearch_recent(
+                "sra",
+                args.query,
+                args.recent_days,
+                args.max_per_day,
+                datetype="edat",
+            )
+            summaries, esummary_url = esummary_sra(uids[:500])
+        
+            if args.debug:
+                write_json(paths["initial"], {
+                    "tag": tag,
+                    "query": args.query,
+                    "recent_days": args.recent_days,
+                    "max_per_day": args.max_per_day,
+                    "esearch_url": esearch_url,
+                    "esummary_url": esummary_url,
+                    "uids_count": len(uids),
+                    "uids_sample": uids[:50],
+                })
+                append_jsonl_one(paths["decision"], {
+                    "tag": tag,
+                    "decision": "sra_esearch_recent",
+                    "esearch_url": esearch_url,
+                    "esummary_url": esummary_url,
+                    "uids_count": len(uids),
+                })
+        
+            if not uids:
+                # Make it obvious what's happening
+                print(tag, "NO UIDS returned.")
+                print("esearch_url:", esearch_url)
+                # Still write latest report so UI has something
+                report = {
+                    "tag": tag,
+                    "generated_utc": utc_now(),
+                    "counters": {"uids_input": 0, "uids_new": 0, "srr_emitted": 0},
+                    "urls": {"esearch": esearch_url, "esummary": esummary_url},
+                }
+                reports.append(report)
+            else:
                 added_srr, report = ingest_uids_to_srr(
-                    tag=ds,
+                    tag=tag,
                     uids=uids,
                     summaries=summaries,
                     biosample_cache=biosample_cache,
@@ -842,13 +933,15 @@ def main():
                     debug=args.debug,
                     runinfo_max_rows=args.runinfo_max_rows,
                 )
-
+        
                 if added_srr:
-                    append_jsonl(f"{DATA_DIR}/srr_catalog_{end.year}.jsonl", added_srr)
+                    year = dt.date.today().year
+                    append_jsonl(f"{DATA_DIR}/srr_catalog_{year}.jsonl", added_srr)
+        
                     for r in added_srr[:800]:
                         bp = r.get("bioproject", {}) if isinstance(r.get("bioproject", {}), dict) else {}
                         latest_added.append({
-                            "tag": ds,
+                            "tag": tag,
                             "srr": r.get("srr", ""),
                             "sra_uid": r.get("sra_uid", ""),
                             "title": r.get("title", ""),
@@ -859,12 +952,14 @@ def main():
                             "bioproject_title": bp.get("title", ""),
                             "url": (r.get("ncbi") or {}).get("srr_url", ""),
                         })
-
+        
                 reports.append(report)
-                print(ds,
+                print(tag,
                       f"uids={report['counters'].get('uids_input',0)}",
                       f"new_uids={report['counters'].get('uids_new',0)}",
                       f"srr_emitted={report['counters'].get('srr_emitted',0)}")
+                if report.get("debug_files"):
+                    print("debug initial:", report["debug_files"].get("initial", ""))
 
         elif args.cmd == "backfill-year":
             year = args.year
@@ -919,7 +1014,13 @@ def main():
             new_srr_total = 0
             
             while True:
-                ids, count_total, esearch_url = esearch_history("sra", args.query, retstart=retstart, retmax=args.page_size)
+                ids, count_total, esearch_url = esearch_history(
+                        "sra",
+                        args.query,
+                        retstart=retstart,
+                        retmax=args.page_size,
+                        sort=args.sort,   # <-- NEW
+                    )
                 if not ids:
                     break
 
@@ -998,6 +1099,12 @@ def main():
                           f"new_uids={report['counters'].get('uids_new',0)}",
                           f"srr_emitted={report['counters'].get('srr_emitted',0)}",
                           f"processed={total_seen}")
+                    
+                    print(tag,
+                        f"sort={args.sort}",
+                        f"page_ids={len(ids)}",
+                        f"count_total={count_total}",
+                    )
 
                     retstart += args.page_size
                     page += 1
@@ -1027,5 +1134,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
