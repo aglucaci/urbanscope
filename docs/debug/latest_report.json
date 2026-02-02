@@ -1,18 +1,4 @@
 {
-  "generated_utc": "2026-02-02T08:01:40+00:00",
-  "reports": [
-    {
-      "tag": "recent_7d",
-      "generated_utc": "2026-02-02T08:01:40+00:00",
-      "counters": {
-        "uids_input": 0,
-        "uids_new": 0,
-        "srr_emitted": 0
-      },
-      "urls": {
-        "esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&term=%28%28urban+OR+city+OR+cities+OR+subway+OR+transit+OR+%22built+environment%22+OR+wastewater+OR+sewage+OR+stormwater+OR+%22public+transit%22+OR+%22surface+swab%22%29+AND+%28microbiome+OR+metagenom%2A+OR+metatranscriptom%2A+OR+%22shotgun+metagenomic%22+OR+%22environmental+swab%22+OR+%22RNA-seq%22+OR+%22amplicon%22%29%29&retmode=xml&reldate=7&datetype=edat&retmax=500&sort=date&api_key=f0e31ae7fbe954f8fac88ffffc620a71cd09&tool=urbanscope-github-action&email=agl4001%40med.cornell.edu",
-        "esummary": ""
-      }
-    }
-  ]
+  "generated_utc": "2026-02-02T08:47:30+00:00",
+  "reports": []
 }
