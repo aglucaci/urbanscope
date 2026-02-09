@@ -1,5 +1,19 @@
 {
-  "generated": "2026-02-01T07:53:29+00:00",
-  "total_srr_records": 0,
-  "years": []
+  "generated": "2026-02-09T13:20:55+00:00",
+  "total_srr_records": 102876,
+  "parts": [
+    "srr_records_part000.json",
+    "srr_records_part001.json",
+    "srr_records_part002.json",
+    "srr_records_part003.json",
+    "srr_records_part004.json",
+    "srr_records_part005.json",
+    "srr_records_part006.json",
+    "srr_records_part007.json",
+    "srr_records_part008.json",
+    "srr_records_part009.json"
+  ],
+  "years": [
+    2026
+  ]
 }

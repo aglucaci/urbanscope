@@ -1,46 +1,46 @@
 {
-  "generated_utc": "2026-02-02T17:08:07+00:00",
-  "total_records": 102416,
+  "generated_utc": "2026-02-09T13:20:55+00:00",
+  "total_records": 102876,
   "parts": [
     {
       "path": "docs/db\\srr_records_part000.json",
-      "records": 11728
+      "records": 11292
     },
     {
       "path": "docs/db\\srr_records_part001.json",
-      "records": 11233
+      "records": 11602
     },
     {
       "path": "docs/db\\srr_records_part002.json",
-      "records": 10950
+      "records": 11154
     },
     {
       "path": "docs/db\\srr_records_part003.json",
-      "records": 11087
+      "records": 10767
     },
     {
       "path": "docs/db\\srr_records_part004.json",
-      "records": 10993
+      "records": 10922
     },
     {
       "path": "docs/db\\srr_records_part005.json",
-      "records": 10779
+      "records": 10837
     },
     {
       "path": "docs/db\\srr_records_part006.json",
-      "records": 11578
+      "records": 11787
     },
     {
       "path": "docs/db\\srr_records_part007.json",
-      "records": 11503
+      "records": 11408
     },
     {
       "path": "docs/db\\srr_records_part008.json",
-      "records": 11248
+      "records": 11339
     },
     {
       "path": "docs/db\\srr_records_part009.json",
-      "records": 1317
+      "records": 1768
     }
   ],
   "years": [

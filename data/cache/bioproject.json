@@ -23248,5 +23248,70 @@
       "bioproject_uid": "802998",
       "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/802998"
     }
+  },
+  "PRJEB79569": {
+    "accession": "PRJEB79569",
+    "uid": "",
+    "error": "uid_not_found"
+  },
+  "PRJNA1418541": {
+    "uid": "1418541",
+    "accession": "PRJNA1418541",
+    "title": "Metagenomic sequencing of wastewater microbial communities under antibiotic and quorum-sensing inhibitor treatments",
+    "description": "This project presents shotgun metagenomic sequencing data generated from wastewater samples collected under controlled laboratory treatments. The samples were exposed to levofloxacin alone or in combination with quorum-sensing inhibitors, including vanillin and indole, to investigate their effects on microbial community composition and antibiotic resistance gene profiles. Total community DNA was extracted from filtered water samples and sequenced using Illumina paired-end technology. The resulting datasets provide insights into the responses of wastewater microbial communities and resistomes to antibiotic pressure and quorum-sensing interference.",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2026/02/04 00:00",
+    "last_update": "",
+    "center_name": "Tongji University",
+    "ncbi": {
+      "bioproject_uid": "1418541",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1418541"
+    }
+  },
+  "PRJNA1417753": {
+    "uid": "1417753",
+    "accession": "PRJNA1417753",
+    "title": "Metagenomic assessment of antimicrobial resistance  and ESKAPE pathogens in Italian slaughterhouse",
+    "description": "This study investigated the microbiome composition and resistome of Italian slaughterhouse wastewater before and after treatment, aiming to evaluate the effectiveness of current sanitation procedures in reducing microbial and antibiotic resistance genes loads.",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2026/02/02 00:00",
+    "last_update": "",
+    "center_name": "University of Camerino",
+    "ncbi": {
+      "bioproject_uid": "1417753",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1417753"
+    }
+  },
+  "PRJNA1308307": {
+    "uid": "1308307",
+    "accession": "PRJNA1308307",
+    "title": "FerMets Metagenome",
+    "description": "FerMets is a obesity management project under dairy products.",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2025/08/20 00:00",
+    "last_update": "",
+    "center_name": "University of Copenhagen",
+    "ncbi": {
+      "bioproject_uid": "1308307",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1308307"
+    }
+  },
+  "PRJNA1215003": {
+    "uid": "1215003",
+    "accession": "PRJNA1215003",
+    "title": "Metagenetic testing",
+    "description": "Metagenetic testing",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2025/01/24 00:00",
+    "last_update": "",
+    "center_name": "Taiyuan University of Technology",
+    "ncbi": {
+      "bioproject_uid": "1215003",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1215003"
+    }
   }
 }

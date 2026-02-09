@@ -9,11 +9,9 @@ and publishes a live, searchable dashboard and downloadable archives — all at 
 
 ---
 
-## 🌍 Live Dashboard
+## Live Dashboard
 
-```
 https://aglucaci.github.io/urbanscope/
-```
 
 Includes:
 - latest newly discovered datasets
@@ -23,7 +21,7 @@ Includes:
 
 ---
 
-## 🎯 What UrbanScope Does
+## What UrbanScope Does
 
 UrbanScope automatically:
 
@@ -55,7 +53,7 @@ All data are public and accessed using NCBI-approved rate limits.
 
 ---
 
-## 🧠 Design Philosophy
+## Design Philosophy
 
 - **Situational awareness, not retrospection**
 - **Append-only, auditable records**
@@ -67,7 +65,7 @@ UrbanScope is intended as **scientific infrastructure**, not a demo.
 
 ---
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```
 urbanscope/
@@ -96,7 +94,7 @@ urbanscope/
 
 ---
 
-## ⚙️ How It Runs (GitHub-Only)
+## How It Runs (GitHub-Only)
 
 ### Historical Backfill (Year-by-Year)
 Run manually from **GitHub Actions** using the workflow:
@@ -122,7 +120,7 @@ Runs automatically every day via cron:
 
 ---
 
-## 📊 Output Formats
+## Output Formats
 
 - **JSONL** — append-only archival storage
 - **JSON** — live dashboard updates
@@ -133,7 +131,7 @@ All outputs are versioned in Git.
 
 ---
 
-## 🔒 Cost & Infrastructure
+## Cost & Infrastructure
 
 | Component | Provider | Cost |
 |--------|---------|------|
@@ -142,11 +140,9 @@ All outputs are versioned in Git.
 | Hosting | GitHub Pages | Free |
 | APIs | NCBI E-utilities | Free |
 
-**No credit card required.**
-
 ---
 
-## ⚠️ Disclaimer
+## Disclaimer
 
 UrbanScope is provided for **research and informational purposes only**.
 It does not constitute public-health guidance, policy recommendations,
@@ -154,7 +150,7 @@ or medical advice.
 
 ---
 
-## 👤 Author
+## Author
 
 **Alexander G. Lucaci, PhD**  
 Computational Evolutionary Biology • Urban Metagenomics • Genomic Surveillance

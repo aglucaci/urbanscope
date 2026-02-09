@@ -1,0 +1,59 @@
+name: UrbanScope Daily Crawl
+
+on:
+  schedule:
+    # Runs daily at 13:00 UTC (~9am ET depending on DST)
+    - cron: "0 13 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: urbanscope-daily-crawl
+  cancel-in-progress: true
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+
+      - name: Run UrbanScope crawler (daily)
+        env:
+          NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}
+          NCBI_EMAIL: ${{ secrets.NCBI_EMAIL }}
+          NCBI_TOOL: urbanscope-srr-harvester
+        run: |
+          python3 -m scripts.urbanscope_harvester crawl \
+            --sort date \
+            --page-size 300 \
+            --stop-after-new-srr 25 \
+            --fetch-bioproject \
+            --fetch-biosample
+
+      - name: Commit updated data
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add data docs || true
+
+          git commit -m "UrbanScope daily crawl $(date -u +'%Y-%m-%d')" || echo "No changes"
+          git push
