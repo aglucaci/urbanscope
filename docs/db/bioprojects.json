@@ -23313,5 +23313,35 @@
       "bioproject_uid": "1215003",
       "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1215003"
     }
+  },
+  "PRJNA1420159": {
+    "uid": "1420159",
+    "accession": "PRJNA1420159",
+    "title": "Raw data of sludge metagenome",
+    "description": "24 sets of raw data from metagenomic sequencing of sludge",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2026/02/07 00:00",
+    "last_update": "",
+    "center_name": "Northwest A&F University",
+    "ncbi": {
+      "bioproject_uid": "1420159",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1420159"
+    }
+  },
+  "PRJNA473419": {
+    "uid": "473419",
+    "accession": "PRJNA473419",
+    "title": "Ghana AMR research project organized by the TMDU and NMIMR",
+    "description": "Our aim of the project is to investigate the current status of antimicrobial resistance among clinical isolates from Ghana, and further to explore major resistance mechanisms involved.",
+    "organism": "",
+    "data_type": "Genome sequencing and assembly",
+    "submission_date": "2018/08/08 00:00",
+    "last_update": "",
+    "center_name": "Tokyo Medical and Dental University",
+    "ncbi": {
+      "bioproject_uid": "473419",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/473419"
+    }
   }
 }
