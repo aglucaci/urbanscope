@@ -23343,5 +23343,20 @@
       "bioproject_uid": "473419",
       "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/473419"
     }
+  },
+  "PRJNA1420960": {
+    "uid": "1420960",
+    "accession": "PRJNA1420960",
+    "title": "Petroleum wastewater hydrolysis-acidification enrichment culture Raw sequence reads",
+    "description": "normal metagenomic sequencing of microorganisms",
+    "organism": "oil-degrading enrichment culture",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2026/02/09 00:00",
+    "last_update": "",
+    "center_name": "China University of Petroleum (Beijing)",
+    "ncbi": {
+      "bioproject_uid": "1420960",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1420960"
+    }
   }
 }
