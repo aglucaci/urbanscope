@@ -23358,5 +23358,20 @@
       "bioproject_uid": "1420960",
       "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1420960"
     }
+  },
+  "PRJNA1414509": {
+    "uid": "1414509",
+    "accession": "PRJNA1414509",
+    "title": "Hydrovoltaic Energy Harvesting from Sewage Sludge Induce Its Efficient Anaerobic Digestion",
+    "description": "Hydrovoltaic effect originates from leveraging water-material interactions to generate electricity. Sewage sludge inherently possesses abundant water-solid interfaces favourable for hydrovoltaic power generation. Herein, we explored the influence of promoting the hydrovoltaic effect of sludge on its subsequent methanogenesis in anaerobic digestion (AD). It was observed that a maximum open-circuit voltage of 0.62 V was achieved from sludge, and in its subsequent AD, the methane production and proportion of methane in biogas increased by 82% and 24.6%, respectively, indicating that the hydrovoltaic effect of sludge enables direct recovery of electricity and significantly enhances its subsequent methanogenesis. The stable isotope-labelled AD experiments demonstrate that the hydrovoltaic effect enhanced water participation in CO2-reduction methanogenesis. Statistical analyses of variations in physicochemical properties of sludge, key enzymes closely related to electron/proton transfer and microbial community in AD reveal that the hydrovoltaic effect induced significant enhancement of water-mediated proton-coupled electron transfer-associated methanogenesis, providing thermodynamic advantage for methanogenic reactions. It was further verified by metagenomic and metatranscriptomic analyses, which showed that the expression levels of key genes associated with the classical and RuBisCo-mediated CO2-reduction methanogenic pathways were almost all significantly upregulated. This study provides a reference for directly recovering electricity from sludge by utilising inherent properties while inducing efficient AD.",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2026/01/26 00:00",
+    "last_update": "",
+    "center_name": "Tongji University",
+    "ncbi": {
+      "bioproject_uid": "1414509",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1414509"
+    }
   }
 }
