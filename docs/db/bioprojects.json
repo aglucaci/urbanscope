@@ -23373,5 +23373,35 @@
       "bioproject_uid": "1414509",
       "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1414509"
     }
+  },
+  "PRJNA1424189": {
+    "uid": "1424189",
+    "accession": "PRJNA1424189",
+    "title": "Metagenomic analysis of full-scale and pilot-scale MBR systems for Water-jet loom wastewater",
+    "description": "Compare the microbial communities and functional genes in the full-scale and pilot-scale MBR systems for spray-woven wastewater. And provide enzymatic verification for the Construction of PMD Transformation Networks with Metagenomic Verification",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2026/02/14 00:00",
+    "last_update": "",
+    "center_name": "Tongji University",
+    "ncbi": {
+      "bioproject_uid": "1424189",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1424189"
+    }
+  },
+  "PRJNA1424920": {
+    "uid": "1424920",
+    "accession": "PRJNA1424920",
+    "title": "Anaerobic digestibility of waste microalgal-bacterial aerobic granular sludge",
+    "description": "This project reports shotgun metagenomic sequencing of biomass from anaerobic digestion systems treating waste microalgal bacterial aerobic granular sludge (WMB-AGS) and waste activated sludge (WAS) to evaluate microbial community shifts and functional potential under ciprofloxacin exposure. Samples were collected from a controlled experimental framework including biochemical methane potential (BMP) tests, short-term hydrolysis-acidogenesis test, and long-term semi-continuous anaerobic digesters operated with and without ciprofloxacin. The multi-omics data were generated to link digestion performance and ciprofloxacin fate with shifts in bacterial and archaeal taxa and with changes in transcriptional activity of pathways related to hydrolysis, methanogenesis, stress response, detoxification, and electron-transfer processes.",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2026/02/17 00:00",
+    "last_update": "",
+    "center_name": "Ghent University",
+    "ncbi": {
+      "bioproject_uid": "1424920",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1424920"
+    }
   }
 }
