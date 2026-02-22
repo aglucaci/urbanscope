@@ -23403,5 +23403,35 @@
       "bioproject_uid": "1424920",
       "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1424920"
     }
+  },
+  "PRJEB108450": {
+    "uid": "1425814",
+    "accession": "PRJEB108450",
+    "title": "Exploring Fecal Microbiome in the CHILD COVID-19 sub-project",
+    "description": "study aims to: (1) determine SARS-CoV-2 infection prevalence and transmission; (2) identify infection predictors and severity factors; and (3) assess health and psychosocial impacts. Building upon the CHILD Cohort Study, we engage 1,462 households (5,378 participants) in biweekly surveys, quarterly questionnaires, and biological sampling. This project expands our dataset to explore the gut microbiome's associations with COVID-19 infections and vaccinations, pandemic-related health statuses, and household members' microbiomes.",
+    "organism": "",
+    "data_type": "Other",
+    "submission_date": "2026/02/19 00:00",
+    "last_update": "",
+    "center_name": "University of California San Diego Microbiome Initiative",
+    "ncbi": {
+      "bioproject_uid": "1425814",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1425814"
+    }
+  },
+  "PRJEB108563": {
+    "uid": "1426239",
+    "accession": "PRJEB108563",
+    "title": "Autism Spectrum Disorder -UCLA",
+    "description": "While social communication deficits are considered the hallmark of autism spectrum disorder (ASD), comorbid gastrointestinal (GI) issues are common and impair quality of life in a large subset of affected individuals. Several studies have linked these GI issues to altered gut microbial composition, or dysbiosis, in ASD. Yet research has not yet clarified how dysbiosis may be related to the core features of ASD or to the symptom heterogeneity of this disorder. A growing number of studies support the concept that gut microbiota can signal to the brain by neural, endocrine, immune, and hormonal pathways. These microbial effects on the brain may modulate outputs in behavior, as well as in autonomic and neuroendocrine function. To our knowledge, no studies have investigated gut-microbiome-brain-behavior interactions in a single population of individuals with ASD to better understand the mechanisms of ASD heterogeneity. Hypothesis: By examining these interactions, we aim to test the general hypothesis that alterations in gut microbial composition are correlated with structural and functional brain alterations, as well as with clinical and behavioral features of ASD. See below for hypotheses related to each specific aim. Specific Aims: Aim 1. To characterize the composition, metagenome, and metabolome of the gut microbiome in children with ASD. We hypothesize that individual ASD-associated microbes, gene products, and metabolites (or aggregate scores derived from microbial/metabolomics profiles) are associated with clinical features of ASD. Aim 2. To identify associations between altered brain network connectivity and gut microbial parameters. We hypothesize that structural and functional connectivity patterns are associated with specific alterations of the gut microbiome, suggesting a possible role of altered microbial signaling in mediating these connectivity changes. Aim 3. To identify associations between altered brain activation patterns and gut microbial parameters. We hypothesize that: (a) children with social deficits, sensory deficits, and increased GI issues (all of which are more common in individuals with ASD) will show the largest differences in fMRI activity in interoceptive and emotion-related brain regions when viewing emotional stimuli; and (b) that these differences in fMRI activity will be correlated with gut microbial parameters. We will also apply machine-learning analyses of the combined microbiota and fMRI data to identify microbial features and activation patterns that predict clinical diagnosis and explain heterogeneity within ASD.",
+    "organism": "",
+    "data_type": "Other",
+    "submission_date": "2026/02/20 00:00",
+    "last_update": "",
+    "center_name": "University of California San Diego Microbiome Initiative",
+    "ncbi": {
+      "bioproject_uid": "1426239",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1426239"
+    }
   }
 }
