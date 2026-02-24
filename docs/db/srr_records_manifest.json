@@ -1,6 +1,6 @@
 {
-  "generated_utc": "2026-02-23T14:08:58+00:00",
-  "total_records": 103574,
+  "generated_utc": "2026-02-24T14:11:05+00:00",
+  "total_records": 103626,
   "parts": [
     {
       "path": "docs/db/srr_records_part000.json",
@@ -24,19 +24,19 @@
     },
     {
       "path": "docs/db/srr_records_part005.json",
-      "records": 11649
+      "records": 12094
     },
     {
       "path": "docs/db/srr_records_part006.json",
-      "records": 12002
+      "records": 11751
     },
     {
       "path": "docs/db/srr_records_part007.json",
-      "records": 11492
+      "records": 11298
     },
     {
       "path": "docs/db/srr_records_part008.json",
-      "records": 10578
+      "records": 10630
     }
   ],
   "years": [

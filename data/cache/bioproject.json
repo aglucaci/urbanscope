@@ -23433,5 +23433,20 @@
       "bioproject_uid": "1426239",
       "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1426239"
     }
+  },
+  "PRJNA1427297": {
+    "uid": "1427297",
+    "accession": "PRJNA1427297",
+    "title": "Airborne microbial metagenomes of Sudwala Caves, South Africa",
+    "description": "This project investigates the composition and functional potential of airborne microbial communities within Sudwala Caves, South Africa, using long-read PacBio HiFi metagenomic sequencing. Air samples were collected from multiple internal cave compartments and external reference sites across two seasonal periods and enriched prior to DNA extraction. Metagenomic sequencing data are accompanied by physicochemical air quality measurements, including particulate matter fractions, formaldehyde concentration, ambient temperature, and relative humidity. The resulting datasets provide a reference resource for studying airborne microbiomes in subterranean environments and support comparative analyses of microbial diversity, functional gene content, and environmental associations.",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2026/02/23 00:00",
+    "last_update": "",
+    "center_name": "University of South Africa",
+    "ncbi": {
+      "bioproject_uid": "1427297",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1427297"
+    }
   }
 }
