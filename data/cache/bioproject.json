@@ -23448,5 +23448,10 @@
       "bioproject_uid": "1427297",
       "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1427297"
     }
+  },
+  "PRJEB108678": {
+    "accession": "PRJEB108678",
+    "uid": "",
+    "error": "uid_not_found"
   }
 }
