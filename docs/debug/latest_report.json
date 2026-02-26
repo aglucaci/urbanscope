@@ -1,14 +1,14 @@
 {
-  "generated_utc": "2026-02-25T14:11:27+00:00",
+  "generated_utc": "2026-02-26T14:10:14+00:00",
   "reports": [
     {
       "tag": "crawl_000000",
-      "generated_utc": "2026-02-25T14:11:27+00:00",
+      "generated_utc": "2026-02-26T14:10:14+00:00",
       "counters": {
         "uids_input": 300,
-        "uids_new": 300,
-        "srr_emitted": 300,
-        "sra_uids_processed_ok": 300
+        "uids_new": 40,
+        "srr_emitted": 40,
+        "sra_uids_processed_ok": 40
       },
       "debug_files": {}
     }
