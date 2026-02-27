@@ -23453,5 +23453,35 @@
     "accession": "PRJEB108678",
     "uid": "",
     "error": "uid_not_found"
+  },
+  "PRJNA1428882": {
+    "uid": "1428882",
+    "accession": "PRJNA1428882",
+    "title": "Wastewater Metagenome",
+    "description": "To identify ARGs in the Wastewater sample",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2026/02/26 00:00",
+    "last_update": "",
+    "center_name": "IICT",
+    "ncbi": {
+      "bioproject_uid": "1428882",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1428882"
+    }
+  },
+  "PRJNA1167668": {
+    "uid": "1167668",
+    "accession": "PRJNA1167668",
+    "title": "Activated Sludge Microbiome under Light and Iron Treatments",
+    "description": "Activated sludge microbiome in reactors of different iron and light condition",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2024/10/01 00:00",
+    "last_update": "",
+    "center_name": "Peking University",
+    "ncbi": {
+      "bioproject_uid": "1167668",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1167668"
+    }
   }
 }

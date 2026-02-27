@@ -1,14 +1,25 @@
 {
-  "generated_utc": "2026-02-26T14:10:14+00:00",
+  "generated_utc": "2026-02-27T14:03:22+00:00",
   "reports": [
     {
       "tag": "crawl_000000",
-      "generated_utc": "2026-02-26T14:10:14+00:00",
+      "generated_utc": "2026-02-27T14:00:43+00:00",
       "counters": {
         "uids_input": 300,
-        "uids_new": 40,
-        "srr_emitted": 40,
-        "sra_uids_processed_ok": 40
+        "uids_new": 16,
+        "srr_emitted": 16,
+        "sra_uids_processed_ok": 16
+      },
+      "debug_files": {}
+    },
+    {
+      "tag": "crawl_000001",
+      "generated_utc": "2026-02-27T14:03:22+00:00",
+      "counters": {
+        "uids_input": 300,
+        "uids_new": 192,
+        "srr_emitted": 192,
+        "sra_uids_processed_ok": 192
       },
       "debug_files": {}
     }
