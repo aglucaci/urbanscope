@@ -23498,5 +23498,80 @@
       "bioproject_uid": "1429776",
       "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1429776"
     }
+  },
+  "PRJNA1430065": {
+    "uid": "1430065",
+    "accession": "PRJNA1430065",
+    "title": "Characterization of a methanogenic aniline-degrading microbial community enriched from a petrochemical sludge",
+    "description": "This project investigates a methanogenic aniline-degrading microbial community after >5 years of adaptation. The community was enriched from an anaerobic sludge sampled from an anaerobic reactor used to treat petrochemical wastewater.",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2026/03/01 00:00",
+    "last_update": "",
+    "center_name": "University of Toronto",
+    "ncbi": {
+      "bioproject_uid": "1430065",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1430065"
+    }
+  },
+  "PRJNA1311989": {
+    "uid": "1311989",
+    "accession": "PRJNA1311989",
+    "title": "Stone heritage biofilm Raw sequence reads",
+    "description": "Metagenomic sequencing data of fraction DNA after stable isotope labeled cultivation of stone cultural heritage biofilm",
+    "organism": "biofilm metagenome",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2025/08/28 00:00",
+    "last_update": "",
+    "center_name": "shantou university",
+    "ncbi": {
+      "bioproject_uid": "1311989",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1311989"
+    }
+  },
+  "PRJNA1293540": {
+    "uid": "1293540",
+    "accession": "PRJNA1293540",
+    "title": "Nanopore MinION long-read metagenomics of Mock Communities and environmental samples",
+    "description": "We evaluated the performance of MinION long-read sequencing on mock communities, including ZymoBIOMICS and custom in-house mixtures of bacterial and fungal strains, as well as environmental samples from soil and groundwater, with a particular emphasis on its ability to detect pathogenic microorganisms.",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2025/07/19 00:00",
+    "last_update": "",
+    "center_name": "AIT Austrian Institute of Technology",
+    "ncbi": {
+      "bioproject_uid": "1293540",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1293540"
+    }
+  },
+  "PRJNA1228997": {
+    "uid": "1228997",
+    "accession": "PRJNA1228997",
+    "title": "Metagenomic data of laboratory culture experiment of Sesuvium portulacastrum in 2022 Raw sequence reads",
+    "description": "Metagenomic data collected during the laboratory culture experiment by ecological floating beds of Sesuvium portulacastrum in 2022",
+    "organism": "plant metagenome",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2025/02/26 00:00",
+    "last_update": "",
+    "center_name": "Institute of Urban Environment, CAS",
+    "ncbi": {
+      "bioproject_uid": "1228997",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1228997"
+    }
+  },
+  "PRJNA1200003": {
+    "uid": "1200003",
+    "accession": "PRJNA1200003",
+    "title": "Human respiratory virus sequence reads",
+    "description": "Human respiratory virus sequences isolated from wastewater and clinical samples via the Twist Respiratory Virus Research Panel.",
+    "organism": "Severe acute respiratory syndrome coronavirus 2",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2024/12/18 00:00",
+    "last_update": "",
+    "center_name": "UNC Charlotte",
+    "ncbi": {
+      "bioproject_uid": "1200003",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1200003"
+    }
   }
 }

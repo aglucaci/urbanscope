@@ -23483,5 +23483,20 @@
       "bioproject_uid": "1167668",
       "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1167668"
     }
+  },
+  "PRJEB96349": {
+    "uid": "1429776",
+    "accession": "PRJEB96349",
+    "title": "Metagenomics of toilet waste across income areas in Bangkok",
+    "description": "Antimicrobial resistance (AMR) is a significant public health threat, each year associated with millions of deaths worldwide. Besides antimicrobial usage different socioeconomic factors have recently gained attention as associated with increased AMR. Bangkok, a city with diverse income levels, provided a unique setting for this study, which aimed to explore the possible within city association between income areas and the diversity and abundance of AMR. Twenty-seven toilet waste samples were collected from nine different sites (low-, middle-, and high-income) during March-April 2023, and metagenomic sequencing performed. The sequencing data were quality checked, and sequences that passed QC were mapped to different antimicrobial, metal and disinfectant resistance gene and bacterial taxonomy databases. We observed a trend of higher antimicrobial resistance gene (ARG), metal resistance and disinfectant resistance abundance (FPKM) in low-income groups compared to middle- and high-income groups. This included both acquired ARGs, as well as presumed intrinsic ARGs, also to completely novel antibiotics, so far only identified though functional cloning.           Significant differences in individual ARGs were also observed between sites. Our study highlights the relative abundance of AMR genes across different income groups, emphasizing how the development of resistance mechanisms revealed through metagenomic analysis can serve as a valuable tool for city surveillance of AMR from toilet waste, particularly focusing on low-income settings.",
+    "organism": "",
+    "data_type": "Other",
+    "submission_date": "2026/02/28 00:00",
+    "last_update": "",
+    "center_name": "Centre for Genomic Epidemiology, National Food Institute, Technical University of Denmark (DTU), Denmark",
+    "ncbi": {
+      "bioproject_uid": "1429776",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1429776"
+    }
   }
 }
