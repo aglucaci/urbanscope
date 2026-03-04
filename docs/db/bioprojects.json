@@ -23573,5 +23573,20 @@
       "bioproject_uid": "1200003",
       "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1200003"
     }
+  },
+  "PRJNA1220382": {
+    "uid": "1220382",
+    "accession": "PRJNA1220382",
+    "title": "Didymoplexis mycorrhizal association",
+    "description": "Fully mycoheterotrophic orchids, which completely depend on fungal partners for carbon and nutrient acquisition, are excellent models for investigating mycorrhizal interactions in plant-fungal symbioses. While mycorrhizal diversity and specificity have been extensively studied in some fully mycoheterotrophic orchids, little is known about the fungal associations of Didymoplexis species, particularly in subtropical and tropical ecosystems. Our study systematically examines the mycorrhizal communities associated with three Didymoplexis species (D. micradenia, D. pallens, and D. siamensis) across five forest locations in Taiwan using high-throughput sequencing.",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2025/02/07 00:00",
+    "last_update": "",
+    "center_name": "National Taiwan University",
+    "ncbi": {
+      "bioproject_uid": "1220382",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1220382"
+    }
   }
 }

@@ -23588,5 +23588,20 @@
       "bioproject_uid": "1220382",
       "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1220382"
     }
+  },
+  "PRJNA1431177": {
+    "uid": "1431177",
+    "accession": "PRJNA1431177",
+    "title": "Emergency department  indoor-air hybrid-capture metagenomics complements wastewater by adding a human-focused respiratory virus perspective",
+    "description": "We conducted a matched-pair study comparing 19 weekly indoor air samples from an emergency department waiting room indoor air ventilation system and 19 24-hour composite municipal wastewater samples in Leuven, Belgium, from December 2024 to April 2025. Both sample sets were processed using probe-based hybrid-capture viral metagenomics protocol.",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2026/03/03 00:00",
+    "last_update": "",
+    "center_name": "KU Leuven",
+    "ncbi": {
+      "bioproject_uid": "1431177",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1431177"
+    }
   }
 }
