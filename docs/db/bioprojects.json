@@ -23603,5 +23603,20 @@
       "bioproject_uid": "1431177",
       "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1431177"
     }
+  },
+  "PRJNA1432024": {
+    "uid": "1432024",
+    "accession": "PRJNA1432024",
+    "title": "Whole genome sequence of Phage isolated from waste water",
+    "description": "Whole genome sequence of Phage isolated from waste water of Uganda National water and sewage corporation",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2026/03/04 00:00",
+    "last_update": "",
+    "center_name": "University of Rwanda",
+    "ncbi": {
+      "bioproject_uid": "1432024",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1432024"
+    }
   }
 }
