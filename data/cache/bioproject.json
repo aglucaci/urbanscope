@@ -23618,5 +23618,20 @@
       "bioproject_uid": "1432024",
       "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1432024"
     }
+  },
+  "PRJNA1419928": {
+    "uid": "1419928",
+    "accession": "PRJNA1419928",
+    "title": "2026MXL-biocrust",
+    "description": "metagenome",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2026/02/06 00:00",
+    "last_update": "",
+    "center_name": "Nanjing University Of Science And Technology",
+    "ncbi": {
+      "bioproject_uid": "1419928",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1419928"
+    }
   }
 }
