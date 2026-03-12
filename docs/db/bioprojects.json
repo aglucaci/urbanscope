@@ -23663,5 +23663,20 @@
       "bioproject_uid": "1434060",
       "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1434060"
     }
+  },
+  "PRJNA1235290": {
+    "uid": "1235290",
+    "accession": "PRJNA1235290",
+    "title": "Evolution of mycoparasitism in the Hypocreales",
+    "description": "The order Hypocreales contains diverse parasites, including fungi that parasitize other fungi (mycoparasitism). This project investigates the emergence of mycoparasitism in the Hypocreales, with a focus on patterns of host association in the understudied mycoparasite genus Hypomyces. Some species of Hypomyces are pathogens of cultivated mushrooms including button mushrooms (Agaricus bisporus), while close relatives in the genus Trichoderma are used as biocontrol agents against plant pathogenic fungi. Better characterizing the evolution of Hypocrealean mycoparasites will increase our understanding of these fungal taxa that affect agriculture, as well as enabling broad comparisons between different groups of fungal and non-fungal parasites.",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2025/03/12 00:00",
+    "last_update": "",
+    "center_name": "University of Utah",
+    "ncbi": {
+      "bioproject_uid": "1235290",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1235290"
+    }
   }
 }
