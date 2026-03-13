@@ -23678,5 +23678,20 @@
       "bioproject_uid": "1235290",
       "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1235290"
     }
+  },
+  "PRJNA1435097": {
+    "uid": "1435097",
+    "accession": "PRJNA1435097",
+    "title": "Energetic Coupling between Intracellular Electron Bifurcation and Extracellular PFOA Defluorination via Microbe-Mediated Interface Remodeling in a ZVI-Enhanced Methanogenic System",
+    "description": "biotreatment",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2026/03/10 00:00",
+    "last_update": "",
+    "center_name": "Taiyuan University of Technology",
+    "ncbi": {
+      "bioproject_uid": "1435097",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1435097"
+    }
   }
 }
