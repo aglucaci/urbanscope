@@ -23693,5 +23693,20 @@
       "bioproject_uid": "1435097",
       "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1435097"
     }
+  },
+  "PRJNA1397906": {
+    "uid": "1397906",
+    "accession": "PRJNA1397906",
+    "title": "gut metagenome",
+    "description": "Bovine intestinal metagenome",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2026/01/04 00:00",
+    "last_update": "",
+    "center_name": "JILIN UNIVERSITY",
+    "ncbi": {
+      "bioproject_uid": "1397906",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1397906"
+    }
   }
 }
