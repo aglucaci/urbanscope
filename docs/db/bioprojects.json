@@ -23708,5 +23708,20 @@
       "bioproject_uid": "1397906",
       "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1397906"
     }
+  },
+  "PRJNA1081427": {
+    "uid": "1081427",
+    "accession": "PRJNA1081427",
+    "title": "Sequencing and DNA Yield Data for Zymo Microbial Community Standard (Cat# D6300) Extracted From Multiple Field-Deployable Sampler Options",
+    "description": "Shotgun-sequencing analysis of indoor microbiomes is critical to understanding the impacts of urban environments on human health and wellbeing. However, challenges in collecting sufficient biological material indoors, alongside sampling and processing inconsistencies, contribute to a field-wide crisis of replicability. Here, a sampling method utilizing deployable polydimethylsiloxane coupons optimized for commercially available extraction kits demonstrated greater DNA yields over swab-based protocols, which would improve the replicability of future indoor microbiome research.",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2024/02/27 00:00",
+    "last_update": "",
+    "center_name": "Yale CEA",
+    "ncbi": {
+      "bioproject_uid": "1081427",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1081427"
+    }
   }
 }
