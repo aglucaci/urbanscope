@@ -23723,5 +23723,15 @@
       "bioproject_uid": "1081427",
       "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1081427"
     }
+  },
+  "PRJNA1440419": {
+    "accession": "PRJNA1440419",
+    "uid": "",
+    "error": "uid_not_found"
+  },
+  "PRJNA1240028": {
+    "accession": "PRJNA1240028",
+    "uid": "",
+    "error": "uid_not_found"
   }
 }
