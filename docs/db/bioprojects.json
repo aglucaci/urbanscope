@@ -23733,5 +23733,15 @@
     "accession": "PRJNA1240028",
     "uid": "",
     "error": "uid_not_found"
+  },
+  "PRJNA1440931": {
+    "accession": "PRJNA1440931",
+    "uid": "",
+    "error": "uid_not_found"
+  },
+  "PRJNA1440602": {
+    "accession": "PRJNA1440602",
+    "uid": "",
+    "error": "uid_not_found"
   }
 }
