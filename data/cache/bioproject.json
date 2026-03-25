@@ -23758,5 +23758,35 @@
       "bioproject_uid": "1441656",
       "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1441656"
     }
+  },
+  "PRJNA1363707": {
+    "uid": "1363707",
+    "accession": "PRJNA1363707",
+    "title": "Anammox bacteria regulate a mixotrophic lifestyle in response to osmotic stress",
+    "description": "Anaerobic ammonium-oxidizing (anammox) bacteria were long regarded as strictly chemolithoautotrophic, yet recent evidence indicates that they can also utilize organic compounds, revealing a mixotrophic lifestyle. This capacity for organic substrate utilization may enhance their resilience under energy-limited or stressful conditions by supplying additional reducing power and metabolic precursors. In this study, we demonstrate that organotrophic metabolism is integrated with the osmoadaptive responses of anammox bacteria, providing mechanistic and operational insights for applying anammox processes in organic-rich saline wastewaters.",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2025/11/14 00:00",
+    "last_update": "",
+    "center_name": "National Cheng Kung University",
+    "ncbi": {
+      "bioproject_uid": "1363707",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1363707"
+    }
+  },
+  "PRJNA1404825": {
+    "uid": "1404825",
+    "accession": "PRJNA1404825",
+    "title": "Simultaneous detection of multiple viral pathogens in vacuumed dust from different building types",
+    "description": "The goal of this project was to evaluate a sequencing-based technique for measuring pathogens in building dust. We utilized a viral sequencing panel (Illumina Viral Surveillance Panel v2) for targeted amplification of viral nucleic acid followed by sequencing in 27 samples from school, university, and professional settings.",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2026/01/18 00:00",
+    "last_update": "",
+    "center_name": "Freedom Genomics LLC",
+    "ncbi": {
+      "bioproject_uid": "1404825",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1404825"
+    }
   }
 }

@@ -23743,5 +23743,20 @@
     "accession": "PRJNA1440602",
     "uid": "",
     "error": "uid_not_found"
+  },
+  "PRJNA1441656": {
+    "uid": "1441656",
+    "accession": "PRJNA1441656",
+    "title": "Persistent pathogens and resistance genes on microplastics in medical wastewater",
+    "description": "In this study, we incubated polypropylene microplastics in medical wastewater samples collected from hospitals to investigate their role as reservoirs for pathogenic and antibiotic-resistant bacteria. Using shotgun metagenomic sequencing, we characterized the microbial community composition and antibiotic resistance gene (ARG) profiles of three sample types: hospital influent, treated effluent, and microplastic-associated biofilms. By comparing these niches, we aimed to determine whether microplastics selectively enrich for persistent pathogens and resistance determinants compared to the surrounding wastewater. Our findings shed light on the potential of microplastics in healthcare waste streams to harbor and disseminate clinically relevant bacteria, informing future assessments of public health risks associated with plastic pollution in medical environments.",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2026/03/23 00:00",
+    "last_update": "",
+    "center_name": "Shandong First Medical University & Shandong Academy of Medical Sciences",
+    "ncbi": {
+      "bioproject_uid": "1441656",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1441656"
+    }
   }
 }
