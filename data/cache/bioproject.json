@@ -23788,5 +23788,35 @@
       "bioproject_uid": "1404825",
       "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1404825"
     }
+  },
+  "PRJNA1442870": {
+    "uid": "1442870",
+    "accession": "PRJNA1442870",
+    "title": "Impact of perfluorooctanoic acid on microalgal-bacterial aerobic granular sludge",
+    "description": "This project investigated the effects of perfluorooctanoic acid (PFOA) exposure on the performance, extracellular polymeric substances (EPS), and microbial functional responses of a lab-scale microalgal-bacterial aerobic granular sludge (MB-AGS) system treating wastewater. Reactors were exposed to 100, 500, and 1000 ppb PFOA, and system performance was evaluated in terms of carbon, nitrogen, and phosphorus removal. Metagenomic and metatranscriptomic sequencing were conducted to characterize microbial community structure and gene expression responses under PFOA stress. The dataset supports analysis of microbial adaptation, nutrient removal stability, PFOA partitioning, and resistance-related functional profiles in MB-AGS systems exposed to PFOA.",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2026/03/25 00:00",
+    "last_update": "",
+    "center_name": "Ghent University",
+    "ncbi": {
+      "bioproject_uid": "1442870",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1442870"
+    }
+  },
+  "PRJNA1373541": {
+    "uid": "1373541",
+    "accession": "PRJNA1373541",
+    "title": "Metagenomic sequencing of air filters from utility vehicels used in MBT plants in Poland - raw sequence reads",
+    "description": "The aim of study was to assess occupational exposure to bacteria and antimicrobial resistance genes (ARGs) present on air filters of utility vehicles used in the working environment of mechanical-biological treatment (MBT) facilities, in the context of workers health risks.",
+    "organism": "air filter metagenome",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2025/12/04 00:00",
+    "last_update": "",
+    "center_name": "Institute of Biochemistry and Biophysics Polish Academy of Sciences",
+    "ncbi": {
+      "bioproject_uid": "1373541",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1373541"
+    }
   }
 }
