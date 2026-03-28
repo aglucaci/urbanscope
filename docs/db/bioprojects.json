@@ -23818,5 +23818,35 @@
       "bioproject_uid": "1373541",
       "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1373541"
     }
+  },
+  "PRJNA1443552": {
+    "uid": "1443552",
+    "accession": "PRJNA1443552",
+    "title": "Nitrifying enrichment metagenome",
+    "description": "Bench scale enrichment reactors were operated for ~180 days to enrich for ammonia oxidizing bacteria and nitrite oxidizing bacteria. Reactors were inoculated from a 5-stage Bardenpho wastewater treatment process. After successful enrichment, batch experiments were conducted under varying quorum sensing autoinducer feeding regimes with exogenous addition of acyl homoserine lactones of varying chain lengths and autoinducer-2.",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2026/03/26 00:00",
+    "last_update": "",
+    "center_name": "Duke University",
+    "ncbi": {
+      "bioproject_uid": "1443552",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1443552"
+    }
+  },
+  "PRJNA1405237": {
+    "uid": "1405237",
+    "accession": "PRJNA1405237",
+    "title": "pig gut metagenome Raw sequence reads",
+    "description": "Effects of Glycyrrhizic Acid on the Fecal Microbiota of Finishing Pigs",
+    "organism": "pig gut metagenome",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2026/01/19 00:00",
+    "last_update": "",
+    "center_name": "Henan Agricultural University",
+    "ncbi": {
+      "bioproject_uid": "1405237",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1405237"
+    }
   }
 }
