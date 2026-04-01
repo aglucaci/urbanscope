@@ -23863,5 +23863,55 @@
       "bioproject_uid": "1243707",
       "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1243707"
     }
+  },
+  "PRJNA1446239": {
+    "uid": "1446239",
+    "accession": "PRJNA1446239",
+    "title": "Anammox Community Following Synergistic Inhibition by Low Temperature and BPA (Metagenomic)",
+    "description": "Anaerobic ammonium oxidation (anammox) offers an energy-efficient route for nitrogen removal, yet its tolerance to organic micropollutants can be disproportionately eroded by cooling. How temperature decline propagates through the physical, regulatory, and ecological layers of this cooperative consortium to amplify xenobiotic toxicity remains unresolved. Here, we operated three continuous-flow anammox biofilm reactors at 35 C, 25 C, and 15 C and challenged them with stepwise bisphenol A (BPA) concentrations (0.2-20 mg/L) to determine how cooling reshapes BPA tolerance across structural, regulatory, and ecological scales. Cooling sharply narrowed the tolerance boundary. The half-maximal inhibitory concentration (IC50) decreased from 25.05 mg/L at 35 C to 5.89 mg/L at 25 C, and at 15 C, a trace dose of 0.2 mg/L caused near-complete functional loss. Confocal imaging revealed cold-driven EPS densification and depth-dependent viability loss consistent with intensified diffusion limitation. Quorum sensing signals, transcription of core anammox genes (hzsB, hzo), and activities of hydrazine synthase and hydrazine oxidoreductase declined in a coordinated cascade, linking physical constraints to regulatory shutdown. Metagenome-resolved analyses showed that core nitrogen cycle genes persisted under cooling, but low temperature constrained enrichment of heterotrophic partners encoding xenobiotic degradation and cofactor biosynthesis pathways, severing the metabolic cross-feeding that buffers anammox bacteria against BPA. Together, these findings reveal a cross-scale vulnerability cascade in which cooling does not simply slow metabolism but dismantles the cooperative partnerships that underpin xenobiotic tolerance in anammox biofilms.",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2026/04/01 00:00",
+    "last_update": "",
+    "center_name": "Tianjin Chengjian University",
+    "ncbi": {
+      "bioproject_uid": "1446239",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1446239"
+    }
+  },
+  "PRJEB93958": {
+    "accession": "PRJEB93958",
+    "uid": "",
+    "error": "uid_not_found"
+  },
+  "PRJNA1444729": {
+    "uid": "1444729",
+    "accession": "PRJNA1444729",
+    "title": "Metagenomic analysis of an upflow hydrolysis-acidification reactor treating BTEX-containing cabin-washing wastewater",
+    "description": "This project provides metagenomic sequencing data from an upflow hydrolysis-acidification reactor (UHAR) treating simulated cabin-washing wastewater containing refractory benzene, toluene, ethylbenzene, and xylenes (BTEX). The study aimed to evaluate a coupling strategy integrating iron-carbon (Fe-C) composite addition with Computational Fluid Dynamics (CFD) guided flow field optimization. Genomic DNA was extracted from sludge samples across different operational stages -- including seed sludge, blank control, Fe-C addition, and Fe-C with optimized flow -- and sequenced on the Illumina NovaSeq platform (150 bp paired-end). The metagenomic data aims to reveal the underlying microbial mechanisms, focusing on how the synergistic system reshapes the metabolic network, enriches electroactive Geobacter and aromatic-degrading Acinetobacter, and stimulates Direct Interspecies Electron Transfer (DIET).",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2026/03/29 00:00",
+    "last_update": "",
+    "center_name": "Zhejiang University",
+    "ncbi": {
+      "bioproject_uid": "1444729",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1444729"
+    }
+  },
+  "PRJNA1441994": {
+    "uid": "1441994",
+    "accession": "PRJNA1441994",
+    "title": "Wastewater metagenomics reveals distinct microbial and antimicrobial resistance gene niches in Zambian communities",
+    "description": "Wastewater samples collected across different districts of Zambia.",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2026/03/24 00:00",
+    "last_update": "",
+    "center_name": "Zambia Genomics Surveillance Consortium",
+    "ncbi": {
+      "bioproject_uid": "1441994",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1441994"
+    }
   }
 }
