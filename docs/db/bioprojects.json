@@ -23913,5 +23913,50 @@
       "bioproject_uid": "1441994",
       "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1441994"
     }
+  },
+  "PRJNA1427215": {
+    "uid": "1427215",
+    "accession": "PRJNA1427215",
+    "title": "Metagenomic and metatranscriptomic insights into microbial community and nitrogen metabolism in an Anammox-dominated biofilm reactor",
+    "description": "This project aims to: (1) investigate the microbial community succession during the enrichment process; (2) reconstruct high-quality metagenome-assembled genomes (MAGs) of key functional populations, including AnAOB, ammonia-oxidizing bacteria (AOB), and denitrifiers; (3) elucidate the metabolic pathways responsible for nitrogen removal, with a focus on the coupling between partial nitrification, endogenous denitratation, and Anammox; and (4) link gene expression patterns to reactor performance via metatranscriptomic analysis. This dataset provides valuable genomic resources for understanding AnAOB ecology and the metabolic interactions within a self-sustaining nitrogen-removing consortium. It supports the development of simplified, energy-saving wastewater treatment processes.",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2026/02/23 00:00",
+    "last_update": "",
+    "center_name": "Hainan University",
+    "ncbi": {
+      "bioproject_uid": "1427215",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1427215"
+    }
+  },
+  "PRJNA1240074": {
+    "uid": "1240074",
+    "accession": "PRJNA1240074",
+    "title": "Rethinking tertiary clarifiers: untapped potential for microbial and genetic pollution control in wastewater treatment",
+    "description": "This study proposes an overlooked yet promising alternative to classical disinfection used in wastewater treatment plants (WWTPs) to control fecal bacteria and, indirectly, antibiotic resistance genes (ARGs): tertiary clarifiers. Applying 16S amplicon and shotgun sequencing to samples from three WWTPs with varying inflow characteristics, we demonstrated that tertiary clarifiers actively shape microbial communities, reducing bacterial abundance while maintaining community richness. Tertiary treatment also decreased total ARG abundance.",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2025/03/21 00:00",
+    "last_update": "",
+    "center_name": "CNR",
+    "ncbi": {
+      "bioproject_uid": "1240074",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1240074"
+    }
+  },
+  "PRJNA1236729": {
+    "uid": "1236729",
+    "accession": "PRJNA1236729",
+    "title": "Metagenomics of cyanide containing wastewater",
+    "description": "Cyanide-containing wastewater samples were collected from the wastewater treatment plant of a steel industry. The concentrations of cyanide and co-contaminants were estimated and found to exceed the permissible limits established by WHO, USEPA, and CPCB. To investigate the microbial community structure and potential cyanide-degrading organisms, the samples were subjected to metagenomic analysis.",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2025/03/16 00:00",
+    "last_update": "",
+    "center_name": "CSIR-NATIONAL BOTANICAL RESEARCH INSTITUTE",
+    "ncbi": {
+      "bioproject_uid": "1236729",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1236729"
+    }
   }
 }
