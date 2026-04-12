@@ -23988,5 +23988,20 @@
       "bioproject_uid": "1447082",
       "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1447082"
     }
+  },
+  "PRJNA1451744": {
+    "uid": "1451744",
+    "accession": "PRJNA1451744",
+    "title": "Shotgun metagenomic profiling of healthcare wastewater in Al Najaf Province, Iraq",
+    "description": "This BioProject contains shotgun metagenomic read sets generated from three paired-end healthcare wastewater environmental samples collected in Al Najaf Province, Iraq. The project aims to characterize microbial community composition and support environmental and public health risk assessment, with emphasis on microbial diversity and antimicrobial resistance-related signals. This work is associated with the MSc research project of Yaqeen Salih Azzawi under the supervision of Assist. Prof. Dr. Laith Basim Ali at the University of Kufa, College of Science, Department of Environment.",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2026/04/10 00:00",
+    "last_update": "",
+    "center_name": "University of Kufa",
+    "ncbi": {
+      "bioproject_uid": "1451744",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1451744"
+    }
   }
 }
