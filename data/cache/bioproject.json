@@ -24008,5 +24008,20 @@
     "accession": "PRJNA1452197",
     "uid": "",
     "error": "uid_not_found"
+  },
+  "PRJNA1452058": {
+    "uid": "1452058",
+    "accession": "PRJNA1452058",
+    "title": "Advanced carbon, nitrogen, and phosphorus removal was achieved from real municipal wastewater by integrating anammox and EBPR in the AOA-IFAS process: distinct roles of biofilm and flocs",
+    "description": "Integrating anammox with enhanced biological phosphorus removal (EBPR) in mainstream municipal wastewater treatment remains challenging under low carbon conditions. In this study, functional differentiation of biofilms and flocs in an IFAS system was quantified for the first time, revealing distinct and cooperative roles in carbon, nitrogen and phosphorus removal. This physical segregation drives a distinct functional division of labor, where biofilms provide the specialized niche for anammox while flocs facilitate partial nitrification and phosphorus removal. The decoupling of carbon and nitrogen redirects carbon toward phosphorus removal, enabling effective coupling of anammox and enhanced biological phosphorus removal. This strategy of spatial-functional differentiation reconfigures nutrient-removal pathways to maximize carbon efficiency, providing a promising approach for the synergistic integration of anammox and EBPR toward carbon-neutral mainstream wastewater treatment.",
+    "organism": "",
+    "data_type": "Raw sequence reads",
+    "submission_date": "2026/04/11 00:00",
+    "last_update": "",
+    "center_name": "Beijing University of Technology",
+    "ncbi": {
+      "bioproject_uid": "1452058",
+      "bioproject_url": "https://www.ncbi.nlm.nih.gov/bioproject/1452058"
+    }
   }
 }
