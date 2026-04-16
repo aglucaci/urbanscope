@@ -3,7 +3,8 @@ import argparse, datetime as dt
 from typing import Any, Dict, List
 
 from .config import (
-    DEFAULT_QUERY, BIOSAMPLE_CACHE, BIOPROJECT_CACHE, BIOPROJECT_UID_CACHE,
+    DEFAULT_QUERY, QUERY_PROFILES, DEFAULT_QUERY_PROFILE_NAMES,
+    BIOSAMPLE_CACHE, BIOPROJECT_CACHE, BIOPROJECT_UID_CACHE,
     DOCS_LATEST_DEBUG, DATA_DIR
 )
 from .utils import ensure_dirs, load_set, read_json, write_json, append_jsonl
@@ -18,6 +19,7 @@ def build_argparser() -> argparse.ArgumentParser:
     d = sub.add_parser("daily")
     d.add_argument("--days", type=int, default=1)  # kept for compatibility
     d.add_argument("--query", default=DEFAULT_QUERY)
+    d.add_argument("--query-profile", action="append", choices=sorted(QUERY_PROFILES.keys()))
     d.add_argument("--max-per-day", type=int, default=500)
     d.add_argument("--debug", action="store_true")
     d.add_argument("--fetch-biosample", action="store_true")
@@ -28,6 +30,7 @@ def build_argparser() -> argparse.ArgumentParser:
     b = sub.add_parser("backfill-year")
     b.add_argument("--year", type=int, required=True)
     b.add_argument("--query", default=DEFAULT_QUERY)
+    b.add_argument("--query-profile", action="append", choices=sorted(QUERY_PROFILES.keys()))
     b.add_argument("--max-per-day", type=int, default=500)
     b.add_argument("--debug", action="store_true")
     b.add_argument("--fetch-biosample", action="store_true")
@@ -36,6 +39,7 @@ def build_argparser() -> argparse.ArgumentParser:
 
     c = sub.add_parser("crawl")
     c.add_argument("--query", default=DEFAULT_QUERY)
+    c.add_argument("--query-profile", action="append", choices=sorted(QUERY_PROFILES.keys()))
     c.add_argument("--page-size", type=int, default=500)
     c.add_argument("--max-total", type=int, default=0)
     c.add_argument("--debug", action="store_true")
@@ -45,6 +49,18 @@ def build_argparser() -> argparse.ArgumentParser:
     c.add_argument("--stop-after-new-srr", type=int, default=0)
     c.add_argument("--sort", default="date")
     return ap
+
+def resolve_query_specs(args) -> List[Dict[str, str]]:
+    selected_profiles = args.query_profile or []
+    use_default_profiles = (args.query == DEFAULT_QUERY) and not selected_profiles
+
+    if use_default_profiles:
+      return [{"name": name, "query": QUERY_PROFILES[name]} for name in DEFAULT_QUERY_PROFILE_NAMES]
+
+    if selected_profiles:
+      return [{"name": name, "query": QUERY_PROFILES[name]} for name in selected_profiles]
+
+    return [{"name": "custom", "query": args.query}]
 
 def run():
     args = build_argparser().parse_args()
@@ -61,18 +77,32 @@ def run():
 
     latest_added: List[Dict[str, Any]] = []
     reports: List[Dict[str, Any]] = []
+    query_specs = resolve_query_specs(args)
 
     try:
         if args.cmd == "daily":
             tag = f"recent_{args.recent_days}d"
             paths = debug_paths(tag)
-
-            uids, esearch_url = esearch_recent("sra", args.query, args.recent_days, args.max_per_day, datetype="edat")
+            uids: List[str] = []
+            query_reports: List[Dict[str, Any]] = []
+            seen_uids = set()
+            for spec in query_specs:
+                found_uids, esearch_url = esearch_recent("sra", spec["query"], args.recent_days, args.max_per_day, datetype="edat")
+                query_reports.append({
+                    "profile": spec["name"],
+                    "query": spec["query"],
+                    "uids_count": len(found_uids),
+                    "esearch_url": esearch_url,
+                })
+                for uid in found_uids:
+                    if uid not in seen_uids:
+                        seen_uids.add(uid)
+                        uids.append(uid)
             summaries, esummary_url = esummary_sra(uids[:500])
 
             if args.debug:
                 write_json(paths["initial"], {
-                    "tag": tag, "query": args.query, "recent_days": args.recent_days,
+                    "tag": tag, "queries": query_reports, "recent_days": args.recent_days,
                     "max_per_day": args.max_per_day, "esearch_url": esearch_url,
                     "esummary_url": esummary_url, "uids_count": len(uids), "uids_sample": uids[:50],
                 })
@@ -109,7 +139,8 @@ def run():
                     "tag": tag,
                     "generated_utc": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
                     "counters": {"uids_input": 0, "uids_new": 0, "srr_emitted": 0},
-                    "urls": {"esearch": esearch_url, "esummary": esummary_url},
+                    "queries": query_reports,
+                    "urls": {"esummary": esummary_url},
                 })
 
         elif args.cmd == "backfill-year":
@@ -120,8 +151,14 @@ def run():
                 if day.year != year:
                     break
                 ds = day.isoformat()
-
-                uids, _ = esearch_day("sra", args.query, ds, args.max_per_day, datetype="edat")
+                uids: List[str] = []
+                seen_uids = set()
+                for spec in query_specs:
+                    found_uids, _ = esearch_day("sra", spec["query"], ds, args.max_per_day, datetype="edat")
+                    for uid in found_uids:
+                        if uid not in seen_uids:
+                            seen_uids.add(uid)
+                            uids.append(uid)
                 summaries, _ = esummary_sra(uids[:500])
 
                 added_srr, report = ingest_uids_to_srr(
@@ -144,9 +181,18 @@ def run():
             new_srr_total = 0
 
             while True:
-                ids, count_total, _ = esearch_history(
-                    "sra", args.query, retstart=retstart, retmax=args.page_size, sort=args.sort
-                )
+                ids: List[str] = []
+                count_total = 0
+                seen_page_ids = set()
+                for spec in query_specs:
+                    found_ids, found_total, _ = esearch_history(
+                        "sra", spec["query"], retstart=retstart, retmax=args.page_size, sort=args.sort
+                    )
+                    count_total = max(count_total, found_total)
+                    for uid in found_ids:
+                        if uid not in seen_page_ids:
+                            seen_page_ids.add(uid)
+                            ids.append(uid)
                 if not ids:
                     break
 

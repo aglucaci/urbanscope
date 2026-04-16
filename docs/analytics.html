@@ -1,0 +1,765 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>UrbanScope — Analytics</title>
+  <meta name="description" content="High-level analytics, summary tables, and JavaScript charts for the current UrbanScope database release." />
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon_16.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon_32.png" />
+  <link rel="icon" href="./assets/favicon.ico" />
+  <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
+  <meta property="og:image" content="./assets/urbanscope_logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/site.css" />
+  <style>
+    .analytics-grid{
+      display:grid;
+      gap:16px;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+    }
+    .analytics-grid.wide{
+      grid-template-columns:1.2fr .8fr;
+    }
+    .chart-panel{
+      min-height:340px;
+    }
+    .chart-svg.tall{
+      min-height:320px;
+    }
+    .chart-shell{
+      margin-top:8px;
+      border-radius:18px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.02);
+      padding:10px;
+    }
+    .table-tools{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+    .table-tools input{
+      max-width:320px;
+    }
+    .small-table{
+      min-width:100%;
+    }
+    .small-table td,
+    .small-table th{
+      padding:10px 12px;
+      font-size:13px;
+    }
+    .small-table tbody tr:hover{
+      background:rgba(255,255,255,.03);
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      color:#dce6f7;
+      font-size:12px;
+      margin-right:8px;
+      margin-bottom:8px;
+    }
+    .stat-test-grid{
+      display:grid;
+      gap:16px;
+      grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+    }
+    .test-metric{
+      margin-top:14px;
+      padding-top:14px;
+      border-top:1px solid var(--line);
+      display:grid;
+      gap:8px;
+    }
+    .test-metric div{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      color:#dce6f7;
+      font-size:13px;
+    }
+    .test-metric strong{
+      color:var(--muted);
+      font-weight:600;
+    }
+    .test-call{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      font-size:12px;
+      margin-top:12px;
+    }
+    .test-call.strong{
+      border-color:rgba(78,197,168,.35);
+      background:rgba(78,197,168,.10);
+    }
+    .test-call.caution{
+      border-color:rgba(255,207,112,.35);
+      background:rgba(255,207,112,.08);
+    }
+    .axis-label{
+      fill:#98a8c0;
+      font-size:12px;
+    }
+    .chart-title-note{
+      color:var(--muted);
+      font-size:13px;
+      margin-top:8px;
+    }
+    @media (max-width: 980px){
+      .analytics-grid,
+      .analytics-grid.wide{
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="site-shell">
+    <nav class="site-nav">
+      <a class="site-brand" href="./index.html">
+        <div class="site-brand-mark"><img src="./assets/urbanscope_logo.png" alt="UrbanScope logo" /></div>
+        <div class="site-brand-copy">
+          <strong>UrbanScope</strong>
+          <span>Urban environmental omics resource</span>
+        </div>
+      </a>
+      <div class="site-links">
+        <a href="./index.html">Home</a>
+        <a href="./explorer.html">Explorer</a>
+        <a href="./about.html">About</a>
+        <a href="./methodology.html">Methodology</a>
+        <a href="./data.html">Data Access</a>
+        <a class="is-active" href="./analytics.html">Analytics</a>
+        <a href="./explore.html">Interactive Charts</a>
+        <a href="./global-map.html">Global Map</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div class="eyebrow">Database Summary</div>
+      <h1>High-level analytics for the current UrbanScope database release.</h1>
+      <p>
+        This page summarizes the live database with manuscript-friendly metrics, useful JavaScript charts, and compact tables that
+        describe scale, geography, assay composition, and project structure. Everything shown here is computed from the same public
+        release used by the explorer.
+      </p>
+      <div class="hero-actions">
+        <a class="button-link primary" href="./data.html">Data Access</a>
+        <a class="button-link" href="./global-map.html">Open Global Map</a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Release Overview</h2>
+        <p>These top-level indicators summarize what is currently in the published database and how complete the visible metadata are.</p>
+      </div>
+      <div class="metric-grid" id="summaryStats">
+        <div class="metric"><span class="label">Loading</span><span class="value">...</span><span class="note">Computing database-wide summaries</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="analytics-grid wide">
+        <div class="panel chart-panel">
+          <div class="section-header">
+            <h2>Runs By Year</h2>
+            <p>Annual run counts provide a quick view of database growth over time.</p>
+          </div>
+          <div class="chart-shell">
+            <svg class="chart-svg tall" id="yearChart" viewBox="0 0 860 340" role="img" aria-label="UrbanScope runs by year"></svg>
+          </div>
+        </div>
+        <div class="panel chart-panel">
+          <div class="section-header">
+            <h2>Assay Composition</h2>
+            <p>Relative assay counts across the current run collection.</p>
+          </div>
+          <div class="chart-shell">
+            <svg class="chart-svg tall" id="assayChart" viewBox="0 0 560 340" role="img" aria-label="UrbanScope assay composition"></svg>
+          </div>
+          <div class="chart-title-note" id="assayNotes">Loading assay composition…</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="analytics-grid">
+        <div class="panel chart-panel">
+          <div class="section-header">
+            <h2>Top Countries</h2>
+            <p>Run-level counts for resolved country labels in the current database.</p>
+          </div>
+          <div class="chart-shell">
+            <svg class="chart-svg tall" id="countryChart" viewBox="0 0 620 380" role="img" aria-label="Top countries by run count"></svg>
+          </div>
+        </div>
+        <div class="panel chart-panel">
+          <div class="section-header">
+            <h2>Top Cities</h2>
+            <p>Run-level counts for resolved city labels. Useful for identifying concentrated sampling locations.</p>
+          </div>
+          <div class="chart-shell">
+            <svg class="chart-svg tall" id="cityChart" viewBox="0 0 620 380" role="img" aria-label="Top cities by run count"></svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="analytics-grid">
+        <div class="panel chart-panel">
+          <div class="section-header">
+            <h2>Top Sequencing Centers</h2>
+            <p>Observed center labels in the current release. This is useful for understanding institutional concentration.</p>
+          </div>
+          <div class="chart-shell">
+            <svg class="chart-svg tall" id="centerChart" viewBox="0 0 620 380" role="img" aria-label="Top sequencing centers"></svg>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="section-header">
+            <h2>Coverage Notes</h2>
+          </div>
+          <div id="coverageBadges"></div>
+          <div class="info-list" style="margin-top:8px">
+            <div class="info-item">
+              <strong>Runs and projects measure public visibility</strong>
+              Counts reflect what is currently indexed from public metadata and should not be interpreted as a complete census of all urban sequencing efforts.
+            </div>
+            <div class="info-item">
+              <strong>Geography is metadata-dependent</strong>
+              Country and city analytics are only as strong as the source records and the current harmonization logic.
+            </div>
+            <div class="info-item">
+              <strong>Assay summaries are practical categories</strong>
+              The assay chart is useful for database overview and browsing, but downstream analytical suitability should still be checked against original records.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Statistical Tests</h2>
+        <p>These tests quantify whether the current database snapshot looks uniform or strongly concentrated, and whether yearly counts show a monotonic trend.</p>
+      </div>
+      <div class="stat-test-grid" id="statTests">
+        <div class="panel">
+          <div class="kicker">Loading</div>
+          <h3>Computing test statistics</h3>
+          <p>Preparing distribution and trend tests from the current release.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Summary Tables</h2>
+        <p>These tables provide a compact view of the current database structure and can be exported or cited in supplementary material.</p>
+      </div>
+      <div class="card-grid">
+        <div class="panel">
+          <div class="table-tools">
+            <div>
+              <strong>Top BioProjects</strong>
+              <div class="chart-title-note">Sorted by run count with geographic and assay context.</div>
+            </div>
+            <input id="projectSearch" placeholder="Filter BioProjects by accession or title" />
+          </div>
+          <div class="table-shell" id="projectTable"></div>
+        </div>
+
+        <div class="panel">
+          <div class="table-tools">
+            <div>
+              <strong>Category Tables</strong>
+              <div class="chart-title-note">Quick reference tables for assays, countries, cities, and centers.</div>
+            </div>
+            <input id="categorySearch" placeholder="Filter category rows" />
+          </div>
+          <div class="table-shell" id="assayTable" style="margin-bottom:14px"></div>
+          <div class="table-shell" id="countryTable" style="margin-bottom:14px"></div>
+          <div class="table-shell" id="cityTable" style="margin-bottom:14px"></div>
+          <div class="table-shell" id="centerTable"></div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      All analytics on this page are computed from the public release under <span class="mono">docs/db/</span>. Refreshing the published database automatically updates these summaries.
+    </footer>
+  </div>
+
+  <script src="./assets/db.js"></script>
+  <script>
+    function fmt(value) {
+      return window.UrbanScopeDB.formatNumber(value);
+    }
+
+    function formatTimestamp(value) {
+      if (!value) return "Unknown";
+      const d = new Date(value);
+      if (Number.isNaN(d.getTime())) return value;
+      return d.toLocaleString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        timeZoneName: "short"
+      });
+    }
+
+    function pct(value, total) {
+      if (!total) return "0.0%";
+      return ((value / total) * 100).toFixed(1) + "%";
+    }
+
+    function nonUnknown(items) {
+      return items.filter((item) => item.name !== "(unknown)");
+    }
+
+    function renderVerticalBarChart(svg, items, options = {}) {
+      const width = options.width || 860;
+      const height = options.height || 340;
+      const left = options.left || 56;
+      const right = 20;
+      const top = 28;
+      const bottom = 58;
+      const usableWidth = width - left - right;
+      const usableHeight = height - top - bottom;
+      const filtered = items.slice();
+      const max = Math.max(...filtered.map((item) => item.count), 1);
+      const gap = options.gap || 12;
+      const barWidth = Math.max(18, (usableWidth - gap * Math.max(filtered.length - 1, 0)) / Math.max(filtered.length, 1));
+      svg.innerHTML = `
+        <rect x="0" y="0" width="${width}" height="${height}" rx="18" fill="rgba(255,255,255,.01)"></rect>
+        <line x1="${left}" y1="${height - bottom}" x2="${width - right}" y2="${height - bottom}" stroke="rgba(148,174,214,.22)" />
+        ${filtered.map((item, index) => {
+          const barHeight = (item.count / max) * usableHeight;
+          const x = left + index * (barWidth + gap);
+          const y = height - bottom - barHeight;
+          return `
+            <rect x="${x}" y="${y}" width="${barWidth}" height="${barHeight}" rx="10" fill="rgba(115,167,255,.82)"></rect>
+            <text x="${x + barWidth / 2}" y="${y - 8}" fill="#dce6f7" font-size="11" text-anchor="middle">${fmt(item.count)}</text>
+            <text class="axis-label" x="${x + barWidth / 2}" y="${height - 20}" text-anchor="middle">${String(item.name).slice(0, options.labelCutoff || 12)}</text>
+          `;
+        }).join("")}
+      `;
+    }
+
+    function renderHorizontalBarChart(svg, items, options = {}) {
+      const width = options.width || 620;
+      const rowHeight = options.rowHeight || 28;
+      const top = 20;
+      const bottom = 20;
+      const left = options.left || 180;
+      const right = 54;
+      const rows = items.length;
+      const height = top + bottom + rows * rowHeight;
+      svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+      const usableWidth = width - left - right;
+      const max = Math.max(...items.map((item) => item.count), 1);
+      const labelLimit = options.labelCutoff || 26;
+      const formatLabel = (value) => {
+        const label = String(value || "");
+        if (label.length <= labelLimit) return label;
+        return `${label.slice(0, Math.max(labelLimit - 1, 1)).trimEnd()}…`;
+      };
+      svg.innerHTML = `
+        <rect x="0" y="0" width="${width}" height="${height}" rx="18" fill="rgba(255,255,255,.01)"></rect>
+        ${items.map((item, index) => {
+          const y = top + index * rowHeight;
+          const w = (item.count / max) * usableWidth;
+          return `
+            <text class="axis-label" x="10" y="${y + 17}">${formatLabel(item.name)}</text>
+            <rect x="${left}" y="${y + 5}" width="${usableWidth}" height="14" rx="7" fill="rgba(255,255,255,.05)" stroke="rgba(148,174,214,.14)"></rect>
+            <rect x="${left}" y="${y + 5}" width="${w}" height="14" rx="7" fill="rgba(78,197,168,.82)"></rect>
+            <text x="${left + usableWidth + 8}" y="${y + 17}" fill="#dce6f7" font-size="11">${fmt(item.count)}</text>
+          `;
+        }).join("")}
+      `;
+    }
+
+    function renderDonutChart(svg, items, options = {}) {
+      const width = options.width || 560;
+      const height = options.height || 340;
+      const cx = width / 2;
+      const cy = height / 2;
+      const radius = 102;
+      const innerRadius = 58;
+      const total = items.reduce((acc, item) => acc + item.count, 0) || 1;
+      const colors = ["#73a7ff", "#4ec5a8", "#ffcf70", "#ff8d7a", "#9f8cff", "#8bd6f1", "#c2d46f", "#f39cc4"];
+      let startAngle = -Math.PI / 2;
+
+      const polar = (r, angle) => [cx + Math.cos(angle) * r, cy + Math.sin(angle) * r];
+      const arcPath = (start, end) => {
+        const [x1, y1] = polar(radius, start);
+        const [x2, y2] = polar(radius, end);
+        const [x3, y3] = polar(innerRadius, end);
+        const [x4, y4] = polar(innerRadius, start);
+        const largeArc = end - start > Math.PI ? 1 : 0;
+        return `M ${x1} ${y1} A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2} L ${x3} ${y3} A ${innerRadius} ${innerRadius} 0 ${largeArc} 0 ${x4} ${y4} Z`;
+      };
+
+      const arcs = items.map((item, index) => {
+        const frac = item.count / total;
+        const endAngle = startAngle + frac * Math.PI * 2;
+        const path = arcPath(startAngle, endAngle);
+        const mid = (startAngle + endAngle) / 2;
+        const [lx, ly] = polar(radius + 18, mid);
+        const color = colors[index % colors.length];
+        startAngle = endAngle;
+        return { item, path, lx, ly, color };
+      });
+
+      svg.innerHTML = `
+        <rect x="0" y="0" width="${width}" height="${height}" rx="18" fill="rgba(255,255,255,.01)"></rect>
+        ${arcs.map((arc) => `<path d="${arc.path}" fill="${arc.color}" opacity="0.92"></path>`).join("")}
+        <circle cx="${cx}" cy="${cy}" r="${innerRadius - 2}" fill="#101a29"></circle>
+        <text x="${cx}" y="${cy - 8}" fill="#edf3ff" font-size="14" text-anchor="middle">Assays</text>
+        <text x="${cx}" y="${cy + 18}" fill="#edf3ff" font-size="24" font-weight="700" text-anchor="middle">${fmt(total)}</text>
+        ${arcs.slice(0, 6).map((arc, index) => `
+          <rect x="22" y="${24 + index * 26}" width="12" height="12" rx="3" fill="${arc.color}"></rect>
+          <text x="42" y="${35 + index * 26}" fill="#dce6f7" font-size="12">${arc.item.name} (${pct(arc.item.count, total)})</text>
+        `).join("")}
+      `;
+    }
+
+    function renderSimpleTable(tableId, items, total, searchValue) {
+      const needle = (searchValue || "").toLowerCase().trim();
+      const target = document.getElementById(tableId);
+      const filtered = needle ? items.filter((item) => item.name.toLowerCase().includes(needle)) : items;
+      const rows = filtered.slice(0, 20);
+      target.innerHTML = `
+        <table class="small-table">
+          <thead>
+            <tr>
+              <th>${tableId === "assayTable" ? "Assay" : tableId === "countryTable" ? "Country" : tableId === "cityTable" ? "City" : "Center"}</th>
+              <th>Runs</th>
+              <th>Percent</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map((item) => `
+              <tr>
+                <td>${item.name}</td>
+                <td class="mono">${fmt(item.count)}</td>
+                <td class="mono">${pct(item.count, total)}</td>
+              </tr>
+            `).join("") || `<tr><td colspan="3" class="muted">No rows match the current filter.</td></tr>`}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderProjectTable(projects, searchValue) {
+      const needle = (searchValue || "").toLowerCase().trim();
+      const target = document.getElementById("projectTable");
+      const rows = projects
+        .slice()
+        .sort((a, b) => b.runs.size - a.runs.size || a.accession.localeCompare(b.accession))
+        .filter((p) => !needle || p.accession.toLowerCase().includes(needle) || (p.title || "").toLowerCase().includes(needle))
+        .slice(0, 25);
+
+      target.innerHTML = `
+        <table class="small-table">
+          <thead>
+            <tr>
+              <th>BioProject</th>
+              <th>Title</th>
+              <th>Runs</th>
+              <th>BioSamples</th>
+              <th>Countries</th>
+              <th>Assays</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map((p) => `
+              <tr>
+                <td class="mono">${p.accession}</td>
+                <td>${p.title || "Untitled project"}</td>
+                <td class="mono">${fmt(p.runs.size)}</td>
+                <td class="mono">${fmt(p.biosamples.size)}</td>
+                <td>${Array.from(p.countries).filter(Boolean).slice(0, 3).join(", ") || "(unknown)"}</td>
+                <td>${Array.from(p.assays).filter(Boolean).slice(0, 3).join(", ") || "Unknown"}</td>
+              </tr>
+            `).join("") || `<tr><td colspan="6" class="muted">No BioProjects match the current filter.</td></tr>`}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function erf(x) {
+      const sign = x < 0 ? -1 : 1;
+      const ax = Math.abs(x);
+      const a1 = 0.254829592;
+      const a2 = -0.284496736;
+      const a3 = 1.421413741;
+      const a4 = -1.453152027;
+      const a5 = 1.061405429;
+      const p = 0.3275911;
+      const t = 1 / (1 + p * ax);
+      const y = 1 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-ax * ax);
+      return sign * y;
+    }
+
+    function normalCdf(z) {
+      return 0.5 * (1 + erf(z / Math.SQRT2));
+    }
+
+    function gammaln(xx) {
+      const cof = [
+        76.18009172947146,
+        -86.50532032941677,
+        24.01409824083091,
+        -1.231739572450155,
+        0.001208650973866179,
+        -0.000005395239384953
+      ];
+      let x = xx - 1;
+      let tmp = x + 5.5;
+      tmp -= (x + 0.5) * Math.log(tmp);
+      let ser = 1.000000000190015;
+      for (let j = 0; j < cof.length; j += 1) {
+        x += 1;
+        ser += cof[j] / x;
+      }
+      return -tmp + Math.log(2.5066282746310005 * ser);
+    }
+
+    function gammaLowerRegularized(a, x) {
+      const ITMAX = 100;
+      const EPS = 3e-7;
+      if (x <= 0) return 0;
+      if (x < a + 1) {
+        let ap = a;
+        let sum = 1 / a;
+        let del = sum;
+        for (let n = 1; n <= ITMAX; n += 1) {
+          ap += 1;
+          del *= x / ap;
+          sum += del;
+          if (Math.abs(del) < Math.abs(sum) * EPS) {
+            return sum * Math.exp(-x + a * Math.log(x) - gammaln(a));
+          }
+        }
+      }
+      let b = x + 1 - a;
+      let c = 1 / 1e-30;
+      let d = 1 / b;
+      let h = d;
+      for (let i = 1; i <= ITMAX; i += 1) {
+        const an = -i * (i - a);
+        b += 2;
+        d = an * d + b;
+        if (Math.abs(d) < 1e-30) d = 1e-30;
+        c = b + an / c;
+        if (Math.abs(c) < 1e-30) c = 1e-30;
+        d = 1 / d;
+        const del = d * c;
+        h *= del;
+        if (Math.abs(del - 1) < EPS) break;
+      }
+      return 1 - Math.exp(-x + a * Math.log(x) - gammaln(a)) * h;
+    }
+
+    function chiSquareGoodnessOfFit(items) {
+      const observed = items.map((item) => item.count).filter((count) => count > 0);
+      const k = observed.length;
+      if (k < 2) return null;
+      const total = observed.reduce((acc, value) => acc + value, 0);
+      const expected = total / k;
+      const chi2 = observed.reduce((acc, obs) => acc + ((obs - expected) ** 2) / expected, 0);
+      const df = k - 1;
+      const p = 1 - gammaLowerRegularized(df / 2, chi2 / 2);
+      return { statistic: chi2, df, pValue: p, expectedPerClass: expected };
+    }
+
+    function mannKendallTrend(items) {
+      const values = items.slice().sort((a, b) => Number(a.name) - Number(b.name)).map((item) => item.count);
+      const n = values.length;
+      if (n < 3) return null;
+      let s = 0;
+      for (let i = 0; i < n - 1; i += 1) {
+        for (let j = i + 1; j < n; j += 1) {
+          if (values[j] > values[i]) s += 1;
+          else if (values[j] < values[i]) s -= 1;
+        }
+      }
+      const tieCounts = new Map();
+      values.forEach((v) => tieCounts.set(v, (tieCounts.get(v) || 0) + 1));
+      const tieTerm = Array.from(tieCounts.values()).reduce((acc, t) => {
+        if (t < 2) return acc;
+        return acc + t * (t - 1) * (2 * t + 5);
+      }, 0);
+      const varS = (n * (n - 1) * (2 * n + 5) - tieTerm) / 18;
+      let z = 0;
+      if (s > 0) z = (s - 1) / Math.sqrt(varS);
+      else if (s < 0) z = (s + 1) / Math.sqrt(varS);
+      const p = 2 * (1 - normalCdf(Math.abs(z)));
+      const tau = s / (0.5 * n * (n - 1));
+      return { s, z, pValue: p, tau, n };
+    }
+
+    function pLabel(p) {
+      if (!Number.isFinite(p)) return "NA";
+      if (p < 0.001) return "<0.001";
+      return p.toFixed(3);
+    }
+
+    function interpretationBadge(p, positiveTrend=false) {
+      if (!Number.isFinite(p)) return { cls: "caution", text: "Insufficient data for a stable test" };
+      if (p < 0.05) {
+        return { cls: "strong", text: positiveTrend ? "Evidence for a non-random monotonic trend" : "Evidence for a non-uniform distribution" };
+      }
+      return { cls: "caution", text: positiveTrend ? "No strong evidence for a monotonic trend" : "No strong evidence against a uniform distribution" };
+    }
+
+    (async () => {
+      const summaryStats = document.getElementById("summaryStats");
+      const assayNotes = document.getElementById("assayNotes");
+      const coverageBadges = document.getElementById("coverageBadges");
+      const statTests = document.getElementById("statTests");
+      const projectSearch = document.getElementById("projectSearch");
+      const categorySearch = document.getElementById("categorySearch");
+
+      try {
+        const { manifest, allRuns } = await window.UrbanScopeDB.fetchAllRuns();
+        const summary = window.UrbanScopeDB.summarize(allRuns);
+        const years = summary.years.slice().sort((a, b) => Number(a.name) - Number(b.name));
+        const assays = summary.assays.slice();
+        const countries = nonUnknown(summary.countries);
+        const cities = nonUnknown(summary.cities);
+        const centers = nonUnknown(summary.centers);
+        const geoPct = Math.round((summary.geoResolvedRuns / Math.max(summary.totalRuns, 1)) * 100);
+        const downloadPct = Math.round((summary.downloadableRuns / Math.max(summary.totalRuns, 1)) * 100);
+        const largestProject = summary.projects.slice().sort((a, b) => b.runs.size - a.runs.size)[0];
+        const assayChi = chiSquareGoodnessOfFit(assays);
+        const countryChi = chiSquareGoodnessOfFit(countries);
+        const yearTrend = mannKendallTrend(years);
+        const assayCall = interpretationBadge(assayChi?.pValue ?? NaN, false);
+        const countryCall = interpretationBadge(countryChi?.pValue ?? NaN, false);
+        const trendCall = interpretationBadge(yearTrend?.pValue ?? NaN, (yearTrend?.tau ?? 0) > 0);
+
+        summaryStats.innerHTML = `
+          <div class="metric"><span class="label">SRR Records</span><span class="value">${fmt(summary.totalRuns)}</span><span class="note">Run-level records in the current public release</span></div>
+          <div class="metric"><span class="label">BioProjects</span><span class="value">${fmt(summary.totalProjects)}</span><span class="note">Distinct project groups represented in the database</span></div>
+          <div class="metric"><span class="label">BioSamples</span><span class="value">${fmt(summary.totalBioSamples)}</span><span class="note">Unique BioSample accessions observed across loaded runs</span></div>
+          <div class="metric"><span class="label">Resolved Countries</span><span class="value">${fmt(summary.totalCountries)}</span><span class="note">Distinct non-unknown country labels in the current release</span></div>
+          <div class="metric"><span class="label">Resolved Cities</span><span class="value">${fmt(summary.totalCities)}</span><span class="note">Distinct non-unknown city labels in the current release</span></div>
+          <div class="metric"><span class="label">Geo Completeness</span><span class="value">${geoPct}%</span><span class="note">Runs with both country and city currently resolved</span></div>
+          <div class="metric"><span class="label">Download Paths</span><span class="value">${downloadPct}%</span><span class="note">Runs carrying a source download path in the loaded metadata</span></div>
+          <div class="metric"><span class="label">Largest BioProject</span><span class="value">${largestProject ? fmt(largestProject.runs.size) : "0"}</span><span class="note">${largestProject ? largestProject.accession : "Unavailable"}</span></div>
+        `;
+
+        coverageBadges.innerHTML = `
+          <span class="badge">Generated: ${formatTimestamp(manifest.generated_utc || manifest.generated || "")}</span>
+          <span class="badge">Part files: ${fmt((manifest.parts || []).length)}</span>
+          <span class="badge">Years represented: ${fmt(years.length)}</span>
+          <span class="badge">Assay classes: ${fmt(assays.length)}</span>
+          <span class="badge">Top country bucket: ${countries[0] ? countries[0].name + " (" + fmt(countries[0].count) + ")" : "N/A"}</span>
+          <span class="badge">Top city bucket: ${cities[0] ? cities[0].name + " (" + fmt(cities[0].count) + ")" : "N/A"}</span>
+        `;
+
+        renderVerticalBarChart(document.getElementById("yearChart"), years, { width: 860, height: 340, labelCutoff: 8 });
+        renderDonutChart(document.getElementById("assayChart"), assays.slice(0, 8), { width: 560, height: 340 });
+        renderHorizontalBarChart(document.getElementById("countryChart"), countries.slice(0, 12), { width: 620, labelCutoff: 28 });
+        renderHorizontalBarChart(document.getElementById("cityChart"), cities.slice(0, 12), { width: 620, labelCutoff: 28 });
+        renderHorizontalBarChart(document.getElementById("centerChart"), centers.slice(0, 12), {
+          width: 620,
+          left: 290,
+          rowHeight: 30,
+          labelCutoff: 34
+        });
+
+        assayNotes.textContent = assays.length
+          ? `${assays[0].name} is currently the largest assay bucket at ${pct(assays[0].count, summary.totalRuns)} of all loaded runs.`
+          : "No assay data are currently available.";
+
+        statTests.innerHTML = `
+          <div class="panel">
+            <div class="kicker">Chi-square goodness-of-fit</div>
+            <h3>Assay distribution test</h3>
+            <p>
+              This test asks whether the observed assay-class counts are closer to a uniform distribution across observed assay categories
+              than we would expect by chance. We use it here because assay composition is count data spread across discrete classes.
+            </p>
+            <div class="test-metric">
+              <div><strong>Null hypothesis</strong><span>Runs are evenly distributed across observed assay classes</span></div>
+              <div><strong>Test statistic</strong><span>${assayChi ? assayChi.statistic.toFixed(2) : "NA"}</span></div>
+              <div><strong>Degrees of freedom</strong><span>${assayChi ? assayChi.df : "NA"}</span></div>
+              <div><strong>p-value</strong><span>${assayChi ? pLabel(assayChi.pValue) : "NA"}</span></div>
+            </div>
+            <div class="test-call ${assayCall.cls}">${assayCall.text}</div>
+          </div>
+          <div class="panel">
+            <div class="kicker">Chi-square goodness-of-fit</div>
+            <h3>Country representation test</h3>
+            <p>
+              This test asks whether resolved country counts are evenly spread across countries or strongly concentrated in a subset.
+              We use it because the database geography is categorical count data and reviewers often want a quantitative statement about skew.
+            </p>
+            <div class="test-metric">
+              <div><strong>Null hypothesis</strong><span>Runs are evenly distributed across resolved countries</span></div>
+              <div><strong>Test statistic</strong><span>${countryChi ? countryChi.statistic.toFixed(2) : "NA"}</span></div>
+              <div><strong>Degrees of freedom</strong><span>${countryChi ? countryChi.df : "NA"}</span></div>
+              <div><strong>p-value</strong><span>${countryChi ? pLabel(countryChi.pValue) : "NA"}</span></div>
+            </div>
+            <div class="test-call ${countryCall.cls}">${countryCall.text}</div>
+          </div>
+          <div class="panel">
+            <div class="kicker">Mann-Kendall trend test</div>
+            <h3>Yearly growth trend</h3>
+            <p>
+              This test asks whether yearly run counts show a monotonic upward or downward trend over time. We use it because yearly counts
+              are ordered in time and may not satisfy normality assumptions required by simpler parametric trend tests.
+            </p>
+            <div class="test-metric">
+              <div><strong>Null hypothesis</strong><span>No monotonic trend in yearly run counts</span></div>
+              <div><strong>Kendall tau</strong><span>${yearTrend ? yearTrend.tau.toFixed(3) : "NA"}</span></div>
+              <div><strong>Z statistic</strong><span>${yearTrend ? yearTrend.z.toFixed(2) : "NA"}</span></div>
+              <div><strong>p-value</strong><span>${yearTrend ? pLabel(yearTrend.pValue) : "NA"}</span></div>
+            </div>
+            <div class="test-call ${trendCall.cls}">${trendCall.text}</div>
+          </div>
+        `;
+
+        const rerenderTables = () => {
+          renderProjectTable(summary.projects, projectSearch.value);
+          renderSimpleTable("assayTable", assays, summary.totalRuns, categorySearch.value);
+          renderSimpleTable("countryTable", countries, summary.totalRuns, categorySearch.value);
+          renderSimpleTable("cityTable", cities, summary.totalRuns, categorySearch.value);
+          renderSimpleTable("centerTable", centers, summary.totalRuns, categorySearch.value);
+        };
+
+        projectSearch.addEventListener("input", rerenderTables);
+        categorySearch.addEventListener("input", rerenderTables);
+        rerenderTables();
+      } catch (err) {
+        summaryStats.innerHTML = `<div class="metric"><span class="label">Status</span><span class="value">Unavailable</span><span class="note">${err.message}</span></div>`;
+        assayNotes.textContent = err.message;
+      }
+    })();
+  </script>
+</body>
+</html>

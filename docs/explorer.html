@@ -1,0 +1,1898 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>UrbanScope — BioProject Explorer</title>
+  <meta name="description" content="UrbanScope is a searchable urban environmental omics database with methods, analytics, downloadable records, and a global map." />
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon_16.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon_32.png" />
+  <link rel="icon" href="./assets/favicon.ico" />
+  <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
+  <meta property="og:image" content="./assets/urbanscope_logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/site.css" />
+  <style>
+    :root{
+      --bg:#0f1621;
+      --panel:#141e2a;
+      --panel-alt:#182435;
+      --fg:#e8eef6;
+      --muted:#95a4b8;
+      --line:#29384a;
+      --line-strong:#36506a;
+      --chip:#1a2431;
+      --accent:#7aa2d0;
+      --good:#5ba37f;
+      --warn:#c3a15d;
+      --bad:#c27c77;
+      --body-grad-1:rgba(122,162,208,.08);
+      --body-grad-2:#0f1621;
+      --body-grad-3:#111a27;
+      --pill-bg:#182332;
+      --input-bg:#16212f;
+      --toolbar-bg:#172231;
+      --header-bg:#192433;
+      --linkbtn-bg:#182332;
+    }
+    :root[data-theme="light"]{
+      --bg:#f4f0e8;
+      --panel:#fffdf8;
+      --panel-alt:#f5eee1;
+      --fg:#182231;
+      --muted:#68768a;
+      --line:#d7d2c8;
+      --line-strong:#c6baa7;
+      --chip:#f1ece1;
+      --accent:#355c7d;
+      --good:#3f6b57;
+      --warn:#9a7b3c;
+      --bad:#9b5a56;
+      --body-grad-1:rgba(53,92,125,.06);
+      --body-grad-2:#f7f3eb;
+      --body-grad-3:#f1ece3;
+      --pill-bg:#f6f1e8;
+      --input-bg:#fbf8f2;
+      --toolbar-bg:#faf6ef;
+      --header-bg:#f4eee4;
+      --linkbtn-bg:#f8f3ea;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, var(--body-grad-1), transparent 28%),
+        linear-gradient(180deg, var(--body-grad-2) 0%, var(--body-grad-3) 100%);
+      color:var(--fg);
+    }
+    a{color:inherit}
+    .wrap{max-width:1320px;margin:14px auto;padding:0 14px;}
+    header{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}
+    h1,h2,h3{
+      font-family:"Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    }
+    h1{margin:0;font-size:20px;letter-spacing:.2px}
+    .muted{color:var(--muted)}
+    .topline{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px}
+    .pill{
+      font-size:12px;color:var(--muted);
+      border:1px solid var(--line); background:var(--pill-bg);
+      padding:4px 10px;border-radius:999px;
+    }
+    .grid{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}
+    .explorerWorkspace{align-items:start;gap:12px}
+    .explorerSidebar{position:static}
+    .explorerSidebar,
+    .resultsCard{padding:14px;border-radius:18px}
+    .explorerSidebar{
+      position:relative;
+      overflow:hidden;
+      background:linear-gradient(180deg, var(--panel-alt) 0%, var(--panel) 100%);
+      border-width:2px;
+      border-style:solid;
+      border-color:var(--line-strong);
+      box-shadow:
+        0 18px 40px rgba(7,12,18,.2),
+        inset 0 1px 0 rgba(255,255,255,.04);
+    }
+    .explorerSidebar::before{
+      content:"";
+      position:absolute;
+      inset:0 0 auto 0;
+      height:4px;
+      background:linear-gradient(90deg, var(--accent), rgba(122,162,208,.18));
+      pointer-events:none;
+    }
+    .explorerSidebar::after{
+      content:"";
+      position:absolute;
+      inset:12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.04);
+      pointer-events:none;
+    }
+    .controlsGrid{
+      display:grid;
+      grid-template-columns:1.2fr .95fr .95fr;
+      gap:12px;
+      align-items:start;
+    }
+    .controlsGrid > div{
+      min-width:0;
+    }
+    .collapseCard{
+      border:1px solid rgba(118,103,83,.14);
+      border-radius:12px;
+      background:var(--toolbar-bg);
+      overflow:hidden;
+    }
+    .collapseBtn{
+      width:100%;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      padding:10px 12px;
+      border:0;
+      border-bottom:1px solid rgba(118,103,83,.12);
+      background:transparent;
+      color:var(--fg);
+      cursor:pointer;
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+    }
+    .collapseBtn span:last-child{
+      font-size:14px;
+      color:var(--muted);
+    }
+    .collapseBody{
+      padding:10px 12px 12px;
+    }
+    .collapseCard.is-collapsed .collapseBody{
+      display:none;
+    }
+    .collapseCard.is-collapsed .collapseBtn{
+      border-bottom:0;
+    }
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line); border-radius:14px; padding:10px;
+      box-shadow:0 8px 20px rgba(70,56,35,.06);
+    }
+    .card h2{margin:0 0 6px 0;font-size:13px;color:var(--muted);font-weight:600;letter-spacing:.25px}
+    .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    label{font-size:11px;color:var(--muted);display:block;margin-bottom:5px}
+    input, select{
+      width:100%;
+      border-radius:10px;
+      border:1px solid var(--line);
+      background:var(--input-bg);
+      color:var(--fg);
+      padding:8px 10px;
+      outline:none;
+      font-size:13px;
+    }
+    input::placeholder{color:rgba(104,118,138,.8)}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+    .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    button{
+      border-radius:10px;
+      border:1px solid var(--line);
+      background:var(--accent);
+      color:var(--panel);
+      padding:8px 11px;
+      cursor:pointer;
+      font-weight:600;
+      font-size:12px;
+    }
+    button.secondary{background:var(--pill-bg);color:var(--fg)}
+    button:disabled{opacity:.55;cursor:not-allowed}
+    .tableWrap{overflow:auto;border-radius:12px;border:1px solid var(--line)}
+    table{width:100%;border-collapse:collapse;min-width:1180px;background:var(--panel)}
+    th, td{padding:9px 10px;border-bottom:1px solid rgba(118,103,83,.22);vertical-align:top}
+    th{
+      position:sticky;top:0;
+      background:var(--header-bg);
+      color:var(--muted);
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.6px;
+      z-index:2;
+      cursor:pointer;
+      user-select:none;
+    }
+    td{font-size:12.5px}
+    .chips{display:flex;gap:6px;flex-wrap:wrap}
+    .chip{
+      font-size:12px;
+      padding:3px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:var(--chip);
+      color:var(--fg);
+      white-space:nowrap;
+    }
+    .chip.good{border-color:rgba(63,107,87,.28); background:rgba(63,107,87,.10)}
+    .chip.warn{border-color:rgba(154,123,60,.28); background:rgba(154,123,60,.10)}
+    .chip.bad{border-color:rgba(155,90,86,.28); background:rgba(155,90,86,.10)}
+    .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+    .small{font-size:11px}
+    .title{font-weight:750}
+    .sub{color:var(--muted);font-size:11px;margin-top:3px;line-height:1.25}
+    .pager{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .status{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .bar{height:8px;width:240px;border-radius:999px;background:rgba(53,92,125,.08);border:1px solid var(--line);overflow:hidden}
+    .bar > div{height:100%;background:rgba(53,92,125,.55);width:0%}
+    .err{color:var(--bad)}
+    .ok{color:var(--good)}
+    .footer{margin:12px 0 4px;color:var(--muted);font-size:11px}
+    .hint{color:var(--muted);font-size:11px;line-height:1.35}
+    .rightTop{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .linkbtn{
+      display:inline-flex;gap:8px;align-items:center;
+      padding:7px 9px;border-radius:10px;border:1px solid var(--line);
+      background:var(--linkbtn-bg);text-decoration:none;color:var(--fg);
+      font-size:11px;font-weight:600;
+    }
+    .modeToggle{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:var(--pill-bg);
+      color:var(--fg);
+      font-size:12px;
+      cursor:pointer;
+    }
+    .sectionBlock{
+      margin-top:12px;
+      padding-top:12px;
+      border-top:1px solid rgba(118,103,83,.14);
+    }
+    .sectionBlock:first-of-type{
+      margin-top:0;
+      padding-top:0;
+      border-top:0;
+    }
+    .sectionEyebrow{
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color:rgba(159,176,218,.8);
+      margin-bottom:6px;
+    }
+    .controlEyebrow{
+      display:inline-flex;
+      align-items:center;
+      padding:6px 12px;
+      border-radius:999px;
+      border:1.5px solid var(--line-strong);
+      background:linear-gradient(135deg, rgba(122,162,208,.18), rgba(90,124,168,.08));
+      color:var(--fg);
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:.1em;
+      margin-bottom:10px;
+      box-shadow:0 10px 24px rgba(7,12,18,.14);
+    }
+    .filtersIntro{
+      margin-top:8px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(122,162,208,.22);
+      background:linear-gradient(135deg, rgba(53,92,125,.14), rgba(154,123,60,.06));
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+    }
+    .filtersIntro h3{
+      margin:0 0 6px;
+      font-size:14px;
+    }
+    .filtersIntro p{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+    }
+    .resultsTop{
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      align-items:flex-start;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .resultsTop h2{
+      margin:0 0 6px;
+      font-size:20px;
+      color:var(--fg);
+    }
+    .resultsTop p{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      max-width:760px;
+    }
+    .resultsMetrics{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:10px;
+      margin:10px 0 12px;
+    }
+    .resultMetric{
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(118,103,83,.14);
+      background:var(--toolbar-bg);
+    }
+    .resultMetric .label{
+      display:block;
+      color:var(--muted);
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      margin-bottom:4px;
+    }
+    .resultMetric .value{
+      display:block;
+      font-size:20px;
+      font-weight:700;
+      letter-spacing:-.03em;
+    }
+    .resultMetric .note{
+      display:block;
+      margin-top:6px;
+      color:var(--muted);
+      font-size:12px;
+    }
+    .resultsToolbar{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      flex-wrap:wrap;
+      padding:10px 12px;
+      border:1px solid rgba(118,103,83,.14);
+      border-radius:14px;
+      background:var(--toolbar-bg);
+      margin-bottom:10px;
+    }
+    .resultsToolbar .hintText{
+      color:var(--muted);
+      font-size:12px;
+    }
+    .inlinePills{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    /* Expandable runs */
+    .expander{
+      display:none;
+      margin-top:8px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      overflow:hidden;
+      background:rgba(0,0,0,.10);
+    }
+    .expanderHead{
+      display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+      padding:8px 10px;
+      border-bottom:1px solid rgba(118,103,83,.18);
+      background:var(--header-bg);
+    }
+    .expanderBody{padding:0;background:var(--panel)}
+    .miniWrap{overflow:auto}
+    .miniTable{width:100%;border-collapse:collapse;min-width:1020px}
+    .miniTable th{
+      position:sticky;top:0;
+      background:var(--header-bg);
+      z-index:1;
+      font-size:11px;
+    }
+    .miniTable th, .miniTable td{padding:7px 9px;border-bottom:1px solid rgba(118,103,83,.18)}
+    .tagbtn{
+      border-radius:999px;border:1px solid var(--line);
+      background:var(--linkbtn-bg);
+      padding:5px 9px;
+      font-size:11px;font-weight:700;
+      color:var(--fg);
+    }
+
+    /* Checkbox */
+    .checkrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
+    .checkrow input[type="checkbox"]{width:auto;transform:scale(1);accent-color:var(--accent)}
+    .checkrow label{margin:0;display:flex;gap:8px;align-items:center;cursor:pointer}
+    @media(max-width:979px){
+      .resultsMetrics{grid-template-columns:1fr}
+      .controlsGrid{grid-template-columns:1fr}
+      .wrap{padding:0 10px}
+      .resultsTop{margin-bottom:10px}
+      table{min-width:980px}
+    }
+    
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="site-nav" style="margin-bottom:18px">
+      <a class="site-brand" href="./index.html">
+        <div class="site-brand-mark"><img src="./assets/urbanscope_logo.png" alt="UrbanScope logo" /></div>
+        <div class="site-brand-copy">
+          <strong>UrbanScope</strong>
+          <span>Urban environmental omics resource</span>
+        </div>
+      </a>
+      <div class="site-links">
+        <a href="./index.html">Home</a>
+        <a class="is-active" href="./explorer.html">Explorer</a>
+        <a href="./about.html">About</a>
+        <a href="./methodology.html">Methodology</a>
+        <a href="./data.html">Data Access</a>
+        <a href="./analytics.html">Analytics</a>
+        <a href="./explore.html">Interactive Charts</a>
+        <a href="./global-map.html">Global Map</a>
+        <button class="modeToggle" id="modeToggle" type="button" aria-label="Toggle light and dark mode">Dark Mode</button>
+      </div>
+    </nav>
+
+<header>
+  <div style="min-width:280px;flex:1">
+    <div class="topline" style="margin-top:10px">
+      <span class="pill" id="pGenerated">Loading…</span>
+      <span class="pill" id="pTotals">—</span>
+    </div>
+
+  </div>
+</header>
+
+
+    <div class="grid explorerWorkspace" id="database">
+      <div class="card explorerSidebar">
+        <div class="sectionEyebrow controlEyebrow">Control Panel</div>
+        <h2 style="color:var(--fg);font-size:18px;margin-bottom:4px">Find the right BioProjects faster</h2>
+        <div class="filtersIntro">
+          <h3>Search, refine, and export from one place</h3>
+          <p>Use natural-language search, geographic filters, and export actions without leaving the explorer. Everything here works against the current published release.</p>
+        </div>
+
+        <div class="controlsGrid sectionBlock">
+          <div>
+            <div class="sectionEyebrow">Search</div>
+            <div class="row">
+              <div style="flex:1;min-width:240px">
+                <label>Search (natural language or fielded query)</label>
+                <input id="q" placeholder='e.g., wastewater in tokyo after 2021 | country:japan assay:wgs year>=2020' />
+              </div>
+            </div>
+            <div class="hint" style="margin-top:8px">
+              Supports free text plus query operators such as <span class="mono">country:japan</span>, <span class="mono">city:"new york"</span>,
+              <span class="mono">assay:wgs</span>, <span class="mono">year&gt;=2020</span>, <span class="mono">center:tsinghua</span>,
+              <span class="mono">srr:SRR123</span>, <span class="mono">bioproject:PRJNA123</span>, or phrases like
+              <span class="mono">air microbiome in seoul before 2024</span>.
+            </div>
+          </div>
+          <div>
+            <div class="collapseCard" id="refineCard">
+              <button class="collapseBtn" id="refineToggle" type="button" aria-expanded="true" aria-controls="refineBody">
+                <span>Refine</span>
+                <span id="refineToggleIcon">−</span>
+              </button>
+              <div class="collapseBody" id="refineBody">
+                <div class="two">
+                  <div>
+                    <label>Country</label>
+                    <select id="country"><option value="">(any)</option></select>
+                  </div>
+                  <div>
+                    <label>City</label>
+                    <select id="city"><option value="">(any)</option></select>
+                  </div>
+                </div>
+
+                <div class="two" style="margin-top:10px">
+                  <div>
+                    <label>Assay class</label>
+                    <select id="assay"><option value="">(any)</option></select>
+                  </div>
+                  <div>
+                    <label>Center</label>
+                    <input id="center" placeholder='e.g., "Weill Cornell", "TSINGHUA"' />
+                  </div>
+                </div>
+
+                <div class="two" style="margin-top:10px">
+                  <div>
+                    <label>Min year</label>
+                    <input id="minYear" placeholder="e.g. 2024" inputmode="numeric" />
+                  </div>
+                  <div>
+                    <label>Max year</label>
+                    <input id="maxYear" placeholder="e.g. 2026" inputmode="numeric" />
+                  </div>
+                </div>
+
+                <div class="checkrow">
+                  <label for="requireGeo">
+                    <input type="checkbox" id="requireGeo" checked />
+                    <span class="small">Require Country <span class="muted">and</span> City</span>
+                  </label>
+                </div>
+
+                <div class="checkrow">
+                  <label for="excludeUnknown">
+                    <input type="checkbox" id="excludeUnknown" checked />
+                    <span class="small">Exclude <span class="mono">(unknown)</span> geo</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="collapseCard" id="actionsCard">
+              <button class="collapseBtn" id="actionsToggle" type="button" aria-expanded="false" aria-controls="actionsBody">
+                <span>Actions And Export</span>
+                <span id="actionsToggleIcon">+</span>
+              </button>
+              <div class="collapseBody" id="actionsBody">
+                <div class="two">
+                  <div>
+                    <label>Load mode</label>
+                    <select id="mode">
+                      <option value="stream">Stream parts</option>
+                      <option value="all">Load all parts</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label>Projects per page</label>
+                    <select id="perPage">
+                      <option>25</option>
+                      <option>50</option>
+                      <option selected>100</option>
+                      <option>200</option>
+                      <option>500</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="btns" style="margin-top:10px">
+                  <button id="btnApply">Apply Filters</button>
+                  <button class="secondary" id="btnReset">Reset</button>
+                  <button class="secondary" id="btnStop" disabled>Stop loading</button>
+                </div>
+                <div class="btns" style="margin-top:8px">
+                  <button class="secondary" id="btnExport">Export page JSON</button>
+                  <button class="secondary" id="btnBundle">Bundle runs JSON</button>
+                  <button class="secondary" id="btnFastqScript">FASTQ script</button>
+                  <button class="secondary" id="btnSrrList">SRR list</button>
+                </div>
+
+                <div style="margin-top:10px">
+                  <div class="status">
+                    <div class="bar"><div id="prog"></div></div>
+                    <div class="small muted" id="pLoad">—</div>
+                  </div>
+                  <div class="small muted" id="pMsg" style="margin-top:6px">—</div>
+                </div>
+                <div class="hint" style="margin-top:8px">
+                  Bundle actions use the <b>currently matched search results</b>. The FASTQ script exports SRA Toolkit commands
+                  that download raw reads from SRR accessions using <span class="mono">prefetch</span> and <span class="mono">fasterq-dump</span>.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card resultsCard">
+        <div class="resultsTop">
+          <div>
+            <div class="sectionEyebrow">Results Workspace</div>
+            <h2>BioProject Results</h2>
+            <p>Browse matched BioProjects, sort the current cohort, expand any row for SRR-level detail, and use the live geography summary to sanity-check the filtered subset.</p>
+          </div>
+          <div class="inlinePills">
+            <span class="pill" id="pMatched">Matched: —</span>
+            <span class="pill" id="pShown">Showing: —</span>
+            <span class="pill">Sort: <span class="mono" id="sortKey">samples</span> <span id="sortDir">▼</span></span>
+          </div>
+        </div>
+
+        <div class="resultsMetrics">
+          <div class="resultMetric">
+            <span class="label">Matched BioProjects</span>
+            <span class="value" id="matchedProjectsLarge">—</span>
+            <span class="note">Current project-level cohort after filters</span>
+          </div>
+          <div class="resultMetric">
+            <span class="label">Visible On This Page</span>
+            <span class="value" id="shownProjectsLarge">—</span>
+            <span class="note">Rows currently rendered in the table</span>
+          </div>
+          <div class="resultMetric">
+            <span class="label">Matched SRR Runs</span>
+            <span class="value" id="matchedRunsLarge">—</span>
+            <span class="note">Underlying run-level records across matched BioProjects</span>
+          </div>
+        </div>
+
+        <div class="resultsToolbar">
+          <div class="hintText">Click a column header to sort. Expand any row to inspect SRR, BioSample, platform, and organism-level details.</div>
+          <div class="small muted" id="pageInfo">—</div>
+        </div>
+
+        <div class="tableWrap">
+          <table id="tbl">
+            <thead>
+              <tr>
+                <th data-k="bioproject">BioProject</th>
+                <th data-k="bioproject_title">Title</th>
+                <th data-k="samples">Runs</th>
+                <th data-k="biosamples">BioSamples</th>
+                <th data-k="countries">Countries</th>
+                <th data-k="cities">Cities</th>
+                <th data-k="assays">Assays</th>
+                <th data-k="years">Years</th>
+                <th data-k="expand">Details</th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+              <tr><td colspan="9" class="muted">Loading manifest…</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pager">
+          <div class="row">
+            <button id="prev">Prev</button>
+            <button id="next">Next</button>
+          </div>
+          <div class="small muted">
+            Sorting is by BioProject-level aggregates (runs, unique BioSamples, etc.).
+          </div>
+        </div>
+
+        <div class="footer">
+          Files expected under <span class="mono">docs/db/</span>:
+          <span class="mono">srr_records_manifest.json</span>,
+          <span class="mono">srr_records_part000.json</span>, …
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+(() => {
+  // --------- Config ----------
+  const MANIFEST_URL = "./db/srr_records_manifest.json";
+  const PART_BASE = "./db/"; // we normalize manifest paths that include docs/db\...
+
+  // --------- State ----------
+  let manifest = null;
+  let allRuns = [];          // SRR-level records
+  let allProjects = [];      // BioProject-level aggregates
+  let matchedProjects = [];
+  let page = 1;
+  let perPage = 100;
+  let sortKey = "samples";
+  let sortAsc = false;
+  let aborter = null;
+  let biosampleCache = null;
+  let biosampleCachePromise = null;
+
+  // --------- Elements ----------
+  const el = (id) => document.getElementById(id);
+  const tbody = el("tbody");
+  const prog = el("prog");
+
+  const pGenerated = el("pGenerated");
+  const pTotals = el("pTotals");
+  const pLoad = el("pLoad");
+  const pMsg = el("pMsg");
+
+  const pShown = el("pShown");
+  const pMatched = el("pMatched");
+  const pageInfo = el("pageInfo");
+  const matchedProjectsLarge = el("matchedProjectsLarge");
+  const shownProjectsLarge = el("shownProjectsLarge");
+  const matchedRunsLarge = el("matchedRunsLarge");
+
+  const q = el("q");
+  const assay = el("assay");
+  const country = el("country");
+  const city = el("city");
+  const center = el("center");
+  const minYear = el("minYear");
+  const maxYear = el("maxYear");
+  const mode = el("mode");
+  const perPageSel = el("perPage");
+  const requireGeo = el("requireGeo");
+  const excludeUnknown = el("excludeUnknown");
+
+  const btnApply = el("btnApply");
+  const btnReset = el("btnReset");
+  const btnStop = el("btnStop");
+  const btnExport = el("btnExport");
+  const btnBundle = el("btnBundle");
+  const btnFastqScript = el("btnFastqScript");
+  const btnSrrList = el("btnSrrList");
+
+  const prev = el("prev");
+  const next = el("next");
+
+  const modeToggle = el("modeToggle");
+  const refineCard = el("refineCard");
+  const refineToggle = el("refineToggle");
+  const refineToggleIcon = el("refineToggleIcon");
+  const actionsCard = el("actionsCard");
+  const actionsToggle = el("actionsToggle");
+  const actionsToggleIcon = el("actionsToggleIcon");
+
+  // --------- Helpers ----------
+  const norm = (s) => (s ?? "").toString().trim();
+  const lower = (s) => norm(s).toLowerCase();
+  const uniq = (arr) => Array.from(new Set(arr.filter(Boolean)));
+
+  function isUnknownGeo(v) {
+    const s = norm(v);
+    return (!s) || (s.toLowerCase() === "(unknown)");
+  }
+
+  function escapeHtml(s) {
+    return (s ?? "").toString()
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function safeInt(x) {
+    const n = parseInt((x ?? "").toString(), 10);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  function safeYearFromRec(rec) {
+    // Prefer ReleaseDate -> year
+    const rd = rec?.runinfo_row?.ReleaseDate || rec?.runinfo_row?.LoadDate || "";
+    const m = rd.match(/^(\d{4})-/);
+    if (m) return safeInt(m[1]);
+    return null;
+  }
+
+  function formatTimestamp(value) {
+    if (!value) return "—";
+    const d = new Date(value);
+    if (Number.isNaN(d.getTime())) return value;
+    return d.toLocaleString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      timeZoneName: "short"
+    });
+  }
+
+  function applyTheme(theme) {
+    const root = document.documentElement;
+    root.setAttribute("data-theme", theme);
+    if (modeToggle) modeToggle.textContent = theme === "dark" ? "Light Mode" : "Dark Mode";
+  }
+
+  function setCollapsed(card, btn, icon, collapsed) {
+    if (!card || !btn || !icon) return;
+    card.classList.toggle("is-collapsed", collapsed);
+    btn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+    icon.textContent = collapsed ? "+" : "−";
+  }
+
+  function normalizePartPath(p) {
+    // Manifest can contain paths like "docs/db\\srr_records_part000.json"
+    let s = (p ?? "").toString().replaceAll("\\", "/");
+    // Strip leading docs/ if present
+    if (s.startsWith("docs/")) s = s.slice(5);
+    // If it's just a filename, prefix PART_BASE
+    if (!s.includes("/")) s = PART_BASE + s;
+    // Ensure it begins with ./db/ for GitHub Pages relative access
+    if (s.startsWith("db/")) s = "./" + s;
+    if (!s.startsWith("./")) s = "./" + s.replace(/^\/+/, "");
+    return s;
+  }
+
+  function setProgress(done, total) {
+    const pct = total ? Math.round((done / total) * 100) : 0;
+    prog.style.width = `${pct}%`;
+  }
+
+  function setMsg(html, cls="muted") {
+    pMsg.className = "small " + cls;
+    pMsg.innerHTML = html;
+  }
+
+  function getBPAcc(rec) {
+    return rec?.runinfo_row?.BioProject || rec?.bioproject?.accession || "";
+  }
+  function getBPTitle(rec) {
+    return rec?.bioproject?.title || rec?.bioproject?.bioproject_title || rec?.bioproject?.name || "";
+  }
+  function getAssayClass(rec) {
+    return rec?.assay?.assay_class || rec?.runinfo_row?.LibraryStrategy || "Unknown";
+  }
+  function getCountry(rec) {
+    return rec?.geo?.country || "";
+  }
+  function getCity(rec) {
+    return rec?.geo?.city || "";
+  }
+  function getCenter(rec) {
+    return rec?.runinfo_row?.CenterName || "";
+  }
+  function getSRR(rec) {
+    return rec?.srr || rec?.runinfo_row?.Run || "";
+  }
+  function getSRAStudy(rec) {
+    return rec?.runinfo_row?.SRAStudy || "";
+  }
+  function getBioSample(rec) {
+    return rec?.runinfo_row?.BioSample || rec?.geo?.biosample_accession || "";
+  }
+  function getBioSampleUrl(rec) {
+    const biosample = norm(getBioSample(rec));
+    return rec?.debug?.biosample_url || (biosample ? `https://www.ncbi.nlm.nih.gov/biosample/?term=${encodeURIComponent(biosample)}` : "");
+  }
+  function getLatitude(rec) {
+    return rec?.geo?.lat || "";
+  }
+  function getLongitude(rec) {
+    return rec?.geo?.lon || "";
+  }
+  function getSampleName(rec) {
+    return rec?.runinfo_row?.SampleName || "";
+  }
+  function getSciName(rec) {
+    return rec?.runinfo_row?.ScientificName || "";
+  }
+  function getDownloadPath(rec) {
+    return rec?.runinfo_row?.download_path || "";
+  }
+  function getPlatform(rec) {
+    const p = rec?.runinfo_row?.Platform || "";
+    const m = rec?.runinfo_row?.Model || "";
+    return (p && m) ? `${p} / ${m}` : (p || m);
+  }
+  function getLayout(rec) {
+    return rec?.runinfo_row?.LibraryLayout || "";
+  }
+  function getLibSource(rec) {
+    return rec?.runinfo_row?.LibrarySource || "";
+  }
+  function getLibraryStrategy(rec) {
+    return rec?.runinfo_row?.LibraryStrategy || "";
+  }
+  function parseLatLonText(raw) {
+    const s = norm(raw);
+    if (!s) return { lat: "", lon: "", label: "" };
+
+    const cardinal = s.match(/(-?\d+(?:\.\d+)?)\s*([NS])[\s,;]+(-?\d+(?:\.\d+)?)\s*([EW])/i);
+    if (cardinal) {
+      const latNum = parseFloat(cardinal[1]) * (/S/i.test(cardinal[2]) ? -1 : 1);
+      const lonNum = parseFloat(cardinal[3]) * (/W/i.test(cardinal[4]) ? -1 : 1);
+      return {
+        lat: String(latNum),
+        lon: String(lonNum),
+        label: `${latNum}, ${lonNum}`
+      };
+    }
+
+    const pair = s.match(/(-?\d+(?:\.\d+)?)\s*[, ]\s*(-?\d+(?:\.\d+)?)/);
+    if (pair) {
+      return {
+        lat: pair[1],
+        lon: pair[2],
+        label: `${pair[1]}, ${pair[2]}`
+      };
+    }
+
+    return { lat: "", lon: "", label: s };
+  }
+  async function ensureBioSampleCache() {
+    if (biosampleCache) return biosampleCache;
+    if (!biosampleCachePromise) {
+      biosampleCachePromise = fetch("./db/biosamples.json")
+        .then((res) => {
+          if (!res.ok) throw new Error(`Failed to load BioSample cache (${res.status})`);
+          return res.json();
+        })
+        .then((json) => {
+          biosampleCache = json || {};
+          return biosampleCache;
+        })
+        .catch((err) => {
+          biosampleCachePromise = null;
+          throw err;
+        });
+    }
+    return biosampleCachePromise;
+  }
+  function getBioSampleFallbackDetails(rec, lookup) {
+    const biosample = norm(getBioSample(rec));
+    if (!biosample || !lookup || !lookup[biosample]) return null;
+    const entry = lookup[biosample];
+    const attrs = entry?.attributes || {};
+    const rawLatLon = attrs.lat_lon || attrs["latitude and longitude"] || attrs.latitude_longitude || "";
+    const parsed = parseLatLonText(rawLatLon);
+    return {
+      url: entry?.efetch_url || "",
+      lat: parsed.lat,
+      lon: parsed.lon,
+      label: parsed.label
+    };
+  }
+
+  function tokenizeQuery(input) {
+    const rx = /"([^"]+)"|'([^']+)'|(\S+)/g;
+    const tokens = [];
+    let m;
+    while ((m = rx.exec(input || "")) !== null) {
+      tokens.push(m[1] || m[2] || m[3] || "");
+    }
+    return tokens.filter(Boolean);
+  }
+
+  function normalizeSearchValue(value) {
+    return lower(value).replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim();
+  }
+
+  function canonicalFieldName(key) {
+    const k = lower(key);
+    if (["country", "nation"].includes(k)) return "country";
+    if (["city", "town"].includes(k)) return "city";
+    if (["assay", "strategy", "librarystrategy"].includes(k)) return "assay";
+    if (["center", "centre", "lab", "institution"].includes(k)) return "center";
+    if (["year", "date"].includes(k)) return "year";
+    if (["minyear", "yearmin", "fromyear"].includes(k)) return "min_year";
+    if (["maxyear", "yearmax", "toyear"].includes(k)) return "max_year";
+    if (["bioproject", "bp", "project"].includes(k)) return "bioproject";
+    if (["srr", "run"].includes(k)) return "srr";
+    if (["biosample", "sample"].includes(k)) return "biosample";
+    if (["organism", "taxon", "scientificname"].includes(k)) return "organism";
+    if (["platform", "model"].includes(k)) return "platform";
+    if (["layout"].includes(k)) return "layout";
+    if (["source", "librarysource"].includes(k)) return "source";
+    return "";
+  }
+
+  function parseNaturalLanguageQuery(raw) {
+    const parsed = {
+      terms: [],
+      fields: [],
+      minYear: null,
+      maxYear: null
+    };
+    if (!norm(raw)) return parsed;
+
+    const tokens = tokenizeQuery(raw);
+    const pushField = (field, value, op="contains") => {
+      if (!field || !norm(value)) return;
+      parsed.fields.push({ field, value: norm(value), op });
+    };
+
+    for (let i = 0; i < tokens.length; i += 1) {
+      const token = tokens[i];
+      const exact = token.match(/^([a-zA-Z_]+):(.*)$/);
+      const compare = token.match(/^([a-zA-Z_]+)(<=|>=|=|<|>)(.+)$/);
+
+      if (exact) {
+        const field = canonicalFieldName(exact[1]);
+        const value = exact[2];
+        if (field === "year" || field === "min_year" || field === "max_year") {
+          const year = safeInt(value);
+          if (year != null) {
+            if (field === "max_year") parsed.maxYear = parsed.maxYear == null ? year : Math.min(parsed.maxYear, year);
+            else parsed.minYear = parsed.minYear == null ? year : Math.max(parsed.minYear, year);
+            if (field === "year") parsed.maxYear = parsed.maxYear == null ? year : Math.min(parsed.maxYear, year);
+          }
+        } else {
+          pushField(field, value);
+        }
+        continue;
+      }
+
+      if (compare) {
+        const field = canonicalFieldName(compare[1]);
+        const op = compare[2];
+        const value = compare[3];
+        if (field === "year") {
+          const year = safeInt(value);
+          if (year != null) {
+            if (op === ">" || op === ">=") parsed.minYear = parsed.minYear == null ? year : Math.max(parsed.minYear, year);
+            if (op === "<" || op === "<=") parsed.maxYear = parsed.maxYear == null ? year : Math.min(parsed.maxYear, year);
+            if (op === "=") {
+              parsed.minYear = year;
+              parsed.maxYear = year;
+            }
+          }
+        } else if (field === "min_year" || field === "max_year") {
+          const year = safeInt(value);
+          if (year != null) {
+            if (field === "min_year") parsed.minYear = parsed.minYear == null ? year : Math.max(parsed.minYear, year);
+            if (field === "max_year") parsed.maxYear = parsed.maxYear == null ? year : Math.min(parsed.maxYear, year);
+          }
+        } else {
+          pushField(field, value, op === "=" ? "equals" : "contains");
+        }
+        continue;
+      }
+
+      const low = lower(token);
+      const next = tokens[i + 1] ? norm(tokens[i + 1]) : "";
+      const nextYear = safeInt(next);
+
+      if ((low === "after" || low === "since") && nextYear != null) {
+        parsed.minYear = parsed.minYear == null ? nextYear : Math.max(parsed.minYear, nextYear);
+        i += 1;
+        continue;
+      }
+      if ((low === "before" || low === "until") && nextYear != null) {
+        parsed.maxYear = parsed.maxYear == null ? nextYear : Math.min(parsed.maxYear, nextYear);
+        i += 1;
+        continue;
+      }
+      if (low === "between" && safeInt(tokens[i + 1]) != null && lower(tokens[i + 2] || "") === "and" && safeInt(tokens[i + 3]) != null) {
+        parsed.minYear = safeInt(tokens[i + 1]);
+        parsed.maxYear = safeInt(tokens[i + 3]);
+        i += 3;
+        continue;
+      }
+      if (["country", "city", "assay", "center", "bioproject", "srr", "biosample", "organism", "platform", "layout", "source"].includes(low) && next) {
+        pushField(canonicalFieldName(low), next);
+        i += 1;
+        continue;
+      }
+      if ((low === "in" || low === "from") && next) {
+        pushField("place", next);
+        i += 1;
+        continue;
+      }
+      if (low === "paired" || low === "single") {
+        pushField("layout", low);
+        continue;
+      }
+      if (/^\d{4}$/.test(low)) {
+        const year = safeInt(low);
+        if (year != null) {
+          parsed.minYear = parsed.minYear == null ? year : parsed.minYear;
+          parsed.maxYear = parsed.maxYear == null ? year : parsed.maxYear;
+          continue;
+        }
+      }
+
+      parsed.terms.push(token);
+    }
+
+    return parsed;
+  }
+
+  function projectSearchBlob(p) {
+    const runStrings = p.runs.slice(0, 400).map(r => [
+      getSRR(r),
+      getBioSample(r),
+      getCountry(r),
+      getCity(r),
+      getCenter(r),
+      getSciName(r),
+      getPlatform(r),
+      getLayout(r),
+      getLibSource(r),
+      getLibraryStrategy(r),
+      getSampleName(r),
+      getSRAStudy(r)
+    ].join(" ")).join(" ");
+    return normalizeSearchValue([
+      p.bioproject,
+      p.title,
+      p.assays.join(" "),
+      p.countries_top.map(x => x[0]).join(" "),
+      p.cities_top.map(x => x[0]).join(" "),
+      p.centers_top.map(x => x[0]).join(" "),
+      runStrings
+    ].join(" "));
+  }
+
+  function projectFieldMatches(p, clause) {
+    const value = normalizeSearchValue(clause.value);
+    if (!value) return true;
+
+    const includesAny = (items) => items.some(item => normalizeSearchValue(item).includes(value));
+    const equalsAny = (items) => items.some(item => normalizeSearchValue(item) === value);
+    const test = clause.op === "equals" ? equalsAny : includesAny;
+
+    switch (clause.field) {
+      case "country": return test(p.runs.map(getCountry));
+      case "city": return test(p.runs.map(getCity));
+      case "place": return test([...p.runs.map(getCountry), ...p.runs.map(getCity)]);
+      case "assay": return test(p.runs.map(getAssayClass));
+      case "center": return test(p.runs.map(getCenter));
+      case "bioproject": return test([p.bioproject, p.title]);
+      case "srr": return test(p.runs.map(getSRR));
+      case "biosample": return test(p.runs.map(getBioSample));
+      case "organism": return test(p.runs.map(getSciName));
+      case "platform": return test(p.runs.map(getPlatform));
+      case "layout": return test(p.runs.map(getLayout));
+      case "source": return test(p.runs.map(getLibSource));
+      default: return test([projectSearchBlob(p)]);
+    }
+  }
+
+  // --------- Aggregation ----------
+  function buildProjectsFromRuns(runs) {
+    const map = new Map();
+    for (const rec of runs) {
+      const bp = norm(getBPAcc(rec)) || "(no_bioproject)";
+      if (!map.has(bp)) {
+        map.set(bp, {
+          bioproject: bp,
+          title: norm(getBPTitle(rec)),
+          bioproject_url: rec?.ncbi?.bioproject_url || (bp && bp !== "(no_bioproject)"
+            ? `https://www.ncbi.nlm.nih.gov/bioproject/?term=${encodeURIComponent(bp)}`
+            : ""),
+          runs: [],
+        });
+      }
+      const obj = map.get(bp);
+      if (!obj.title) obj.title = norm(getBPTitle(rec));
+      obj.runs.push(rec);
+    }
+
+    // Derive aggregates
+    const projects = [];
+    for (const [bp, obj] of map.entries()) {
+      const yrs = obj.runs.map(safeYearFromRec).filter(y => y != null);
+      const assays = uniq(obj.runs.map(getAssayClass));
+      const countries = obj.runs.map(getCountry).map(norm).filter(Boolean);
+      const cities = obj.runs.map(getCity).map(norm).filter(Boolean);
+      const centers = obj.runs.map(getCenter).map(norm).filter(Boolean);
+
+      const biosamples = uniq(obj.runs.map(getBioSample).map(norm).filter(Boolean));
+      const minY = yrs.length ? Math.min(...yrs) : null;
+      const maxY = yrs.length ? Math.max(...yrs) : null;
+
+      projects.push({
+        bioproject: bp,
+        title: obj.title,
+        bioproject_url: obj.bioproject_url,
+        samples: obj.runs.length,
+        biosamples: biosamples.length,
+        assays,
+        min_year: minY,
+        max_year: maxY,
+        countries_top: topCounts(countries, 3),
+        cities_top: topCounts(cities, 3),
+        centers_top: topCounts(centers, 2),
+        runs: obj.runs,
+      });
+    }
+    return projects;
+  }
+
+  function topCounts(values, k=3) {
+    const counts = {};
+    for (const v of values) {
+      const key = v || "(unknown)";
+      counts[key] = (counts[key] || 0) + 1;
+    }
+    const arr = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0,k);
+    return arr; // [ [name, count], ... ]
+  }
+
+  function countMap(values, unknownLabel="(unknown)") {
+    const m = new Map();
+    for (const v of values) {
+      const key = norm(v) || unknownLabel;
+      m.set(key, (m.get(key) || 0) + 1);
+    }
+    return Array.from(m.entries()).sort((a,b) => b[1]-a[1]);
+  }
+
+  // --------- Filtering ----------
+  function projectMatches(p) {
+    const parsedQ = parseNaturalLanguageQuery(q.value);
+    const wantAssay = norm(assay.value);
+    const wantCountry = norm(country.value);
+    const wantCity = norm(city.value);
+    const wantCenter = lower(center.value);
+    const minY = parsedQ.minYear != null ? parsedQ.minYear : safeInt(minYear.value);
+    const maxY = parsedQ.maxYear != null ? parsedQ.maxYear : safeInt(maxYear.value);
+
+    // Geo completeness filter (enabled by default)
+    // - requireGeo: require at least one run with BOTH country and city
+    // - excludeUnknown: treat "(unknown)" as missing and hide projects with unknown geo
+    const wantRequireGeo = (requireGeo && requireGeo.checked) ? true : false;
+    const wantExcludeUnknown = (excludeUnknown && excludeUnknown.checked) ? true : false;
+
+    if (wantRequireGeo || wantExcludeUnknown) {
+      const hasCountry = p.runs.some(r => !isUnknownGeo(getCountry(r)));
+      const hasCity = p.runs.some(r => !isUnknownGeo(getCity(r)));
+      if (!(hasCountry && hasCity)) return false;
+    }
+
+    if (wantExcludeUnknown) {
+      // If ANY run has unknown country OR unknown city, exclude the BioProject
+      const anyUnknown = p.runs.some(r => isUnknownGeo(getCountry(r)) || isUnknownGeo(getCity(r)));
+      if (anyUnknown) return false;
+    }
+
+    // Year filter uses project min/max (if missing, it passes unless min/max explicitly require overlap)
+    if (minY != null) {
+      if (p.max_year == null) return false;
+      if (p.max_year < minY) return false;
+    }
+    if (maxY != null) {
+      if (p.min_year == null) return false;
+      if (p.min_year > maxY) return false;
+    }
+
+    if (wantAssay) {
+      if (!p.assays.includes(wantAssay)) return false;
+    }
+
+    if (wantCountry) {
+      const countries = p.runs.map(r => norm(getCountry(r)) || "(unknown)");
+      if (!countries.includes(wantCountry)) return false;
+    }
+    if (wantCity) {
+      const cities = p.runs.map(r => norm(getCity(r)) || "(unknown)");
+      if (!cities.includes(wantCity)) return false;
+    }
+
+    if (wantCenter) {
+      const centers = p.runs.map(r => lower(getCenter(r)));
+      if (!centers.some(c => c.includes(wantCenter))) return false;
+    }
+
+    if (parsedQ.fields.length || parsedQ.terms.length) {
+      const blob = projectSearchBlob(p);
+      for (const clause of parsedQ.fields) {
+        if (!projectFieldMatches(p, clause)) return false;
+      }
+      for (const term of parsedQ.terms) {
+        if (!blob.includes(normalizeSearchValue(term))) return false;
+      }
+    }
+
+    return true;
+  }
+
+  function applyFilters() {
+    // Rebuild projects from runs (stream mode grows over time)
+    allProjects = buildProjectsFromRuns(allRuns);
+
+    // Refresh filter dropdowns (based on runs, not projects)
+    populateFacets();
+
+    matchedProjects = allProjects.filter(projectMatches);
+    matchedProjects.sort(sortFn);
+
+    page = 1;
+    render();
+  }
+
+  // --------- Sorting ----------
+  function sortVal(p, k) {
+    switch (k) {
+      case "bioproject": return p.bioproject;
+      case "bioproject_title": return p.title || "";
+      case "samples": return p.samples;
+      case "biosamples": return p.biosamples;
+      case "countries": return (p.countries_top?.[0]?.[0] || "");
+      case "cities": return (p.cities_top?.[0]?.[0] || "");
+      case "assays": return p.assays.join(", ");
+      case "years": return (p.min_year ?? -1);
+      default: return p.samples;
+    }
+  }
+
+  function sortFn(a,b) {
+    const ak = sortVal(a, sortKey);
+    const bk = sortVal(b, sortKey);
+    if (ak === bk) return 0;
+    if (ak == null) return sortAsc ? 1 : -1;
+    if (bk == null) return sortAsc ? -1 : 1;
+    return sortAsc ? (ak > bk ? 1 : -1) : (ak < bk ? 1 : -1);
+  }
+
+  function setSort(k) {
+    if (k === "expand") return;
+    if (sortKey === k) sortAsc = !sortAsc;
+    else { sortKey = k; sortAsc = (k === "bioproject" || k === "bioproject_title" || k === "countries" || k === "cities" || k === "assays" || k === "years") ? true : false; }
+    el("sortKey").textContent = k;
+    el("sortDir").textContent = sortAsc ? "▲" : "▼";
+    matchedProjects.sort(sortFn);
+    render();
+  }
+
+  // --------- Rendering ----------
+  function render() {
+    perPage = parseInt(perPageSel.value, 10) || 100;
+    const total = matchedProjects.length;
+    const pages = Math.max(1, Math.ceil(total / perPage));
+    page = Math.min(page, pages);
+
+    const start = (page - 1) * perPage;
+    const end = Math.min(total, start + perPage);
+    const slice = matchedProjects.slice(start, end);
+
+    pMatched.textContent = `Matched: ${total.toLocaleString()} BioProjects`;
+    pShown.textContent = `Showing: ${slice.length.toLocaleString()}`;
+    pageInfo.textContent = `Page ${page} / ${pages}`;
+    if (matchedProjectsLarge) matchedProjectsLarge.textContent = total.toLocaleString();
+    if (shownProjectsLarge) shownProjectsLarge.textContent = slice.length.toLocaleString();
+    if (matchedRunsLarge) matchedRunsLarge.textContent = matchedProjects.flatMap(p => p.runs).length.toLocaleString();
+
+    prev.disabled = page <= 1;
+    next.disabled = page >= pages;
+
+    if (!slice.length) {
+      tbody.innerHTML = `<tr><td colspan="9" class="muted">No results (try loosening filters).</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = slice.map(projectToRow).join("");
+
+    // Wire expanders
+    for (const tr of tbody.querySelectorAll("tr[data-bp]")) {
+      const bp = tr.getAttribute("data-bp");
+      const btn = tr.querySelector("button[data-expand]");
+      const childRow = tbody.querySelector(`tr[data-child-for="${bp}"]`);
+      const box = childRow ? childRow.querySelector(".expander") : null;
+      if (btn && childRow && box) {
+        btn.addEventListener("click", () => {
+          const isOpen = childRow.style.display !== "none";
+          childRow.style.display = isOpen ? "none" : "table-row";
+          box.style.display = isOpen ? "none" : "block";
+          btn.textContent = isOpen ? "Expand" : "Collapse";
+          btn.classList.toggle("secondary", isOpen);
+          if (!isOpen) renderRunsInto(box, bp);
+        });
+      }
+    }
+  }
+
+  function projectToRow(p) {
+    const bp = escapeHtml(p.bioproject);
+    const bpUrl = p.bioproject_url || (p.bioproject && p.bioproject !== "(no_bioproject)"
+      ? `https://www.ncbi.nlm.nih.gov/bioproject/?term=${encodeURIComponent(p.bioproject)}`
+      : "#");
+
+    const countries = p.countries_top.length
+      ? p.countries_top.map(([k,v]) => `<span class="chip">${escapeHtml(k)} <span class="muted">(${v})</span></span>`).join("")
+      : `<span class="muted">—</span>`;
+
+    const cities = p.cities_top.length
+      ? p.cities_top.map(([k,v]) => `<span class="chip">${escapeHtml(k)} <span class="muted">(${v})</span></span>`).join("")
+      : `<span class="muted">—</span>`;
+
+    const assays = (p.assays?.length)
+      ? p.assays.slice(0,4).map(a => `<span class="chip ${a === "Unknown" ? "warn" : "good"}">${escapeHtml(a)}</span>`).join("")
+      : `<span class="muted">—</span>`;
+
+    const years = (p.min_year != null || p.max_year != null)
+      ? `<span class="mono">${p.min_year ?? "—"}–${p.max_year ?? "—"}</span>`
+      : `<span class="muted">—</span>`;
+
+    const centers = p.centers_top?.length
+      ? `<div class="sub">Centers: ${p.centers_top.map(([k,v]) => `${escapeHtml(k)} (${v})`).join(", ")}</div>`
+      : ``;
+
+    return `
+      <tr data-bp="${escapeHtml(p.bioproject)}">
+        <td class="mono">
+          ${p.bioproject && p.bioproject !== "(no_bioproject)"
+            ? `<a href="${bpUrl}" target="_blank" rel="noopener">${bp}</a>`
+            : `<span class="muted">${bp}</span>`
+          }
+        </td>
+        <td>
+          <div class="title">${p.title ? escapeHtml(p.title) : `<span class="muted">—</span>`}</div>
+          ${centers}
+        </td>
+        <td class="mono">${p.samples.toLocaleString()}</td>
+        <td class="mono">${p.biosamples.toLocaleString()}</td>
+        <td><div class="chips">${countries}</div></td>
+        <td><div class="chips">${cities}</div></td>
+        <td><div class="chips">${assays}</div></td>
+        <td>${years}</td>
+        <td>
+          <button class="tagbtn" data-expand="1">Expand</button>
+        </td>
+      </tr>
+      <tr class="childRow" data-child-for="${escapeHtml(p.bioproject)}" style="display:none">
+        <td colspan="9" style="padding:0 0 12px 0;border:0">
+          <div class="expander" style="display:none">
+            <div class="expanderHead">
+              <div class="small muted">
+                <span class="mono">${bp}</span> · ${p.samples.toLocaleString()} runs · ${p.biosamples.toLocaleString()} biosamples
+              </div>
+              <div class="row">
+                <a class="linkbtn" href="${bpUrl}" target="_blank" rel="noopener">Open BioProject</a>
+              </div>
+            </div>
+            <div class="expanderBody">
+              <div class="miniWrap">
+                <table class="miniTable">
+                  <thead>
+                    <tr>
+                      <th>SRR</th>
+                      <th>SRA UID</th>
+                      <th>BioSample</th>
+                      <th>Assay</th>
+                      <th>Country</th>
+                      <th>City</th>
+                      <th>Year</th>
+                      <th>Center</th>
+                      <th>Platform</th>
+                      <th>Layout</th>
+                      <th>Organism</th>
+                    </tr>
+                  </thead>
+                  <tbody class="miniBody">
+                    <tr><td colspan="11" class="muted">Loading runs…</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+    `;
+  }
+
+  async function renderRunsInto(expanderEl, bioprojectAcc) {
+    // Find the project in current matched list (or allProjects)
+    const p = allProjects.find(x => x.bioproject === bioprojectAcc) || matchedProjects.find(x => x.bioproject === bioprojectAcc);
+    const body = expanderEl.querySelector(".miniBody");
+    if (!p || !body) return;
+
+    // Sort runs by ReleaseDate desc (approx: year desc then SRR)
+    const runs = p.runs.slice().sort((a,b) => {
+      const ay = safeYearFromRec(a) ?? -1;
+      const by = safeYearFromRec(b) ?? -1;
+      if (ay !== by) return by - ay;
+      return (norm(getSRR(a)) < norm(getSRR(b))) ? -1 : 1;
+    });
+
+    let bioLookup = null;
+    const needsBioSampleFallback = runs.some((rec) => {
+      const biosample = norm(getBioSample(rec));
+      return biosample && (!norm(getLatitude(rec)) || !norm(getLongitude(rec)) || !getBioSampleUrl(rec));
+    });
+    if (needsBioSampleFallback) {
+      try {
+        bioLookup = await ensureBioSampleCache();
+      } catch (err) {
+        console.warn("Unable to load BioSample cache for explorer fallback", err);
+      }
+    }
+
+    body.innerHTML = runs.map(rec => {
+      const srr = norm(getSRR(rec));
+      const srrUrl = rec?.ncbi?.srr_url || (srr ? `https://www.ncbi.nlm.nih.gov/sra/?term=${encodeURIComponent(srr)}` : "#");
+      const sraUid = norm(rec?.sra_uid);
+      const sraUrl = rec?.ncbi?.sra_uid_url || (sraUid ? `https://www.ncbi.nlm.nih.gov/sra/?term=${encodeURIComponent(sraUid)}` : "#");
+
+      const assay = norm(getAssayClass(rec)) || "Unknown";
+      const ctry = norm(getCountry(rec)) || "(unknown)";
+      const cty = norm(getCity(rec)) || "(unknown)";
+      const yr = safeYearFromRec(rec);
+      const cn = norm(getCenter(rec)) || "(unknown)";
+      const bs = norm(getBioSample(rec)) || "(unknown)";
+      const fallback = getBioSampleFallbackDetails(rec, bioLookup);
+      const bsUrl = getBioSampleUrl(rec) || fallback?.url || "";
+      const platform = norm(getPlatform(rec)) || "(unknown)";
+      const layout = norm(getLayout(rec)) || "";
+      const org = norm(getSciName(rec)) || "";
+      const lat = norm(getLatitude(rec)) || norm(fallback?.lat);
+      const lon = norm(getLongitude(rec)) || norm(fallback?.lon);
+      const coordLabel = lat && lon ? `${lat}, ${lon}` : (norm(fallback?.label) || lat || lon);
+
+      return `
+        <tr>
+          <td class="mono"><a href="${srrUrl}" target="_blank" rel="noopener">${escapeHtml(srr)}</a></td>
+          <td class="mono">${sraUid ? `<a href="${sraUrl}" target="_blank" rel="noopener">${escapeHtml(sraUid)}</a>` : `<span class="muted">—</span>`}</td>
+          <td>
+            ${bs !== "(unknown)" && bsUrl
+              ? `<a class="mono" href="${bsUrl}" target="_blank" rel="noopener">${escapeHtml(bs)}</a>`
+              : `<span class="mono">${escapeHtml(bs)}</span>`
+            }
+            ${coordLabel ? `<div class="sub">Lat/Lon: <span class="mono">${escapeHtml(coordLabel)}</span></div>` : ``}
+          </td>
+          <td><span class="chip ${assay === "Unknown" ? "warn" : "good"}">${escapeHtml(assay)}</span></td>
+          <td>${escapeHtml(ctry)}</td>
+          <td>${escapeHtml(cty)}</td>
+          <td class="mono">${yr ?? "—"}</td>
+          <td>${escapeHtml(cn)}</td>
+          <td>${escapeHtml(platform)}</td>
+          <td class="mono">${escapeHtml(layout)}</td>
+          <td>${escapeHtml(org)}</td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  // --------- Facets (dropdown options) ----------
+  function populateFacets() {
+    // Build from runs so stream mode stays accurate
+    const assays = uniq(allRuns.map(getAssayClass).map(norm).filter(Boolean)).sort((a,b)=>a.localeCompare(b));
+    const countries = uniq(allRuns.map(getCountry).map(x => norm(x) || "(unknown)")).sort((a,b)=>a.localeCompare(b));
+    const cities = uniq(allRuns.map(getCity).map(x => norm(x) || "(unknown)")).sort((a,b)=>a.localeCompare(b));
+
+    fillSelect(assay, assays, "(any)");
+    fillSelect(country, countries, "(any)");
+    fillSelect(city, cities, "(any)");
+  }
+
+  function fillSelect(sel, values, anyLabel="(any)") {
+    const cur = sel.value;
+    const opts = [`<option value="">${anyLabel}</option>`]
+      .concat(values.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`));
+    sel.innerHTML = opts.join("");
+    if (values.includes(cur)) sel.value = cur;
+    else sel.value = "";
+  }
+
+  // --------- Loading ----------
+  async function loadManifest() {
+    const r = await fetch(MANIFEST_URL, {cache:"no-store"});
+    if (!r.ok) throw new Error(`Failed to fetch manifest: ${r.status} ${r.statusText}`);
+    manifest = await r.json();
+    return manifest;
+  }
+
+  async function loadParts({loadAll}) {
+    if (!manifest?.parts?.length) return;
+
+    // Cancel any previous loading
+    if (aborter) aborter.abort();
+    aborter = new AbortController();
+
+    btnStop.disabled = false;
+    setMsg(loadAll ? "Loading all part files…" : "Streaming part files (you can stop anytime)…", "muted");
+
+    const totalParts = manifest.parts.length;
+    let loadedParts = 0;
+    let loadedRecords = 0;
+
+    for (const part of manifest.parts) {
+      if (aborter.signal.aborted) break;
+
+      const url = normalizePartPath(part.path);
+      pLoad.textContent = `Loaded ${loadedParts}/${totalParts} parts · ${loadedRecords.toLocaleString()} records`;
+      setProgress(loadedParts, totalParts);
+
+      let data = null;
+      try {
+        const r = await fetch(url, {signal: aborter.signal, cache:"no-store"});
+        if (!r.ok) throw new Error(`Fetch failed: ${r.status} ${r.statusText}`);
+        data = await r.json();
+      } catch (e) {
+        setMsg(`Error loading <span class="mono">${escapeHtml(url)}</span>: <span class="err">${escapeHtml(e.message)}</span>`, "err");
+        break;
+      }
+
+      if (Array.isArray(data)) {
+        allRuns.push(...data);
+        loadedRecords += data.length;
+        loadedParts += 1;
+      } else {
+        loadedParts += 1;
+      }
+
+      // Update live in stream mode
+      if (!loadAll) {
+        applyFilters();
+      }
+    }
+
+    setProgress(totalParts, totalParts);
+    pLoad.textContent = `Loaded ${loadedParts}/${totalParts} parts · ${loadedRecords.toLocaleString()} records`;
+    btnStop.disabled = true;
+
+    if (!aborter.signal.aborted) {
+      setMsg(`<span class="ok">Ready.</span> Loaded ${loadedRecords.toLocaleString()} SRR records.`, "ok");
+    } else {
+      setMsg(`<span class="warn">Stopped.</span> Loaded ${loadedRecords.toLocaleString()} SRR records so far.`, "muted");
+    }
+
+    applyFilters();
+  }
+
+  function resetUI() {
+    q.value = "";
+    assay.value = "";
+    country.value = "";
+    city.value = "";
+    center.value = "";
+    minYear.value = "";
+    maxYear.value = "";
+    if (requireGeo) requireGeo.checked = true;
+    if (excludeUnknown) excludeUnknown.checked = true;
+    perPageSel.value = "100";
+    mode.value = "stream";
+    sortKey = "samples";
+    sortAsc = false;
+    el("sortKey").textContent = sortKey;
+    el("sortDir").textContent = "▼";
+    page = 1;
+    applyFilters();
+  }
+
+  function slugify(value) {
+    return (value || "search")
+      .toString()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "_")
+      .replace(/^_+|_+$/g, "")
+      .slice(0, 48) || "search";
+  }
+
+  function matchedRuns() {
+    return matchedProjects.flatMap(p => p.runs);
+  }
+
+  function buildBundlePayload() {
+    const runs = matchedRuns();
+    const accessions = uniq(runs.map(getSRR).map(norm).filter(Boolean)).sort((a,b) => a.localeCompare(b));
+    const projects = matchedProjects.map(p => ({
+      bioproject: p.bioproject,
+      title: p.title,
+      run_count: p.samples,
+      biosample_count: p.biosamples,
+      assays: p.assays,
+      years: { min: p.min_year, max: p.max_year },
+      countries_top: p.countries_top,
+      cities_top: p.cities_top,
+      centers_top: p.centers_top
+    }));
+
+    return {
+      exported_utc: new Date().toISOString(),
+      source: "UrbanScope search bundle",
+      filters: {
+        q: q.value,
+        assay: assay.value,
+        country: country.value,
+        city: city.value,
+        center: center.value,
+        min_year: minYear.value,
+        max_year: maxYear.value,
+        require_geo: !!(requireGeo && requireGeo.checked),
+        exclude_unknown: !!(excludeUnknown && excludeUnknown.checked)
+      },
+      counts: {
+        matched_projects: matchedProjects.length,
+        matched_runs: runs.length,
+        unique_srr_accessions: accessions.length
+      },
+      srr_accessions: accessions,
+      projects,
+      runs: runs.map(rec => ({
+        srr: norm(getSRR(rec)),
+        bioproject: norm(getBPAcc(rec)),
+        biosample: norm(getBioSample(rec)),
+        assay_class: norm(getAssayClass(rec)),
+        country: norm(getCountry(rec)),
+        city: norm(getCity(rec)),
+        center: norm(getCenter(rec)),
+        year: safeYearFromRec(rec),
+        scientific_name: norm(getSciName(rec)),
+        platform: norm(getPlatform(rec)),
+        layout: norm(getLayout(rec)),
+        library_source: norm(getLibSource(rec)),
+        sra_download_path: norm(getDownloadPath(rec)),
+        ncbi_srr_url: rec?.ncbi?.srr_url || ""
+      }))
+    };
+  }
+
+  function downloadTextFile(filename, content, type="text/plain") {
+    const blob = new Blob([content], { type });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  }
+
+  function exportMatchedBundle() {
+    const payload = buildBundlePayload();
+    const label = slugify(q.value || country.value || city.value || assay.value || "matched_runs");
+    downloadTextFile(`urbanscope_bundle_${label}.json`, JSON.stringify(payload, null, 2), "application/json");
+    setMsg(`<span class="ok">Bundle exported.</span> Saved ${payload.counts.unique_srr_accessions.toLocaleString()} SRR accessions from the current search.`, "ok");
+  }
+
+  function exportSrrList() {
+    const payload = buildBundlePayload();
+    const label = slugify(q.value || country.value || city.value || assay.value || "matched_runs");
+    downloadTextFile(`urbanscope_srr_${label}.txt`, payload.srr_accessions.join("\n") + "\n");
+    setMsg(`<span class="ok">SRR list exported.</span> Saved ${payload.counts.unique_srr_accessions.toLocaleString()} accessions for the current search.`, "ok");
+  }
+
+  function buildFastqScript() {
+    const payload = buildBundlePayload();
+    const label = slugify(q.value || country.value || city.value || assay.value || "matched_runs");
+    const accessions = payload.srr_accessions;
+    const accessionBlock = accessions.map(acc => `  "${acc}"`).join(" \\\n");
+    return `#!/usr/bin/env bash
+set -euo pipefail
+
+# UrbanScope FASTQ bundle
+# Generated: ${payload.exported_utc}
+# Matched BioProjects: ${payload.counts.matched_projects}
+# Matched SRR runs: ${payload.counts.unique_srr_accessions}
+
+OUTDIR="\${1:-urbanscope_fastq_${label}}"
+THREADS="\${THREADS:-6}"
+mkdir -p "$OUTDIR/sra" "$OUTDIR/fastq" "$OUTDIR/logs"
+
+if ! command -v prefetch >/dev/null 2>&1; then
+  echo "Missing required command: prefetch" >&2
+  echo "Install NCBI SRA Toolkit first: https://github.com/ncbi/sra-tools/wiki/02.-Installing-SRA-Toolkit" >&2
+  exit 1
+fi
+
+if ! command -v fasterq-dump >/dev/null 2>&1; then
+  echo "Missing required command: fasterq-dump" >&2
+  echo "Install NCBI SRA Toolkit first: https://github.com/ncbi/sra-tools/wiki/02.-Installing-SRA-Toolkit" >&2
+  exit 1
+fi
+
+SRRS=(
+${accessionBlock}
+)
+
+for SRR in "\${SRRS[@]}"; do
+  echo "[UrbanScope] downloading $SRR"
+  prefetch "$SRR" --output-directory "$OUTDIR/sra" >> "$OUTDIR/logs/prefetch.log" 2>&1
+  fasterq-dump "$OUTDIR/sra/$SRR" --split-files --threads "$THREADS" --outdir "$OUTDIR/fastq" >> "$OUTDIR/logs/fasterq_dump.log" 2>&1
+done
+
+echo "[UrbanScope] completed FASTQ export into $OUTDIR/fastq"
+`;
+  }
+
+  function exportFastqScript() {
+    const payload = buildBundlePayload();
+    const label = slugify(q.value || country.value || city.value || assay.value || "matched_runs");
+    downloadTextFile(`urbanscope_fastq_bundle_${label}.sh`, buildFastqScript(), "text/x-shellscript");
+    setMsg(`<span class="ok">FASTQ script exported.</span> Script includes ${payload.counts.unique_srr_accessions.toLocaleString()} SRR runs from the current search.`, "ok");
+  }
+
+  function exportCurrentPage() {
+    perPage = parseInt(perPageSel.value, 10) || 100;
+    const start = (page - 1) * perPage;
+    const end = Math.min(matchedProjects.length, start + perPage);
+    const slice = matchedProjects.slice(start, end).map(p => ({
+      bioproject: p.bioproject,
+      title: p.title,
+      samples: p.samples,
+      biosamples: p.biosamples,
+      assays: p.assays,
+      years: {min: p.min_year, max: p.max_year},
+      countries_top: p.countries_top,
+      cities_top: p.cities_top,
+      centers_top: p.centers_top,
+      runs: p.runs, // keep full records for now; you can strip later if size is an issue
+    }));
+
+    const blob = new Blob([JSON.stringify({
+      exported_utc: new Date().toISOString(),
+      page,
+      per_page: perPage,
+      sort: {key: sortKey, asc: sortAsc},
+      filters: {
+        q: q.value,
+        assay: assay.value,
+        country: country.value,
+        city: city.value,
+        center: center.value,
+        min_year: minYear.value,
+        max_year: maxYear.value
+      },
+      projects: slice
+    }, null, 2)], {type:"application/json"});
+
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `urbanscope_bioproject_page_${page}.json`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  }
+
+  // --------- Events ----------
+  btnApply.addEventListener("click", applyFilters);
+  btnReset.addEventListener("click", resetUI);
+  btnStop.addEventListener("click", () => { if (aborter) aborter.abort(); btnStop.disabled = true; });
+  btnExport.addEventListener("click", exportCurrentPage);
+  btnBundle.addEventListener("click", exportMatchedBundle);
+  btnFastqScript.addEventListener("click", exportFastqScript);
+  btnSrrList.addEventListener("click", exportSrrList);
+  if (modeToggle) {
+    modeToggle.addEventListener("click", () => {
+      const current = document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
+      const next = current === "dark" ? "light" : "dark";
+      localStorage.setItem("urbanscope-explorer-theme", next);
+      applyTheme(next);
+    });
+  }
+  if (refineToggle) {
+    refineToggle.addEventListener("click", () => {
+      const collapsed = !refineCard.classList.contains("is-collapsed");
+      setCollapsed(refineCard, refineToggle, refineToggleIcon, collapsed);
+    });
+  }
+  if (actionsToggle) {
+    actionsToggle.addEventListener("click", () => {
+      const collapsed = !actionsCard.classList.contains("is-collapsed");
+      setCollapsed(actionsCard, actionsToggle, actionsToggleIcon, collapsed);
+    });
+  }
+
+  prev.addEventListener("click", () => { page = Math.max(1, page - 1); render(); });
+  next.addEventListener("click", () => { page = page + 1; render(); });
+
+  // Sort on header click
+  document.querySelectorAll("th[data-k]").forEach(th => {
+    th.addEventListener("click", () => setSort(th.getAttribute("data-k")));
+  });
+
+  // Apply on Enter in search boxes
+  [q, center, minYear, maxYear].forEach(inp => {
+    inp.addEventListener("keydown", (e) => { if (e.key === "Enter") applyFilters(); });
+  });
+
+  if (requireGeo) requireGeo.addEventListener("change", applyFilters);
+  if (excludeUnknown) excludeUnknown.addEventListener("change", applyFilters);
+
+  // --------- Init ----------
+  (async () => {
+    try {
+      const savedTheme = localStorage.getItem("urbanscope-explorer-theme");
+      applyTheme(savedTheme === "light" ? "light" : "dark");
+      setCollapsed(refineCard, refineToggle, refineToggleIcon, false);
+      setCollapsed(actionsCard, actionsToggle, actionsToggleIcon, true);
+      const mf = await loadManifest();
+      pGenerated.textContent = `Generated: ${formatTimestamp(mf.generated_utc || mf.generated || "")}`;
+      pTotals.textContent = `Total SRR records: ${(mf.total_records ?? mf.total_srr_records ?? "—").toLocaleString?.() ?? (mf.total_records ?? mf.total_srr_records ?? "—")}`;
+
+      // Load data
+      const loadAll = mode.value === "all";
+      await loadParts({loadAll});
+
+      // If user flips mode later, re-load on demand
+      mode.addEventListener("change", async () => {
+        // If switching from stream->all, do a full reload for best stats.
+        const wantAll = mode.value === "all";
+        allRuns = [];
+        tbody.innerHTML = `<tr><td colspan="9" class="muted">Reloading…</td></tr>`;
+        await loadParts({loadAll: wantAll});
+      });
+
+      setMsg(`<span class="ok">Ready.</span> BioProject aggregation is live.`, "ok");
+    } catch (e) {
+      setMsg(`<span class="err">${escapeHtml(e.message)}</span>`, "err");
+      tbody.innerHTML = `<tr><td colspan="9" class="err">Failed to initialize: ${escapeHtml(e.message)}</td></tr>`;
+    }
+  })();
+})();
+</script>
+</body>
+</html>

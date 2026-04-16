@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>UrbanScope — About</title>
+  <meta name="description" content="About UrbanScope, a public urban environmental omics resource and searchable database." />
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon_16.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon_32.png" />
+  <link rel="icon" href="./assets/favicon.ico" />
+  <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
+  <meta property="og:image" content="./assets/urbanscope_logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/site.css" />
+</head>
+<body>
+  <div class="site-shell">
+    <nav class="site-nav">
+      <a class="site-brand" href="./index.html">
+        <div class="site-brand-mark"><img src="./assets/urbanscope_logo.png" alt="UrbanScope logo" /></div>
+        <div class="site-brand-copy">
+          <strong>UrbanScope</strong>
+          <span>Urban environmental omics resource</span>
+        </div>
+      </a>
+      <div class="site-links">
+        <a href="./index.html">Home</a>
+        <a href="./explorer.html">Explorer</a>
+        <a class="is-active" href="./about.html">About</a>
+        <a href="./methodology.html">Methodology</a>
+        <a href="./data.html">Data Access</a>
+        <a href="./analytics.html">Analytics</a>
+        <a href="./explore.html">Interactive Charts</a>
+        <a href="./global-map.html">Global Map</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div class="eyebrow">Resource Overview</div>
+      <h1>UrbanScope frames the database as scientific infrastructure, not just a dashboard.</h1>
+      <p>
+        UrbanScope is a public-facing bioinformatics resource for discovering, contextualizing, and reusing urban environmental
+        sequencing datasets. It combines a searchable web interface with downloadable records and transparent methods so the
+        resource can support manuscript review, comparative analysis, and downstream meta-analysis.
+      </p>
+      <div class="hero-actions">
+        <a class="button-link primary" href="./index.html">Open Database Explorer</a>
+        <a class="button-link" href="./methodology.html">Read Methods</a>
+      </div>
+      <div class="hero-stats" id="heroStats">
+        <div class="metric"><span class="label">Loading</span><span class="value">...</span><span class="note">Reading manifest and record summaries</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Intended Use Cases</h2>
+      </div>
+      <div class="text-columns">
+        <div class="panel">
+          <div class="info-list">
+            <div class="info-item">
+              <strong>Dataset discovery</strong>
+              Find urban studies by geography, assay class, sequencing center, or BioProject accession.
+            </div>
+            <div class="info-item">
+              <strong>Comparative synthesis</strong>
+              Estimate which countries, cities, and assay types dominate the visible public urban omics landscape.
+            </div>
+            <div class="info-item">
+              <strong>Curation support</strong>
+              Identify records with incomplete or ambiguous location metadata that may need manual follow-up.
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="info-list">
+            <div class="info-item">
+              <strong>Resource citation</strong>
+              Present the portal as a maintained database with methods, schema notes, and explicit caveats suitable for peer review.
+            </div>
+            <div class="info-item">
+              <strong>Programmatic reuse</strong>
+              Download structured JSON and derive local tables, harmonized catalogs, or study cohorts for external analysis.
+            </div>
+            <div class="info-item">
+              <strong>Landscape monitoring</strong>
+              Track how the public urban omics corpus changes over time as new SRR records are added.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Strengths And Boundaries</h2>
+      </div>
+      <div class="split">
+        <div class="panel">
+          <div class="kicker">Strengths</div>
+          <div class="checklist">
+            <span>NCBI-backed source records</span>
+            <span>Static hosting and reproducible distribution</span>
+            <span>Searchable BioProject-level aggregation</span>
+            <span>SRR-level provenance retained</span>
+            <span>Public JSON artifacts for reuse</span>
+            <span>Built for continual updates</span>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="kicker">Limitations</div>
+          <div class="checklist">
+            <span>Metadata quality depends on submitter annotations</span>
+            <span>Geographic fields may be incomplete or inconsistent</span>
+            <span>Automated assay labels are heuristic summaries</span>
+            <span>Database inclusion does not imply study quality ranking</span>
+            <span>Coverage reflects what is publicly deposited</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      UrbanScope is distributed as a public scientific resource for research discovery and reuse. Source-linked records remain subject
+      to the metadata quality and submission practices of the original repositories.
+    </footer>
+  </div>
+
+  <script src="./assets/db.js"></script>
+  <script>
+    (async () => {
+      const stats = document.getElementById("heroStats");
+      try {
+        const { allRuns } = await window.UrbanScopeDB.fetchAllRuns();
+        const summary = window.UrbanScopeDB.summarize(allRuns);
+        stats.innerHTML = `
+          <div class="metric"><span class="label">SRR Records</span><span class="value">${window.UrbanScopeDB.formatNumber(summary.totalRuns)}</span><span class="note">Public run-level records currently indexed</span></div>
+          <div class="metric"><span class="label">BioProjects</span><span class="value">${window.UrbanScopeDB.formatNumber(summary.totalProjects)}</span><span class="note">Aggregated project-level entries</span></div>
+          <div class="metric"><span class="label">Countries</span><span class="value">${window.UrbanScopeDB.formatNumber(summary.totalCountries)}</span><span class="note">Distinct country labels with resolved names</span></div>
+          <div class="metric"><span class="label">Geo-Resolved Runs</span><span class="value">${Math.round((summary.geoResolvedRuns / Math.max(summary.totalRuns, 1)) * 100)}%</span><span class="note">Runs with both country and city present</span></div>
+        `;
+      } catch (err) {
+        stats.innerHTML = `<div class="metric"><span class="label">Status</span><span class="value">Unavailable</span><span class="note">${err.message}</span></div>`;
+      }
+    })();
+  </script>
+</body>
+</html>

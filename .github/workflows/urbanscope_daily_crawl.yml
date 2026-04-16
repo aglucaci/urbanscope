@@ -5,6 +5,46 @@ on:
     # Runs daily at 13:00 UTC (~9am ET depending on DST)
     - cron: "0 13 * * *"
   workflow_dispatch:
+    inputs:
+      crawl_mode:
+        description: "Which harvester command to run"
+        required: true
+        default: "crawl"
+        type: choice
+        options:
+          - crawl
+          - backfill-year
+          - daily
+      query_profiles:
+        description: "Comma-separated query profiles, or leave blank for the default multi-profile deep search"
+        required: false
+        default: ""
+        type: string
+      year:
+        description: "Year to use when crawl_mode is backfill-year"
+        required: false
+        default: ""
+        type: string
+      page_size:
+        description: "Page size for crawl mode"
+        required: false
+        default: "500"
+        type: string
+      max_total:
+        description: "Optional max total UIDs for crawl mode, leave 0 for no cap"
+        required: false
+        default: "0"
+        type: string
+      stop_after_new_srr:
+        description: "Optional early stop for crawl mode, leave 0 for no early stop"
+        required: false
+        default: "0"
+        type: string
+      recent_days:
+        description: "Recent-day window for daily mode"
+        required: false
+        default: "14"
+        type: string
 
 permissions:
   contents: write
@@ -35,18 +75,73 @@ jobs:
             pip install -r requirements.txt
           fi
 
-      - name: Run UrbanScope crawler (daily)
+      - name: Run UrbanScope crawler
         env:
           NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}
           NCBI_EMAIL: ${{ secrets.NCBI_EMAIL }}
           NCBI_TOOL: urbanscope-srr-harvester
         run: |
-          python3 -m scripts.urbanscope_harvester crawl \
-            --sort date \
-            --page-size 300 \
-            --stop-after-new-srr 25 \
-            --fetch-bioproject \
-            --fetch-biosample
+          set -euo pipefail
+
+          build_profile_args() {
+            local raw_profiles="$1"
+            local args=()
+            if [ -n "$raw_profiles" ]; then
+              IFS=',' read -ra profiles <<< "$raw_profiles"
+              for profile in "${profiles[@]}"; do
+                profile="$(echo "$profile" | xargs)"
+                if [ -n "$profile" ]; then
+                  args+=(--query-profile "$profile")
+                fi
+              done
+            fi
+            printf '%s\n' "${args[@]}"
+          }
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            MODE="${{ github.event.inputs.crawl_mode }}"
+            PAGE_SIZE="${{ github.event.inputs.page_size }}"
+            MAX_TOTAL="${{ github.event.inputs.max_total }}"
+            STOP_AFTER_NEW_SRR="${{ github.event.inputs.stop_after_new_srr }}"
+            RECENT_DAYS="${{ github.event.inputs.recent_days }}"
+            YEAR="${{ github.event.inputs.year }}"
+            mapfile -t PROFILE_ARGS < <(build_profile_args "${{ github.event.inputs.query_profiles }}")
+
+            if [ "$MODE" = "crawl" ]; then
+              python3 -m scripts.urbanscope_harvester.cli crawl \
+                --sort date \
+                --page-size "$PAGE_SIZE" \
+                --max-total "$MAX_TOTAL" \
+                --stop-after-new-srr "$STOP_AFTER_NEW_SRR" \
+                --fetch-bioproject \
+                --fetch-biosample \
+                "${PROFILE_ARGS[@]}"
+            elif [ "$MODE" = "backfill-year" ]; then
+              if [ -z "$YEAR" ]; then
+                echo "workflow_dispatch input 'year' is required for backfill-year" >&2
+                exit 1
+              fi
+              python3 -m scripts.urbanscope_harvester.cli backfill-year \
+                --year "$YEAR" \
+                --fetch-bioproject \
+                --fetch-biosample \
+                "${PROFILE_ARGS[@]}"
+            else
+              python3 -m scripts.urbanscope_harvester.cli daily \
+                --recent-days "$RECENT_DAYS" \
+                --max-per-day 500 \
+                --fetch-bioproject \
+                --fetch-biosample \
+                "${PROFILE_ARGS[@]}"
+            fi
+          else
+            python3 -m scripts.urbanscope_harvester.cli crawl \
+              --sort date \
+              --page-size 300 \
+              --stop-after-new-srr 25 \
+              --fetch-bioproject \
+              --fetch-biosample
+          fi
 
       - name: Commit updated data
         run: |

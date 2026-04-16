@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>UrbanScope — Methodology</title>
+  <meta name="description" content="Methods, provenance, enrichment logic, and caveats for the UrbanScope database." />
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon_16.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon_32.png" />
+  <link rel="icon" href="./assets/favicon.ico" />
+  <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
+  <meta property="og:image" content="./assets/urbanscope_logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/site.css" />
+</head>
+<body>
+  <div class="site-shell">
+    <nav class="site-nav">
+      <a class="site-brand" href="./index.html">
+        <div class="site-brand-mark"><img src="./assets/urbanscope_logo.png" alt="UrbanScope logo" /></div>
+        <div class="site-brand-copy">
+          <strong>UrbanScope</strong>
+          <span>Urban environmental omics resource</span>
+        </div>
+      </a>
+      <div class="site-links">
+        <a href="./index.html">Home</a>
+        <a href="./explorer.html">Explorer</a>
+        <a href="./about.html">About</a>
+        <a class="is-active" href="./methodology.html">Methodology</a>
+        <a href="./data.html">Data Access</a>
+        <a href="./analytics.html">Analytics</a>
+        <a href="./explore.html">Interactive Charts</a>
+        <a href="./global-map.html">Global Map</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div class="eyebrow">Methods And Provenance</div>
+      <h1>Transparent derivation is part of the database, not an afterthought.</h1>
+      <p>
+        UrbanScope ingests public sequencing metadata, preserves run-level provenance, enriches records with project and location
+        context, and republishes the result as static web artifacts. This page describes the current workflow in reviewer-facing terms.
+      </p>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Published Database Structure</h2>
+      </div>
+      <div class="card-grid">
+        <article class="panel">
+          <h3>Database overview</h3>
+          <p>
+            The explorer loads a manifest and one or more part files containing SRR-level records. Those records are aggregated into one
+            row per BioProject and can be expanded to reveal underlying SRR and SRA run detail.
+          </p>
+          <p style="margin-top:12px">
+            <span class="mono">Manifest</span>:
+            <span class="mono">docs/db/srr_records_manifest.json</span> stores the file list, generation timestamp, and total record count.
+            <br/>
+            <span class="mono">Parts</span>:
+            <span class="mono">docs/db/srr_records_partXXX.json</span> store arrays of SRR records built from RunInfo fields plus derived annotations.
+          </p>
+        </article>
+        <article class="panel">
+          <h3>What is in each record?</h3>
+          <p>Core fields are sourced from SRA RunInfo and joined with optional enrichments:</p>
+          <div class="info-list" style="margin-top:12px">
+            <div class="info-item">
+              <strong><span class="mono">runinfo_row</span></strong>
+              SRR, BioProject, BioSample, dates, platform, and center metadata from the public run record.
+            </div>
+            <div class="info-item">
+              <strong><span class="mono">bioproject</span></strong>
+              Project accession and title when those enrichments are available.
+            </div>
+            <div class="info-item">
+              <strong><span class="mono">geo</span></strong>
+              Country and city fields derived from BioSample and location parsing.
+            </div>
+            <div class="info-item">
+              <strong><span class="mono">assay</span></strong>
+              Assay class labels such as WGS, RNA-seq, or 16S/ITS for filtering and summary analytics.
+            </div>
+          </div>
+        </article>
+        <article class="panel">
+          <h3>Geo-resolved browsing</h3>
+          <p>
+            The explorer includes <b>Require Country/City</b> and <b>Exclude (unknown)</b> options so users can restrict browsing to
+            records with more complete geographic resolution when location-aware discovery is the priority.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Workflow Summary</h2>
+      </div>
+      <div class="card-grid">
+        <article class="panel">
+          <div class="kicker">1. Discovery</div>
+          <h3>Harvest candidate records from NCBI-linked resources</h3>
+          <p>
+            The pipeline queries public NCBI resources and tracks associated SRA identifiers, BioProjects, and BioSamples that match the
+            project’s urban environmental collection strategy.
+          </p>
+        </article>
+        <article class="panel">
+          <div class="kicker">2. Normalization</div>
+          <h3>Preserve SRR-level metadata with stable keys</h3>
+          <p>
+            RunInfo-derived fields such as accession, dates, sequencing center, library strategy, platform, and download path are stored
+            alongside the original SRR accession so the record remains auditable.
+          </p>
+        </article>
+        <article class="panel">
+          <div class="kicker">3. Enrichment</div>
+          <h3>Attach BioProject and geographic context</h3>
+          <p>
+            Linked project metadata and parsed location fields are added when available, allowing the interface to summarize records by
+            study, geography, and assay class.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="split">
+        <div class="panel">
+          <div class="kicker">Included Fields</div>
+          <div class="info-list">
+            <div class="info-item">
+              <strong><span class="mono">runinfo_row</span></strong>
+              Core SRA RunInfo metadata including SRR accession, BioProject, BioSample, release date, platform, center, and run download path.
+            </div>
+            <div class="info-item">
+              <strong><span class="mono">bioproject</span></strong>
+              Project-level metadata such as title, description, accession, data type, and project URLs when available from NCBI.
+            </div>
+            <div class="info-item">
+              <strong><span class="mono">geo</span></strong>
+              Parsed location fields including country, city, raw source string, and optional latitude or longitude values when present.
+            </div>
+            <div class="info-item">
+              <strong><span class="mono">assay</span></strong>
+              Heuristic assay classifications derived from run metadata for high-level filtering and summary analytics.
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="kicker">Important Caveats</div>
+          <div class="info-list">
+            <div class="info-item">
+              <strong>Metadata inherit repository ambiguity</strong>
+              If the original public submission is incomplete or inconsistent, UrbanScope can expose that inconsistency but cannot fully repair it automatically.
+            </div>
+            <div class="info-item">
+              <strong>Geographic resolution is best-effort</strong>
+              Country and city values may originate from structured BioSample fields or parsed location text and should be interpreted as practical, not absolute, harmonization.
+            </div>
+            <div class="info-item">
+              <strong>Assay classes are summary labels</strong>
+              The displayed assay grouping is useful for browsing and counts, but exact downstream analytical suitability should still be confirmed against the original records.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Quality Notes</h2>
+      </div>
+      <div class="card-grid">
+        <article class="panel">
+          <h3>Static publication model</h3>
+          <p>
+            The public site is distributed as static artifacts under <span class="mono">docs/</span>, which reduces infrastructure fragility and makes each published snapshot inspectable in version control.
+          </p>
+        </article>
+        <article class="panel">
+          <h3>Chunked database delivery</h3>
+          <p>
+            Large SRR collections are published as a manifest plus part files, enabling browser-based access without requiring a dedicated server-side database.
+          </p>
+        </article>
+        <article class="panel">
+          <h3>Expandable provenance</h3>
+          <p>
+            The main explorer aggregates by BioProject for readability but preserves underlying SRR-level rows so users can move from summary view to source-derived detail.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      Methodological descriptions on this page summarize the current public release and should be updated alongside future changes to harvesting, harmonization, or inclusion logic.
+    </footer>
+  </div>
+</body>
+</html>

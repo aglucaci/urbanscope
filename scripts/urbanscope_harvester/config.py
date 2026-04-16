@@ -79,87 +79,130 @@ DEFAULT_QUERY = (
 
 """
 
+QUERY_PROFILES = {
+    "urban_shotgun": (
+        '('
+          '('
+            '"urban" OR "city" OR "cities" OR metropolitan OR municipal OR '
+            '"built environment" OR "built-environment" OR '
+            'subway OR metro OR transit OR railway OR airport OR station OR '
+            '"public transit" OR "public transport" OR '
+            'wastewater OR sewage OR sewer OR stormwater OR '
+            'street OR sidewalk OR pavement OR road OR '
+            'building OR buildings OR housing OR dormitory OR hospital OR school OR campus OR '
+            '"surface swab" OR fomite OR surface OR '
+            'air OR aerosol OR dust'
+          ') '
+          'AND '
+          '('
+            '"whole genome shotgun" OR '
+            '"shotgun metagenom*" OR '
+            '"shotgun sequencing" OR '
+            'metagenom* OR '
+            'metatranscriptom* OR '
+            '"total RNA sequencing" OR '
+            '"metatranscriptome sequencing" OR '
+            'microbiome OR microbiota'
+          ') '
+          'AND '
+          '('
+            'environment* OR "built environment" OR wastewater OR sewage OR sewer OR stormwater OR '
+            'surface OR swab OR air OR aerosol OR dust'
+          ') '
+          'NOT '
+          '('
+            '"single-cell" OR scRNA OR "whole exome" OR WES OR '
+            'soil OR sediment OR marine OR ocean OR freshwater OR river OR lake OR '
+            'forest OR agricultur* OR farm OR plant OR rhizosphere'
+          ')'
+        ')'
+    ),
+    "urban_amplicon": (
+        '('
+          '('
+            '"urban" OR "city" OR "cities" OR metropolitan OR municipal OR '
+            '"built environment" OR "built-environment" OR '
+            'subway OR metro OR transit OR railway OR airport OR station OR '
+            'wastewater OR sewage OR sewer OR stormwater OR '
+            'street OR sidewalk OR pavement OR road OR '
+            'building OR buildings OR housing OR hospital OR school OR campus OR '
+            'surface OR swab OR fomite OR air OR aerosol OR dust'
+          ') '
+          'AND '
+          '('
+            'amplicon OR "marker gene" OR "16S" OR "16S rRNA" OR "18S" OR ITS OR '
+            '"V3-V4" OR "V4 region" OR "internal transcribed spacer" OR microbiome OR microbiota'
+          ') '
+          'AND '
+          '('
+            'environment* OR wastewater OR sewage OR sewer OR stormwater OR '
+            '"built environment" OR surface OR swab OR air OR aerosol OR dust'
+          ') '
+          'NOT '
+          '('
+            '"single-cell" OR scRNA OR "whole exome" OR WES OR '
+            'soil OR sediment OR marine OR ocean OR freshwater OR river OR lake OR '
+            'forest OR agricultur* OR farm OR plant OR rhizosphere'
+          ')'
+        ')'
+    ),
+    "wastewater_surveillance": (
+        '('
+          '('
+            'wastewater OR sewage OR sewer OR stormwater OR influent OR effluent OR sludge OR '
+            '"waste water" OR "waste-water"'
+          ') '
+          'AND '
+          '('
+            'urban OR city OR cities OR metropolitan OR municipal OR community OR public'
+          ') '
+          'AND '
+          '('
+            'microbiome OR microbiota OR metagenom* OR metatranscriptom* OR '
+            'amplicon OR "16S" OR ITS OR virome'
+          ')'
+        ')'
+    ),
+    "transit_and_surface": (
+        '('
+          '('
+            'subway OR metro OR transit OR railway OR train OR bus OR airport OR terminal OR station OR '
+            '"public transit" OR "public transport" OR '
+            'surface OR swab OR fomite OR handrail OR turnstile OR bench OR kiosk'
+          ') '
+          'AND '
+          '('
+            'microbiome OR microbiota OR metagenom* OR metatranscriptom* OR amplicon OR "16S" OR ITS'
+          ')'
+        ')'
+    ),
+    "air_and_dust": (
+        '('
+          '('
+            'urban OR city OR cities OR metropolitan OR municipal OR '
+            '"built environment" OR building OR hospital OR school OR classroom OR office'
+          ') '
+          'AND '
+          '('
+            'air OR aerosol OR bioaerosol OR dust OR particulate'
+          ') '
+          'AND '
+          '('
+            'microbiome OR microbiota OR metagenom* OR metatranscriptom* OR amplicon OR "16S" OR ITS'
+          ')'
+        ')'
+    )
+}
 
-DEFAULT_QUERY = (
-    '('
-      # -------------------------------
-      # 1) MUST be urban / city context
-      # -------------------------------
-      '('
-        '"urban" OR "city" OR "cities" OR metropolitan OR municipal OR '
-        '"built environment" OR '
-        'subway OR metro OR transit OR railway OR airport OR '
-        '"public transit" OR "public transport" OR '
-        'wastewater OR sewage OR stormwater OR '
-        'street OR sidewalk OR pavement OR '
-        'building OR buildings OR housing OR '
-        '"surface swab" OR fomite OR '
-        'air OR aerosol'
-      ') '
-      'AND '
+DEFAULT_QUERY_PROFILE_NAMES = [
+    "urban_shotgun",
+    "urban_amplicon",
+    "wastewater_surveillance",
+    "transit_and_surface",
+    "air_and_dust",
+]
 
-      # ------------------------------------------------
-      # 2) MUST be shotgun metagenomics / metatranscriptomics
-      # ------------------------------------------------
-      '('
-        '"whole genome shotgun" OR '
-        '"shotgun metagenom*" OR '
-        '"shotgun sequencing" OR '
-        'metagenom* OR '
-        'metatranscriptom* OR '
-        '"total RNA sequencing" OR '
-        '"metatranscriptome sequencing"'
-      ') '
-      'AND '
-
-      # ------------------------------------------------
-      # 3) MUST be environmental (not host clinical RNA-seq)
-      # ------------------------------------------------
-      '('
-        'environment* OR '
-        '"built environment" OR '
-        'wastewater OR sewage OR stormwater OR '
-        'surface OR swab OR '
-        'air OR aerosol'
-      ') '
-
-      # -------------------------------
-      # 4) HARD EXCLUSIONS
-      # -------------------------------
-      'NOT '
-      '('
-        # Marker gene / amplicon
-        'amplicon OR '
-        '"marker gene" OR '
-        '"16S" OR "16S rRNA" OR '
-        '"18S" OR '
-        '"ITS" OR '
-        '"V3-V4" OR "V4 region" OR '
-        '"barcod*" OR '
-
-        # Host-focused RNA-seq / genomics
-        '"RNA-seq" OR '
-        '"single-cell" OR '
-        'scRNA OR '
-        '"whole exome" OR '
-        'WES OR '
-
-        # Common non-urban environments
-        'soil OR '
-        'sediment OR '
-        'marine OR '
-        'ocean OR '
-        'freshwater OR '
-        'river OR '
-        'lake OR '
-        'forest OR '
-        'agricultur* OR '
-        'farm OR '
-        'plant OR '
-        'rhizosphere'
-      ')'
-    ')'
-)
+DEFAULT_QUERY = QUERY_PROFILES["urban_shotgun"]
 
 
 

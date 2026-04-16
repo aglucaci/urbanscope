@@ -1,0 +1,690 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>UrbanScope — Global Map</title>
+  <meta name="description" content="Large interactive global distribution map for UrbanScope with year filters, regional views, and fullscreen exploration." />
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon_16.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon_32.png" />
+  <link rel="icon" href="./assets/favicon.ico" />
+  <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
+  <meta property="og:image" content="./assets/urbanscope_logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/site.css" />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <style>
+    .map-page{
+      max-width:1560px;
+    }
+    .map-workbench{
+      margin-top:18px;
+      padding:18px;
+      border-radius:28px;
+      border:1px solid var(--line-strong);
+      background:rgba(16,26,41,.90);
+      box-shadow:var(--shadow);
+    }
+    .map-controls{
+      display:grid;
+      gap:12px;
+      grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+      margin-bottom:16px;
+    }
+    .map-controls label{
+      display:block;
+      margin-bottom:6px;
+      color:var(--muted);
+      font-size:12px;
+    }
+    .map-controls select,
+    .map-controls input{
+      width:100%;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      color:var(--fg);
+      padding:10px 12px;
+    }
+    .map-layout{
+      display:grid;
+      gap:16px;
+      grid-template-columns:1fr;
+      align-items:start;
+    }
+    .map-stage{
+      border-radius:24px;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+      overflow:hidden;
+      min-height:78vh;
+      position:relative;
+    }
+    .map-stage.is-fullscreen{
+      min-height:100vh;
+      border-radius:0;
+    }
+    .map-toolbar{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      flex-wrap:wrap;
+      padding:14px 16px;
+      border-bottom:1px solid var(--line);
+      background:rgba(255,255,255,.02);
+    }
+    .map-toolbar-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .toolbar-btn{
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      color:var(--fg);
+      padding:9px 12px;
+      cursor:pointer;
+      font-weight:600;
+    }
+    .map-canvas{
+      width:100%;
+      min-height:calc(78vh - 68px);
+      background:#101a29;
+    }
+    .map-stage.is-fullscreen .map-canvas{
+      min-height:calc(100vh - 68px);
+    }
+    .leaflet-container{
+      width:100%;
+      height:100%;
+      min-height:inherit;
+      background:#101a29;
+      font-family:"IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif;
+    }
+    .leaflet-control-zoom a{
+      background:#152131;
+      color:#edf3ff;
+      border-color:#32455e;
+    }
+    .leaflet-popup-content-wrapper,
+    .leaflet-popup-tip{
+      background:#152131;
+      color:#edf3ff;
+    }
+    .leaflet-control-attribution{
+      background:rgba(16,26,41,.78);
+      color:#9fb0c3;
+    }
+    .leaflet-control-attribution a{
+      color:#dce6f7;
+    }
+    .sidebar-stack{
+      display:grid;
+      gap:16px;
+      grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+    }
+    .country-list{
+      display:grid;
+      gap:10px;
+      max-height:540px;
+      overflow:auto;
+      padding-right:4px;
+    }
+    .country-item{
+      display:grid;
+      grid-template-columns:minmax(140px, 1fr) 1fr 70px;
+      gap:10px;
+      align-items:center;
+      padding:10px 12px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.02);
+    }
+    .country-item-name{
+      color:#dce6f7;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      font-size:13px;
+    }
+    .country-item-bar{
+      height:10px;
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+    }
+    .country-item-bar > div{
+      height:100%;
+      width:0;
+      background:linear-gradient(90deg, rgba(78,197,168,.82), rgba(115,167,255,.84));
+    }
+    .country-item-value{
+      text-align:right;
+      color:var(--muted);
+      font-variant-numeric:tabular-nums;
+      font-size:12px;
+    }
+    .mini-hint{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+    }
+    @media (max-width: 1100px){
+      .map-stage{
+        min-height:66vh;
+      }
+      .map-canvas{
+        min-height:calc(66vh - 68px);
+      }
+      .sidebar-stack{
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="site-shell map-page">
+    <nav class="site-nav">
+      <a class="site-brand" href="./index.html">
+        <div class="site-brand-mark"><img src="./assets/urbanscope_logo.png" alt="UrbanScope logo" /></div>
+        <div class="site-brand-copy">
+          <strong>UrbanScope</strong>
+          <span>Urban environmental omics resource</span>
+        </div>
+      </a>
+      <div class="site-links">
+        <a href="./index.html">Home</a>
+        <a href="./explorer.html">Explorer</a>
+        <a href="./about.html">About</a>
+        <a href="./methodology.html">Methodology</a>
+        <a href="./data.html">Data Access</a>
+        <a href="./analytics.html">Analytics</a>
+        <a href="./explore.html">Interactive Charts</a>
+        <a class="is-active" href="./global-map.html">Global Map</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div class="eyebrow">Interactive Map</div>
+      <h1>Explore global distribution in a larger, map-first view.</h1>
+      <p>
+        This page is designed for interaction rather than summary alone. Filter the release by year or region, switch map scope,
+        and open the map in fullscreen for easier browsing. You can inspect both conservative country-level coverage and sample-level
+        coordinates when BioSample latitude and longitude are available.
+      </p>
+    </section>
+
+    <section class="section">
+      <div class="map-workbench">
+        <div class="map-controls">
+          <div>
+            <label for="mapMode">Map Layer</label>
+            <select id="mapMode">
+              <option value="countries">Country Coverage</option>
+              <option value="samples" selected>Sample Coordinates</option>
+            </select>
+          </div>
+          <div>
+            <label for="regionSelect">Map Region</label>
+            <select id="regionSelect">
+              <option value="world">World</option>
+              <option value="002">Africa</option>
+              <option value="019">Americas</option>
+              <option value="142">Asia</option>
+              <option value="150">Europe</option>
+              <option value="009">Oceania</option>
+            </select>
+          </div>
+          <div>
+            <label for="startYear">Start Year</label>
+            <select id="startYear"><option value="">Any</option></select>
+          </div>
+          <div>
+            <label for="endYear">End Year</label>
+            <select id="endYear"><option value="">Any</option></select>
+          </div>
+          <div>
+            <label for="countrySearch">Country Filter</label>
+            <input id="countrySearch" placeholder="Filter country labels" />
+          </div>
+        </div>
+
+        <div class="map-layout">
+          <div class="map-stage" id="mapStage">
+            <div class="map-toolbar">
+              <div>
+                <strong>Global Distribution</strong>
+                <div class="mini-hint" id="mapSubtitle">Loading interactive map…</div>
+              </div>
+              <div class="map-toolbar-actions">
+                <button class="toolbar-btn" id="resetMap">Reset Filters</button>
+                <button class="toolbar-btn" id="fullscreenMap">Fullscreen</button>
+              </div>
+            </div>
+            <div class="map-canvas" id="geoChart">
+              <div style="padding:24px;color:var(--muted)">Loading map data…</div>
+            </div>
+          </div>
+
+          <div class="sidebar-stack">
+            <div class="panel">
+              <div class="section-header">
+                <h2>Filtered Summary</h2>
+                <p>These metrics update with the current map filters.</p>
+              </div>
+              <div class="metric-grid" id="mapMetrics">
+                <div class="metric"><span class="label">Loading</span><span class="value">...</span><span class="note">Computing country-level totals</span></div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="section-header">
+                <h2>Top Countries</h2>
+                <p>Sorted by run count within the current filters.</p>
+              </div>
+              <div class="country-list" id="countryList"></div>
+            </div>
+
+            <div class="panel">
+              <div class="section-header">
+                <h2>How To Use</h2>
+                <p>Tips for navigating this larger interactive map.</p>
+              </div>
+              <div class="info-list">
+                <div class="info-item">
+                  <strong>Use fullscreen for exploration</strong>
+                  The fullscreen button expands the map surface so the choropleth is easier to inspect and present.
+                </div>
+                <div class="info-item">
+                  <strong>Filter by year range</strong>
+                  Narrow the release to a period of interest and compare how country representation changes over time.
+                </div>
+                <div class="info-item">
+                  <strong>Switch regional scope</strong>
+                  Change the map region to zoom the display toward a single continent-style view.
+                </div>
+                <div class="info-item">
+                  <strong>Use sample coordinates when available</strong>
+                  Switch the map layer to sample coordinates to place marker points from BioSample latitude and longitude attributes.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      The map uses resolved country labels for coverage views and BioSample latitude and longitude attributes for sample-coordinate views when present. It is intended for interactive exploration, not normalized epidemiological inference.
+    </footer>
+  </div>
+
+  <script src="./assets/db.js"></script>
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+  <script>
+    const fmt = (value) => window.UrbanScopeDB.formatNumber(value);
+    const norm = (value) => (value ?? "").toString().trim();
+    const known = (value) => {
+      const s = norm(value).toLowerCase();
+      return !!s && s !== "(unknown)";
+    };
+    let biosampleCache = null;
+    let biosampleCachePromise = null;
+    const REGION_BOUNDS = {
+      world: [[-55, -170], [78, 190]],
+      "002": [[-38, -25], [38, 55]],
+      "019": [[-58, -170], [72, -30]],
+      "142": [[-10, 25], [78, 180]],
+      "150": [[34, -25], [72, 45]],
+      "009": [[-50, 110], [5, 180]]
+    };
+
+    function parseLatLonText(raw) {
+      const s = norm(raw);
+      if (!s) return null;
+
+      const cardinal = s.match(/(-?\d+(?:\.\d+)?)\s*([NS])[\s,;]+(-?\d+(?:\.\d+)?)\s*([EW])/i);
+      if (cardinal) {
+        const lat = parseFloat(cardinal[1]) * (/S/i.test(cardinal[2]) ? -1 : 1);
+        const lon = parseFloat(cardinal[3]) * (/W/i.test(cardinal[4]) ? -1 : 1);
+        if (Number.isFinite(lat) && Number.isFinite(lon)) return { lat, lon };
+      }
+
+      const pair = s.match(/(-?\d+(?:\.\d+)?)\s*[, ]\s*(-?\d+(?:\.\d+)?)/);
+      if (pair) {
+        const lat = parseFloat(pair[1]);
+        const lon = parseFloat(pair[2]);
+        if (Number.isFinite(lat) && Number.isFinite(lon)) return { lat, lon };
+      }
+
+      return null;
+    }
+
+    async function ensureBioSampleCache() {
+      if (biosampleCache) return biosampleCache;
+      if (!biosampleCachePromise) {
+        biosampleCachePromise = fetch("./db/biosamples.json", { cache: "no-store" })
+          .then((res) => {
+            if (!res.ok) throw new Error(`Unable to load BioSample cache (${res.status})`);
+            return res.json();
+          })
+          .then((json) => {
+            biosampleCache = json || {};
+            return biosampleCache;
+          })
+          .catch((err) => {
+            biosampleCachePromise = null;
+            throw err;
+          });
+      }
+      return biosampleCachePromise;
+    }
+
+    function extractCoordinates(rec, bioLookup) {
+      const directLat = parseFloat(norm(rec?.geo?.lat));
+      const directLon = parseFloat(norm(rec?.geo?.lon));
+      if (Number.isFinite(directLat) && Number.isFinite(directLon)) {
+        return { lat: directLat, lon: directLon };
+      }
+
+      const biosample = window.UrbanScopeDB.getBioSample(rec);
+      const attrs = biosample && bioLookup && bioLookup[biosample] ? (bioLookup[biosample].attributes || {}) : null;
+      const raw = attrs ? (attrs.lat_lon || attrs["latitude and longitude"] || attrs.latitude_longitude || "") : "";
+      return parseLatLonText(raw);
+    }
+
+    function fillYearSelect(select, years) {
+      const current = select.value;
+      select.innerHTML = [`<option value="">Any</option>`]
+        .concat(years.map((year) => `<option value="${year}">${year}</option>`))
+        .join("");
+      if (years.map(String).includes(current)) select.value = current;
+    }
+
+    function renderCountryList(target, items) {
+      const sliced = items.slice(0, 18);
+      const max = Math.max(...sliced.map((item) => item.count), 1);
+      target.innerHTML = sliced.map((item) => `
+        <div class="country-item">
+          <div class="country-item-name">${item.name}</div>
+          <div class="country-item-bar"><div style="width:${(item.count / max) * 100}%"></div></div>
+          <div class="country-item-value">${fmt(item.count)}</div>
+        </div>
+      `).join("") || `<div class="mini-hint">No countries match the current filters.</div>`;
+    }
+
+    (async () => {
+      const chartRoot = document.getElementById("geoChart");
+      const mapStage = document.getElementById("mapStage");
+      const subtitle = document.getElementById("mapSubtitle");
+      const metrics = document.getElementById("mapMetrics");
+      const countryList = document.getElementById("countryList");
+      const mapMode = document.getElementById("mapMode");
+      const regionSelect = document.getElementById("regionSelect");
+      const startYear = document.getElementById("startYear");
+      const endYear = document.getElementById("endYear");
+      const countrySearch = document.getElementById("countrySearch");
+      const resetMap = document.getElementById("resetMap");
+      const fullscreenMap = document.getElementById("fullscreenMap");
+      let lastRegionValue = regionSelect.value;
+      const map = L.map(chartRoot, {
+        zoomSnap: 0.25,
+        worldCopyJump: true,
+        preferCanvas: true
+      });
+      const basemap = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>'
+      });
+      basemap.addTo(map);
+      const pointLayer = L.layerGroup().addTo(map);
+
+      function applyRegionView() {
+        const bounds = REGION_BOUNDS[regionSelect.value] || REGION_BOUNDS.world;
+        map.fitBounds(bounds, { padding: [24, 24] });
+      }
+
+      function clearLayer() {
+        pointLayer.clearLayers();
+      }
+
+      function aggregateCountriesFromCoordinates(rows) {
+        const grouped = new Map();
+        rows.forEach((row) => {
+          const key = row.country || "(unknown)";
+          if (!grouped.has(key)) {
+            grouped.set(key, {
+              name: key,
+              count: 0,
+              latTotal: 0,
+              lonTotal: 0,
+              projects: new Set(),
+              samples: 0
+            });
+          }
+          const entry = grouped.get(key);
+          entry.count += row.runCount || 1;
+          entry.samples += 1;
+          entry.latTotal += row.lat;
+          entry.lonTotal += row.lon;
+          if (row.project) entry.projects.add(row.project);
+        });
+        return Array.from(grouped.values())
+          .map((entry) => ({
+            name: entry.name,
+            count: entry.count,
+            projects: entry.projects.size,
+            sampleCount: entry.samples,
+            lat: entry.latTotal / Math.max(entry.samples, 1),
+            lon: entry.lonTotal / Math.max(entry.samples, 1)
+          }))
+          .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+      }
+
+      function drawSampleMarkers(rows) {
+        rows.forEach((row) => {
+          const marker = L.circleMarker([row.lat, row.lon], {
+            radius: 4,
+            weight: 1,
+            color: "#cfe4ff",
+            fillColor: "#4ec5a8",
+            fillOpacity: 0.68
+          });
+          marker.bindPopup(`
+            <div style="min-width:220px">
+              <strong>${row.country || "Unresolved country"}</strong><br />
+              ${row.city ? `${row.city}<br />` : ``}
+              ${row.biosample ? `BioSample: <span class="mono">${row.biosample}</span><br />` : ``}
+              ${row.run ? `Run: <span class="mono">${row.run}</span><br />` : ``}
+              <span class="mono">${row.lat.toFixed(4)}, ${row.lon.toFixed(4)}</span>
+            </div>
+          `);
+          pointLayer.addLayer(marker);
+        });
+      }
+
+      function drawCountryMarkers(rows) {
+        const max = Math.max(...rows.map((row) => row.count), 1);
+        rows.forEach((row) => {
+          const radius = 6 + (Math.sqrt(row.count / max) * 18);
+          const marker = L.circleMarker([row.lat, row.lon], {
+            radius,
+            weight: 1.5,
+            color: "#cfe4ff",
+            fillColor: "#73a7ff",
+            fillOpacity: 0.45
+          });
+          marker.bindPopup(`
+            <div style="min-width:220px">
+              <strong>${row.name}</strong><br />
+              Runs: <span class="mono">${fmt(row.count)}</span><br />
+              Coordinate-resolved samples: <span class="mono">${fmt(row.sampleCount)}</span><br />
+              BioProjects: <span class="mono">${fmt(row.projects)}</span><br />
+              <span class="mono">${row.lat.toFixed(4)}, ${row.lon.toFixed(4)}</span>
+            </div>
+          `);
+          pointLayer.addLayer(marker);
+        });
+      }
+
+      try {
+        const { allRuns } = await window.UrbanScopeDB.fetchAllRuns();
+        const allYears = Array.from(new Set(allRuns.map(window.UrbanScopeDB.yearFromRecord).filter(Boolean))).sort((a, b) => a - b);
+        fillYearSelect(startYear, allYears);
+        fillYearSelect(endYear, allYears);
+        applyRegionView();
+
+        function filteredRuns() {
+          const minYear = startYear.value ? parseInt(startYear.value, 10) : null;
+          const maxYear = endYear.value ? parseInt(endYear.value, 10) : null;
+          const needle = countrySearch.value.trim().toLowerCase();
+          return allRuns.filter((rec) => {
+            const country = window.UrbanScopeDB.getCountry(rec);
+            const year = window.UrbanScopeDB.yearFromRecord(rec);
+            if (minYear != null && (year == null || year < minYear)) return false;
+            if (maxYear != null && (year == null || year > maxYear)) return false;
+            if (needle && !country.toLowerCase().includes(needle)) return false;
+            if (mapMode.value === "countries" && !known(country)) return false;
+            return true;
+          });
+        }
+
+        async function draw(forceRegionFit = false) {
+          const runs = filteredRuns();
+          clearLayer();
+          const counts = new Map();
+          runs.forEach((rec) => {
+            const country = window.UrbanScopeDB.getCountry(rec);
+            if (known(country)) counts.set(country, (counts.get(country) || 0) + 1);
+          });
+          const countries = Array.from(counts.entries())
+            .map(([name, count]) => ({ name, count }))
+            .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+
+          const topCountry = countries[0];
+          const projectCount = new Set(runs.map(window.UrbanScopeDB.getBioProject).filter(Boolean)).size;
+          const visibleYears = Array.from(new Set(runs.map(window.UrbanScopeDB.yearFromRecord).filter(Boolean))).sort((a, b) => a - b);
+          let coordinateRows = [];
+
+          if (mapMode.value === "samples") {
+            let bioLookup = null;
+            try {
+              bioLookup = await ensureBioSampleCache();
+            } catch (err) {
+              console.warn("Unable to load BioSample cache for sample-coordinate map", err);
+            }
+            coordinateRows = runs.map((rec) => {
+              const coords = extractCoordinates(rec, bioLookup);
+              if (!coords) return null;
+              const country = window.UrbanScopeDB.getCountry(rec);
+              const city = window.UrbanScopeDB.getCity(rec);
+              const biosample = window.UrbanScopeDB.getBioSample(rec);
+              const run = rec?.srr || rec?.runinfo_row?.Run || "";
+              return {
+                lat: coords.lat,
+                lon: coords.lon,
+                country,
+                city,
+                biosample,
+                run,
+                project: window.UrbanScopeDB.getBioProject(rec),
+                runCount: 1,
+                label: [country, city, biosample || run].filter(Boolean).join(" • ")
+              };
+            }).filter(Boolean);
+          }
+
+          const coordinateCountries = aggregateCountriesFromCoordinates(coordinateRows.filter((row) => known(row.country)));
+
+          subtitle.textContent = mapMode.value === "samples"
+            ? `Showing ${fmt(coordinateRows.length)} coordinate-resolved samples from ${fmt(runs.length)} filtered runs${visibleYears.length ? ` between ${visibleYears[0]} and ${visibleYears[visibleYears.length - 1]}` : ""}.`
+            : `Showing ${fmt(coordinateCountries.length)} coordinate-backed country hubs from ${fmt(runs.length)} filtered runs${visibleYears.length ? ` between ${visibleYears[0]} and ${visibleYears[visibleYears.length - 1]}` : ""}. Zoom and pan to inspect regional detail.`;
+
+          metrics.innerHTML = `
+            <div class="metric"><span class="label">${mapMode.value === "samples" ? "Coordinate Samples" : "Mapped Runs"}</span><span class="value">${fmt(mapMode.value === "samples" ? coordinateRows.length : runs.length)}</span><span class="note">${mapMode.value === "samples" ? "Runs with usable BioSample latitude and longitude" : "Runs in the current filtered map view"}</span></div>
+            <div class="metric"><span class="label">Countries</span><span class="value">${fmt(countries.length)}</span><span class="note">Resolved country labels passing the current filters</span></div>
+            <div class="metric"><span class="label">BioProjects</span><span class="value">${fmt(projectCount)}</span><span class="note">Distinct BioProjects represented in the filtered map</span></div>
+            <div class="metric"><span class="label">${mapMode.value === "samples" ? "Largest Country Bucket" : "Largest Bucket"}</span><span class="value" style="font-size:22px">${topCountry ? topCountry.name : "N/A"}</span><span class="note">${topCountry ? fmt(topCountry.count) + " runs" : "No countries available"}</span></div>
+          `;
+
+          renderCountryList(countryList, countries);
+
+          if (mapMode.value === "samples") {
+            if (!coordinateRows.length) {
+              subtitle.textContent = "No sample coordinates match the current filters.";
+              return;
+            }
+            drawSampleMarkers(coordinateRows);
+            if (forceRegionFit || regionSelect.value !== lastRegionValue) applyRegionView();
+            lastRegionValue = regionSelect.value;
+            return;
+          }
+
+          if (!coordinateCountries.length) {
+            subtitle.textContent = "No coordinate-backed country aggregates match the current filters.";
+            return;
+          }
+          drawCountryMarkers(coordinateCountries);
+          if (forceRegionFit || regionSelect.value !== lastRegionValue) applyRegionView();
+          lastRegionValue = regionSelect.value;
+        }
+
+        [mapMode, regionSelect, startYear, endYear].forEach((el) => el.addEventListener("change", draw));
+        countrySearch.addEventListener("input", draw);
+        resetMap.addEventListener("click", () => {
+          mapMode.value = "samples";
+          regionSelect.value = "world";
+          startYear.value = "";
+          endYear.value = "";
+          countrySearch.value = "";
+          draw(true);
+        });
+        fullscreenMap.addEventListener("click", async () => {
+          if (!document.fullscreenElement) {
+            await mapStage.requestFullscreen();
+            mapStage.classList.add("is-fullscreen");
+            fullscreenMap.textContent = "Exit Fullscreen";
+          } else {
+            await document.exitFullscreen();
+            mapStage.classList.remove("is-fullscreen");
+            fullscreenMap.textContent = "Fullscreen";
+          }
+          map.invalidateSize();
+          draw(true);
+        });
+        document.addEventListener("fullscreenchange", () => {
+          const active = document.fullscreenElement === mapStage;
+          mapStage.classList.toggle("is-fullscreen", active);
+          fullscreenMap.textContent = active ? "Exit Fullscreen" : "Fullscreen";
+          map.invalidateSize();
+          draw(true);
+        });
+        window.addEventListener("resize", () => {
+          map.invalidateSize();
+          draw(false);
+        });
+
+        draw(true);
+      } catch (err) {
+        subtitle.textContent = err.message;
+        metrics.innerHTML = `<div class="metric"><span class="label">Status</span><span class="value">Unavailable</span><span class="note">${err.message}</span></div>`;
+      }
+    })();
+  </script>
+</body>
+</html>

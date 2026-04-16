@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>UrbanScope — Data Access</title>
+  <meta name="description" content="Download locations, schema guidance, and reuse notes for the UrbanScope database." />
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon_16.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon_32.png" />
+  <link rel="icon" href="./assets/favicon.ico" />
+  <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
+  <meta property="og:image" content="./assets/urbanscope_logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/site.css" />
+</head>
+<body>
+  <div class="site-shell">
+    <nav class="site-nav">
+      <a class="site-brand" href="./index.html">
+        <div class="site-brand-mark"><img src="./assets/urbanscope_logo.png" alt="UrbanScope logo" /></div>
+        <div class="site-brand-copy">
+          <strong>UrbanScope</strong>
+          <span>Urban environmental omics resource</span>
+        </div>
+      </a>
+      <div class="site-links">
+        <a href="./index.html">Home</a>
+        <a href="./explorer.html">Explorer</a>
+        <a href="./about.html">About</a>
+        <a href="./methodology.html">Methodology</a>
+        <a class="is-active" href="./data.html">Data Access</a>
+        <a href="./analytics.html">Analytics</a>
+        <a href="./explore.html">Interactive Charts</a>
+        <a href="./global-map.html">Global Map</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div class="eyebrow">Downloads And Schema</div>
+      <h1>UrbanScope exposes its database as browser-friendly pages and machine-readable public artifacts.</h1>
+      <p>
+        This page documents where the current release lives, what the main files contain, and how collaborators can reuse the public
+        records without reverse-engineering the website.
+      </p>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Primary Public Files</h2>
+        <p>All links below are versioned with the repository and intended to support direct download, inspection, and local scripting.</p>
+      </div>
+      <div class="table-shell panel" id="primaryFilesTable" style="padding:0"></div>
+    </section>
+
+    <section class="section">
+      <div class="split">
+        <div class="panel">
+          <div class="kicker">Schema Guide</div>
+          <div class="info-list">
+            <div class="info-item">
+              <strong>Accession anchors</strong>
+              SRR, BioProject, and BioSample identifiers function as the main join points across records and external repository lookups.
+            </div>
+            <div class="info-item">
+              <strong>Run metadata</strong>
+              The nested <span class="mono">runinfo_row</span> object carries SRA-derived values such as run date, library strategy, center, and platform.
+            </div>
+            <div class="info-item">
+              <strong>Location metadata</strong>
+              The nested <span class="mono">geo</span> object stores parsed country and city labels and any raw string retained during enrichment.
+            </div>
+            <div class="info-item">
+              <strong>Assay metadata</strong>
+              The nested <span class="mono">assay</span> object stores UrbanScope’s higher-level assay classification for filtering and analytics.
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="kicker">Reuse Guidance</div>
+          <div class="info-list">
+            <div class="info-item">
+              <strong>Prefer manifest-driven loading</strong>
+              Scripts should read the manifest first so they can accommodate future chunk-count changes without hardcoding file names.
+            </div>
+            <div class="info-item">
+              <strong>Expect imperfect location data</strong>
+              Downstream analyses that depend on geographic precision should explicitly filter or manually verify unresolved or ambiguous entries.
+            </div>
+            <div class="info-item">
+              <strong>Retain accession provenance</strong>
+              When exporting subsets, keep the original accessions so any study can be traced back to its source repository pages.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Downloading Raw FASTQ Files</h2>
+        <p>UrbanScope now supports search-derived dataset bundling so filtered results can be converted into raw-read download inputs.</p>
+      </div>
+      <div class="card-grid">
+        <article class="panel">
+          <h3>From the main explorer</h3>
+          <p>
+            Use the filters in the main database explorer, then export one of the dataset bundle options:
+            <span class="mono">Bundle matched runs (JSON)</span>,
+            <span class="mono">SRR accession list</span>, or
+            <span class="mono">FASTQ download script</span>.
+          </p>
+        </article>
+        <article class="panel">
+          <h3>FASTQ script output</h3>
+          <p>
+            The FASTQ script is generated from the current matched search results and uses SRA Toolkit commands
+            <span class="mono">prefetch</span> and <span class="mono">fasterq-dump</span> to retrieve raw reads for the exported SRR accessions.
+          </p>
+        </article>
+        <article class="panel">
+          <h3>Bundle reuse</h3>
+          <p>
+            The JSON bundle preserves the search filters, project summaries, and run-level accessions so a dataset cohort can be archived,
+            shared with collaborators, or re-used later without reconstructing the same search by hand.
+          </p>
+        </article>
+      </div>
+      <div class="panel" style="margin-top:16px">
+        <div class="kicker">Typical Workflow</div>
+        <p>
+          Search for a cohort in the explorer, export the matched SRR bundle, and then run the generated shell script on a machine with
+          SRA Toolkit installed. This gives UrbanScope a practical bridge from searchable metadata to raw FASTQ retrieval.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Suggested Citation And Use Statement</h2>
+        <p>The exact manuscript citation can be added later, but the site can still provide a reviewer-friendly placeholder now.</p>
+      </div>
+      <div class="panel">
+        <p>
+          Users of UrbanScope should cite both the UrbanScope resource and the original repositories or studies associated with any reused
+          BioProject, BioSample, or SRR accessions. UrbanScope reorganizes public metadata for discovery and comparison; it does not replace
+          the need to cite primary data generators.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Current Release Snapshot</h2>
+        <p>This panel reads the live manifest so the download page stays aligned with the published database.</p>
+      </div>
+      <div class="metric-grid" id="releaseStats">
+        <div class="metric"><span class="label">Loading</span><span class="value">...</span><span class="note">Reading release metadata</span></div>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      Direct file links on this page refer to the public release bundled with the site. Update the descriptions here whenever the schema or distribution layout changes.
+    </footer>
+  </div>
+
+  <script src="./assets/db.js"></script>
+  <script>
+    (async () => {
+      const container = document.getElementById("releaseStats");
+      const primaryFilesTable = document.getElementById("primaryFilesTable");
+
+      function formatTimestamp(value) {
+        if (!value) return "Unknown";
+        const d = new Date(value);
+        if (Number.isNaN(d.getTime())) return value;
+        return d.toLocaleString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "numeric",
+          minute: "2-digit",
+          timeZoneName: "short"
+        });
+      }
+
+      function renderTable(target, columns, rows, emptyMessage) {
+        const body = rows.length
+          ? rows.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`).join("")
+          : `<tr><td colspan="${columns.length}" class="muted">${emptyMessage}</td></tr>`;
+        target.innerHTML = `
+          <table>
+            <thead>
+              <tr>${columns.map((label) => `<th>${label}</th>`).join("")}</tr>
+            </thead>
+            <tbody>${body}</tbody>
+          </table>
+        `;
+      }
+
+      renderTable(primaryFilesTable, ["File", "Purpose", "Audience"], [], "Loading public files...");
+
+      try {
+        const manifest = await window.UrbanScopeDB.fetchManifest();
+        const firstPart = (manifest.parts || [])[0] || "srr_records_part000.json";
+        const partLabel = (manifest.parts || []).length > 1
+          ? `<a href="./db/${firstPart}"><span class="mono">docs/db/${firstPart}</span></a> and ${(manifest.parts || []).length - 1} companion part files`
+          : `<a href="./db/${firstPart}"><span class="mono">docs/db/${firstPart}</span></a>`;
+
+        container.innerHTML = `
+          <div class="metric"><span class="label">Generated</span><span class="value" style="font-size:22px">${formatTimestamp(manifest.generated_utc || manifest.generated || "")}</span><span class="note">Timestamp stored in the public manifest</span></div>
+          <div class="metric"><span class="label">Total SRR Records</span><span class="value">${window.UrbanScopeDB.formatNumber(manifest.total_records || 0)}</span><span class="note">Records distributed across the published part files</span></div>
+          <div class="metric"><span class="label">Part Files</span><span class="value">${window.UrbanScopeDB.formatNumber((manifest.parts || []).length)}</span><span class="note">Chunked JSON files used by the explorer and analytics pages</span></div>
+          <div class="metric"><span class="label">Release Years</span><span class="value">${window.UrbanScopeDB.formatNumber((manifest.years || []).length)}</span><span class="note">Distinct years represented in the current manifest summary</span></div>
+        `;
+
+        renderTable(primaryFilesTable,
+          ["File", "Purpose", "Audience"],
+          [
+            [
+              `<a href="./db/srr_records_manifest.json"><span class="mono">docs/db/srr_records_manifest.json</span></a>`,
+              "Manifest describing generation time, part files, total SRR record count, and release-year summary.",
+              "Programmatic loaders and release sanity checks."
+            ],
+            [
+              partLabel,
+              "Chunked SRR-level database records consumed by the public web interface and reusable in local analysis.",
+              "Developers, analysts, and meta-analysis workflows."
+            ],
+            [
+              `<a href="./db/srr_index.json"><span class="mono">docs/db/srr_index.json</span></a>`,
+              "Compact release summary with total records, part list, and generation timestamp.",
+              "Quick metadata checks and lightweight status polling."
+            ],
+            [
+              `<a href="./db/bioprojects.json"><span class="mono">docs/db/bioprojects.json</span></a>`,
+              "Cached BioProject-derived enrichments when available for the current build.",
+              "Project-level reuse and provenance review."
+            ],
+            [
+              `<a href="./latest_srr.json"><span class="mono">docs/latest_srr.json</span></a>`,
+              "Current lightweight feed of recent records for dashboard-level latest-additions style usage.",
+              "Status widgets and monitoring views."
+            ]
+          ],
+          "No public file entries are available."
+        );
+      } catch (err) {
+        container.innerHTML = `<div class="metric"><span class="label">Status</span><span class="value">Unavailable</span><span class="note">${err.message}</span></div>`;
+        renderTable(primaryFilesTable, ["File", "Purpose", "Audience"], [], err.message);
+      }
+    })();
+  </script>
+</body>
+</html>
