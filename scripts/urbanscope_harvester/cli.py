@@ -5,7 +5,7 @@ from typing import Any, Dict, List
 from .config import (
     DEFAULT_QUERY, QUERY_PROFILES, DEFAULT_QUERY_PROFILE_NAMES,
     BIOSAMPLE_CACHE, BIOPROJECT_CACHE, BIOPROJECT_UID_CACHE, AI_CURATION_CACHE, OPENAI_MODEL, OPENAI_API_KEY,
-    DOCS_LATEST_DEBUG, DATA_DIR
+    DOCS_LATEST_DEBUG, DATA_DIR, DB_DIR
 )
 from .utils import ensure_dirs, load_set, read_json, write_json, append_jsonl, iter_jsonl_glob
 from .ncbi import esearch_recent, esearch_day, esearch_history, esummary_sra
@@ -326,6 +326,23 @@ def run():
                         break
                 if args.max_records and len(records) >= args.max_records:
                     break
+
+            if not records:
+                manifest = read_json(f"{DB_DIR}/srr_records_manifest.json", {})
+                parts = manifest.get("parts", []) if isinstance(manifest, dict) else []
+                for part in parts:
+                    part_path = part.get("path", "") if isinstance(part, dict) else ""
+                    if not part_path:
+                        continue
+                    chunk = read_json(part_path, [])
+                    if not isinstance(chunk, list):
+                        continue
+                    for rec in chunk:
+                        records.append(rec)
+                        if args.max_records and len(records) >= args.max_records:
+                            break
+                    if args.max_records and len(records) >= args.max_records:
+                        break
 
             ai_counts = curate_records(
                 records,
