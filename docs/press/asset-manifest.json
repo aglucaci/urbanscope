@@ -1,0 +1,46 @@
+{
+  "project": "UMDB",
+  "expanded_name": "Urban Microbiome Database",
+  "preferred_logo": "umdb-logo-primary-horizontal-transparent.png",
+  "assets": [
+    {
+      "file": "umdb-logo-primary-horizontal-transparent.png",
+      "role": "primary_logo",
+      "background": "transparent",
+      "recommended_use": "websites, slides, posters, general press use"
+    },
+    {
+      "file": "umdb-logo-primary-horizontal-solid.png",
+      "role": "primary_logo_alt",
+      "background": "solid",
+      "recommended_use": "opaque export fallback"
+    },
+    {
+      "file": "umdb-logo-icon-preview.png",
+      "role": "small_format_preview",
+      "background": "transparent",
+      "recommended_use": "icon-scale preview and compact placements"
+    },
+    {
+      "file": "umdb-logo-variant-sheet.png",
+      "role": "reference_sheet",
+      "background": "white",
+      "recommended_use": "internal comparison and archival reference"
+    },
+    {
+      "file": "umdb-logo-original-concept.png",
+      "role": "archival_concept",
+      "background": "white",
+      "recommended_use": "historical reference"
+    }
+  ],
+  "palette": {
+    "deep_navy": "#09111B",
+    "panel_navy": "#101A29",
+    "teal": "#4EC5A8",
+    "sky": "#73A7FF",
+    "amber": "#FFCF70",
+    "text_light": "#EDF3FF",
+    "text_muted": "#98A8C0"
+  }
+}

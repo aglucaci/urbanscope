@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>UMDB — Press Kit</title>
+  <meta name="description" content="Official UMDB logo downloads, brand guidance, palette, and media boilerplate." />
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon_16.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon_32.png" />
+  <link rel="icon" href="./assets/favicon.ico" />
+  <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
+  <meta property="og:image" content="./press/umdb-logo-primary-horizontal-transparent.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/site.css" />
+  <style>
+    .press-grid{
+      display:grid;
+      gap:16px;
+      grid-template-columns:1.25fr .75fr;
+    }
+    .asset-grid{
+      display:grid;
+      gap:16px;
+      grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+    }
+    .asset-preview{
+      border-radius:18px;
+      border:1px solid var(--line);
+      background:
+        linear-gradient(45deg, rgba(255,255,255,.03) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.03) 75%),
+        linear-gradient(45deg, rgba(255,255,255,.03) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.03) 75%),
+        rgba(255,255,255,.015);
+      background-position:0 0, 14px 14px;
+      background-size:28px 28px;
+      min-height:180px;
+      display:grid;
+      place-items:center;
+      padding:22px;
+    }
+    .asset-preview img{
+      max-width:100%;
+      max-height:140px;
+      object-fit:contain;
+    }
+    .download-list{
+      display:grid;
+      gap:10px;
+      margin-top:14px;
+    }
+    .download-link{
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      align-items:center;
+      text-decoration:none;
+      padding:12px 14px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:rgba(255,255,255,.025);
+    }
+    .download-link span:last-child{
+      color:var(--muted);
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .swatch-grid{
+      display:grid;
+      gap:12px;
+      grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));
+      margin-top:12px;
+    }
+    .swatch{
+      border-radius:18px;
+      overflow:hidden;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.02);
+    }
+    .swatch-chip{
+      height:72px;
+    }
+    .swatch-copy{
+      padding:12px 14px;
+      font-size:13px;
+    }
+    .quote-box{
+      white-space:pre-wrap;
+      font-size:15px;
+      color:#d9e4f4;
+    }
+    @media (max-width: 980px){
+      .press-grid{
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="site-shell">
+    <nav class="site-nav">
+      <a class="site-brand" href="./index.html">
+        <div class="site-brand-mark"><img src="./assets/umdb-logo.png" alt="UMDB logo" /></div>
+        <div class="site-brand-copy">
+          <strong>UMDB</strong>
+          <span>Urban Microbiome Database</span>
+        </div>
+      </a>
+      <div class="site-links">
+        <a href="./index.html">Home</a>
+        <a href="./explorer.html">Explorer</a>
+        <a href="./about.html">About</a>
+        <a href="./methodology.html">Methodology</a>
+        <a href="./data.html">Data Access</a>
+        <a class="is-active" href="./press-kit.html">Press Kit</a>
+        <a href="./analytics.html">Analytics</a>
+        <a href="./explore.html">Interactive Charts</a>
+        <a href="./global-map.html">Global Map</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div class="eyebrow">Media Assets</div>
+      <h1>UMDB press kit with approved logos, palette, boilerplate, and usage guidance.</h1>
+      <p>
+        This page packages the current public-facing identity for articles, presentations, repository listings, talks, posters,
+        and general media use. The preferred file for most uses is the transparent horizontal logo.
+      </p>
+      <div class="hero-actions">
+        <a class="button-link primary" href="./press/umdb-logo-primary-horizontal-transparent.png">Download Primary Logo</a>
+        <a class="button-link" href="./press/umdb-press-kit.zip">Download Full Press Kit</a>
+        <a class="button-link" href="./press/brand-guide.md">Download Brand Guide</a>
+        <a class="button-link" href="./press/asset-manifest.json">Asset Manifest</a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="press-grid">
+        <div class="panel">
+          <div class="section-header">
+            <h2>Primary Logo</h2>
+            <p>The recommended lockup for most editorial, web, and slide use.</p>
+          </div>
+          <div class="asset-preview">
+            <img src="./press/umdb-logo-primary-horizontal-transparent.png" alt="UMDB primary logo" />
+          </div>
+          <div class="download-list">
+            <a class="download-link" href="./press/umdb-logo-primary-horizontal-transparent.png"><span>Transparent PNG</span><span>Preferred</span></a>
+            <a class="download-link" href="./press/umdb-logo-primary-horizontal-solid.png"><span>Solid-background PNG</span><span>Fallback</span></a>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="section-header">
+            <h2>Quick Facts</h2>
+          </div>
+          <div class="info-list">
+            <div class="info-item">
+              <strong>Official Name</strong>
+              UMDB (Urban Microbiome Database)
+            </div>
+            <div class="info-item">
+              <strong>Preferred Reference</strong>
+              Use the full name once, then use UMDB on subsequent reference.
+            </div>
+            <div class="info-item">
+              <strong>Preferred Asset</strong>
+              <span class="mono">umdb-logo-primary-horizontal-transparent.png</span>
+            </div>
+            <div class="info-item">
+              <strong>Avoid</strong>
+              Recoloring, stretching, adding glows, or referring to the public identity as UrbanScope.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Downloads</h2>
+        <p>Approved files for press, documentation, web embeds, and archival reference.</p>
+      </div>
+      <div class="asset-grid">
+        <article class="panel">
+          <div class="kicker">Bundle</div>
+          <h3>Full Press Kit Archive</h3>
+          <p>Single ZIP containing the approved files, guide, manifest, and boilerplate.</p>
+          <div class="download-list">
+            <a class="download-link" href="./press/umdb-press-kit.zip"><span>ZIP</span><span>All Assets</span></a>
+          </div>
+        </article>
+        <article class="panel">
+          <div class="kicker">Primary</div>
+          <h3>Transparent Horizontal Logo</h3>
+          <p>Best default choice for media and page layouts.</p>
+          <div class="download-list">
+            <a class="download-link" href="./press/umdb-logo-primary-horizontal-transparent.png"><span>PNG</span><span>Transparent</span></a>
+          </div>
+        </article>
+        <article class="panel">
+          <div class="kicker">Fallback</div>
+          <h3>Solid Export</h3>
+          <p>Use when transparency is not supported by the target workflow.</p>
+          <div class="download-list">
+            <a class="download-link" href="./press/umdb-logo-primary-horizontal-solid.png"><span>PNG</span><span>Solid</span></a>
+          </div>
+        </article>
+        <article class="panel">
+          <div class="kicker">Reference</div>
+          <h3>Variant Sheet</h3>
+          <p>Internal comparison view showing alternate directions explored for the mark.</p>
+          <div class="download-list">
+            <a class="download-link" href="./press/umdb-logo-variant-sheet.png"><span>PNG</span><span>Reference</span></a>
+          </div>
+        </article>
+        <article class="panel">
+          <div class="kicker">Archive</div>
+          <h3>Original Concept</h3>
+          <p>Historical concept retained for project recordkeeping and design provenance.</p>
+          <div class="download-list">
+            <a class="download-link" href="./press/umdb-logo-original-concept.png"><span>PNG</span><span>Archive</span></a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Palette</h2>
+        <p>The logo and site currently lean on a navy, teal, blue, and amber scientific palette.</p>
+      </div>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-chip" style="background:#09111B"></div><div class="swatch-copy"><strong>Deep Navy</strong><br /><span class="mono">#09111B</span></div></div>
+        <div class="swatch"><div class="swatch-chip" style="background:#101A29"></div><div class="swatch-copy"><strong>Panel Navy</strong><br /><span class="mono">#101A29</span></div></div>
+        <div class="swatch"><div class="swatch-chip" style="background:#4EC5A8"></div><div class="swatch-copy"><strong>Teal</strong><br /><span class="mono">#4EC5A8</span></div></div>
+        <div class="swatch"><div class="swatch-chip" style="background:#73A7FF"></div><div class="swatch-copy"><strong>Sky</strong><br /><span class="mono">#73A7FF</span></div></div>
+        <div class="swatch"><div class="swatch-chip" style="background:#FFCF70"></div><div class="swatch-copy"><strong>Amber</strong><br /><span class="mono">#FFCF70</span></div></div>
+        <div class="swatch"><div class="swatch-chip" style="background:#EDF3FF"></div><div class="swatch-copy"><strong>Light Text</strong><br /><span class="mono">#EDF3FF</span></div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="press-grid">
+        <div class="panel">
+          <div class="section-header">
+            <h2>Usage Notes</h2>
+          </div>
+          <div class="info-list">
+            <div class="info-item"><strong>Use clear space.</strong> Leave at least the height of the `U` around the mark.</div>
+            <div class="info-item"><strong>Scale proportionally.</strong> Do not stretch, crop, rotate, or stack the lockup into a different arrangement.</div>
+            <div class="info-item"><strong>Preserve contrast.</strong> Avoid noisy or low-contrast placements that reduce legibility.</div>
+            <div class="info-item"><strong>Keep the name stable.</strong> Use UMDB and Urban Microbiome Database, not UrbanScope.</div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="section-header">
+            <h2>Boilerplate</h2>
+            <p>Short copy suitable for slides, articles, program blurbs, or repository descriptions.</p>
+          </div>
+          <div class="quote-box">UMDB (Urban Microbiome Database) is a public-facing scientific resource for discovering, organizing, and exploring urban microbiome and related environmental sequencing metadata from public repositories. The project emphasizes searchable BioProject-level discovery, run-level provenance, browser-based analytics, and reusable public release artifacts for downstream analysis, comparison, and study assembly.</div>
+          <p class="footer-note"><a href="./press/boilerplate.txt">Download plain-text boilerplate</a></p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      The downloadable press files on this page live under <span class="mono">docs/press/</span> and are intended to be the repo’s public-facing branding bundle.
+    </footer>
+  </div>
+</body>
+</html>
