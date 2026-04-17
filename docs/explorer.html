@@ -336,6 +336,53 @@
       font-size:13px;
       max-width:760px;
     }
+    .loadBanner{
+      margin-bottom:12px;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid rgba(122,162,208,.24);
+      background:linear-gradient(135deg, rgba(53,92,125,.18), rgba(24,36,53,.96));
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .loadBanner[hidden]{
+      display:none;
+    }
+    .loadBannerTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .loadBannerTitle{
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--fg);
+    }
+    .loadBannerStatus{
+      font-size:12px;
+      color:var(--muted);
+    }
+    .loadBanner .bar{
+      height:14px;
+      width:100%;
+    }
+    .loadBannerMeta{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .loadBannerMeta strong{
+      color:var(--fg);
+    }
     .resultsMetrics{
       display:grid;
       grid-template-columns:repeat(3, minmax(0, 1fr));
@@ -454,7 +501,7 @@
         <a href="./methodology.html">Methodology</a>
         <a href="./data.html">Data Access</a>
         <a href="./analytics.html">Analytics</a>
-        <a href="./explore.html">Interactive Charts</a>
+        <a href="./analytics.html">Analytics</a>
         <a href="./global-map.html">Global Map</a>
         <button class="modeToggle" id="modeToggle" type="button" aria-label="Toggle light and dark mode">Dark Mode</button>
       </div>
@@ -652,6 +699,18 @@
           </div>
         </div>
 
+        <div class="loadBanner" id="loadBanner">
+          <div class="loadBannerTop">
+            <div class="loadBannerTitle">Explorer Loading Progress</div>
+            <div class="loadBannerStatus" id="loadBannerStatus">Preparing dataset...</div>
+          </div>
+          <div class="bar" aria-hidden="true"><div id="loadBannerProg"></div></div>
+          <div class="loadBannerMeta">
+            <div id="loadBannerDetail">Starting Explorer load...</div>
+            <div><strong id="loadBannerPct">0%</strong></div>
+          </div>
+        </div>
+
         <div class="resultsMetrics">
           <div class="resultMetric">
             <span class="label">Matched BioProjects</span>
@@ -711,6 +770,7 @@
     </div>
   </div>
 
+<script src="./assets/db.js"></script>
 <script>
 (() => {
   // --------- Config ----------
@@ -741,6 +801,11 @@
   const pLoad = el("pLoad");
   const pPct = el("pPct");
   const pMsg = el("pMsg");
+  const loadBanner = el("loadBanner");
+  const loadBannerProg = el("loadBannerProg");
+  const loadBannerPct = el("loadBannerPct");
+  const loadBannerStatus = el("loadBannerStatus");
+  const loadBannerDetail = el("loadBannerDetail");
   let pEta = el("pEta");
 
   if (!pEta && pMsg?.parentNode) {
@@ -886,11 +951,22 @@
         ? `${remaining} part${remaining === 1 ? "" : "s"} remaining`
         : "All parts loaded";
     }
+    if (loadBannerProg) loadBannerProg.style.width = `${pct}%`;
+    if (loadBannerPct) loadBannerPct.textContent = `${pct}%`;
+    if (loadBannerDetail) {
+      const remaining = Math.max((total || 0) - (done || 0), 0);
+      loadBannerDetail.textContent = remaining > 0
+        ? `${remaining} part${remaining === 1 ? "" : "s"} remaining in this load`
+        : "All Explorer data loaded";
+    }
   }
 
   function setMsg(html, cls="muted") {
     pMsg.className = "small " + cls;
     pMsg.innerHTML = html;
+    if (loadBannerStatus) {
+      loadBannerStatus.textContent = (html || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+    }
   }
 
   function getBPAcc(rec) {
@@ -1756,6 +1832,16 @@
         setMsg(`<span class="ok">Ready.</span> Loaded ${loadedRecords.toLocaleString()} SRR records.`, "ok");
       }
 
+      if (loadBanner) {
+        if (status === "ready") {
+          window.setTimeout(() => {
+            if (loadBanner) loadBanner.hidden = true;
+          }, 800);
+        } else {
+          loadBanner.hidden = false;
+        }
+      }
+
       applyFilters();
     };
 
@@ -1828,6 +1914,7 @@
     };
 
     btnStop.disabled = false;
+    if (loadBanner) loadBanner.hidden = false;
     refreshLoadUI();
 
     if (loadAll) {
@@ -2148,7 +2235,7 @@ echo "[UMDB] completed FASTQ export into $OUTDIR/fastq"
       const savedTheme = localStorage.getItem("umdb-explorer-theme");
       applyTheme(savedTheme === "light" ? "light" : "dark");
       setCollapsed(refineCard, refineToggle, refineToggleIcon, false);
-      setCollapsed(actionsCard, actionsToggle, actionsToggleIcon, true);
+      setCollapsed(actionsCard, actionsToggle, actionsToggleIcon, false);
       const mf = await loadManifest();
       pGenerated.textContent = `Generated: ${formatTimestamp(mf.generated_utc || mf.generated || "")}`;
       pTotals.textContent = `Total SRR records: ${(mf.total_records ?? mf.total_srr_records ?? "—").toLocaleString?.() ?? (mf.total_records ?? mf.total_srr_records ?? "—")}`;
