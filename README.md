@@ -9,7 +9,7 @@ The repository has two jobs:
 
 The current public site is available at:
 
-https://aglucaci.github.io/urbanscope/
+https://aglucaci.github.io/umdb/
 
 ## What This Repository Is
 

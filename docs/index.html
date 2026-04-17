@@ -58,7 +58,7 @@
 
     <section class="section">
       <div class="section-header">
-        <h2>Why UrbanScope Exists</h2>
+        <h2>Why UMDB Exists</h2>
       </div>
       <div class="card-grid">
         <article class="panel">
@@ -160,7 +160,7 @@
           <div class="info-list">
             <div class="info-item">
               <strong>Human and machine access</strong>
-              UrbanScope supports browser exploration, JSON distribution, run bundling, and raw-read download preparation from one public interface.
+              UMDB supports browser exploration, JSON distribution, run bundling, and raw-read download preparation from one public interface.
             </div>
             <div class="info-item">
               <strong>Geography-aware views</strong>
@@ -172,7 +172,7 @@
     </section>
 
     <footer class="site-footer">
-      UrbanScope is a public, versioned urban environmental omics database built from repository metadata and presented as a dynamic scientific resource.
+      UMDB is a public, versioned urban environmental omics database built from repository metadata and presented as a dynamic scientific resource.
     </footer>
   </div>
 
@@ -217,8 +217,8 @@
       renderTable(snapshotTable, ["Feature", "What It Means", "Where To Explore It"], [], "Loading release snapshot...");
 
       try {
-        const { manifest, allRuns } = await window.UrbanScopeDB.fetchAllRuns();
-        const summary = window.UrbanScopeDB.summarize(allRuns);
+        const { manifest, allRuns } = await window.UMDBDB.fetchAllRuns();
+        const summary = window.UMDBDB.summarize(allRuns);
         const countries = summary.countries.filter((x) => x.name !== "(unknown)");
         const cities = summary.cities.filter((x) => x.name !== "(unknown)");
         const assays = summary.assays.filter((x) => x.name !== "Unknown");
@@ -228,15 +228,15 @@
         const largestProject = summary.projects.slice().sort((a, b) => b.runs.size - a.runs.size)[0];
 
         heroStats.innerHTML = `
-          <div class="metric"><span class="label">SRR Records</span><span class="value">${window.UrbanScopeDB.formatNumber(summary.totalRuns)}</span><span class="note">Run-level records in the current release</span></div>
-          <div class="metric"><span class="label">BioProjects</span><span class="value">${window.UrbanScopeDB.formatNumber(summary.totalProjects)}</span><span class="note">Project-level entries available for browsing</span></div>
-          <div class="metric"><span class="label">Countries</span><span class="value">${window.UrbanScopeDB.formatNumber(summary.totalCountries)}</span><span class="note">Resolved country labels in the current release</span></div>
+          <div class="metric"><span class="label">SRR Records</span><span class="value">${window.UMDBDB.formatNumber(summary.totalRuns)}</span><span class="note">Run-level records in the current release</span></div>
+          <div class="metric"><span class="label">BioProjects</span><span class="value">${window.UMDBDB.formatNumber(summary.totalProjects)}</span><span class="note">Project-level entries available for browsing</span></div>
+          <div class="metric"><span class="label">Countries</span><span class="value">${window.UMDBDB.formatNumber(summary.totalCountries)}</span><span class="note">Resolved country labels in the current release</span></div>
           <div class="metric"><span class="label">Geo Completeness</span><span class="value">${geoPct}%</span><span class="note">Runs with both country and city available</span></div>
         `;
 
         overviewMetrics.innerHTML = `
           <div class="metric"><span class="label">Generated</span><span class="value" style="font-size:22px">${formatTimestamp(manifest.generated_utc || manifest.generated || "")}</span><span class="note">Timestamp of the public release manifest</span></div>
-          <div class="metric"><span class="label">Resolved Cities</span><span class="value">${window.UrbanScopeDB.formatNumber(summary.totalCities)}</span><span class="note">Distinct city labels currently available</span></div>
+          <div class="metric"><span class="label">Resolved Cities</span><span class="value">${window.UMDBDB.formatNumber(summary.totalCities)}</span><span class="note">Distinct city labels currently available</span></div>
           <div class="metric"><span class="label">Assay Classes</span><span class="value" style="font-size:20px">${assays.slice(0, 6).map((x) => x.name).join(", ") || "Unavailable"}</span><span class="note">Observed assay categories in the current release${assays.length > 6 ? " with additional lower-frequency classes in the analytics view" : ""}</span></div>
           <div class="metric"><span class="label">Year Span</span><span class="value">${years.length ? years[0].name + " to " + years[years.length - 1].name : "NA"}</span><span class="note">Observed dated run years in the loaded records</span></div>
           <div class="metric"><span class="label">Download Paths</span><span class="value">${downloadPct}%</span><span class="note">Runs carrying a source download path</span></div>
@@ -247,17 +247,17 @@
           [
             [
               "Largest BioProject",
-              largestProject ? `${largestProject.accession} with ${window.UrbanScopeDB.formatNumber(largestProject.runs.size)} runs` : "Unavailable",
+              largestProject ? `${largestProject.accession} with ${window.UMDBDB.formatNumber(largestProject.runs.size)} runs` : "Unavailable",
               `<a href="./explorer.html">BioProject Explorer</a>`
             ],
             [
               "Top Country Bucket",
-              countries[0] ? `${countries[0].name} with ${window.UrbanScopeDB.formatNumber(countries[0].count)} runs` : "Unavailable",
+              countries[0] ? `${countries[0].name} with ${window.UMDBDB.formatNumber(countries[0].count)} runs` : "Unavailable",
               `<a href="./global-map.html">Global Map</a>`
             ],
             [
               "Top City Bucket",
-              cities[0] ? `${cities[0].name} with ${window.UrbanScopeDB.formatNumber(cities[0].count)} runs` : "Unavailable",
+              cities[0] ? `${cities[0].name} with ${window.UMDBDB.formatNumber(cities[0].count)} runs` : "Unavailable",
               `<a href="./explore.html">Interactive Charts</a>`
             ],
             [

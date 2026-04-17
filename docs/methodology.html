@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>UrbanScope — Methodology</title>
-  <meta name="description" content="Methods, provenance, enrichment logic, and caveats for the UrbanScope database." />
+  <title>UMDB — Methodology</title>
+  <meta name="description" content="Methods, provenance, enrichment logic, and caveats for the UMDB database." />
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon_16.png" />
   <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon_32.png" />
   <link rel="icon" href="./assets/favicon.ico" />
   <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
-  <meta property="og:image" content="./assets/urbanscope_logo.png" />
+  <meta property="og:image" content="./assets/UMDB_logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -19,9 +19,9 @@
   <div class="site-shell">
     <nav class="site-nav">
       <a class="site-brand" href="./index.html">
-        <div class="site-brand-mark"><img src="./assets/urbanscope_logo.png" alt="UrbanScope logo" /></div>
+        <div class="site-brand-mark"><img src="./assets/UMDB_logo.png" alt="UMDB logo" /></div>
         <div class="site-brand-copy">
-          <strong>UrbanScope</strong>
+          <strong>UMDB</strong>
           <span>Urban environmental omics resource</span>
         </div>
       </a>
@@ -41,7 +41,7 @@
       <div class="eyebrow">Methods And Provenance</div>
       <h1>Transparent derivation is part of the database, not an afterthought.</h1>
       <p>
-        UrbanScope ingests public sequencing metadata, preserves run-level provenance, enriches records with project and location
+        UMDB ingests public sequencing metadata, preserves run-level provenance, enriches records with project and location
         context, and republishes the result as versioned web artifacts. This page describes the current workflow in reviewer-facing terms.
       </p>
     </section>
@@ -140,11 +140,11 @@
           <div class="info-list" style="margin-top:12px">
             <div class="info-item">
               <strong>Search strategy</strong>
-              UrbanScope queries public NCBI-linked resources with one or more urban-environment query profiles rather than relying on a single keyword expression. This increases recall for studies described with different vocabulary.
+              UMDB queries public NCBI-linked resources with one or more urban-environment query profiles rather than relying on a single keyword expression. This increases recall for studies described with different vocabulary.
             </div>
             <div class="info-item">
               <strong>Primary execution commands</strong>
-              The harvester is driven through <span class="mono">python3 -m scripts.urbanscope_harvester.cli</span> with the main commands <span class="mono">crawl</span>, <span class="mono">daily</span>, <span class="mono">backfill-year</span>, and <span class="mono">curate-ai</span>.
+              The harvester is driven through <span class="mono">python3 -m scripts.UMDB_harvester.cli</span> with the main commands <span class="mono">crawl</span>, <span class="mono">daily</span>, <span class="mono">backfill-year</span>, and <span class="mono">curate-ai</span>.
             </div>
             <div class="info-item">
               <strong>Run-level accumulation</strong>
@@ -319,7 +319,7 @@
           <div class="info-list">
             <div class="info-item">
               <strong>Metadata inherit repository ambiguity</strong>
-              If the original public submission is incomplete or inconsistent, UrbanScope can expose that inconsistency but cannot fully repair it automatically.
+              If the original public submission is incomplete or inconsistent, UMDB can expose that inconsistency but cannot fully repair it automatically.
             </div>
             <div class="info-item">
               <strong>Geographic resolution is best-effort</strong>

@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>UrbanScope — Data Access</title>
-  <meta name="description" content="Download locations, schema guidance, and reuse notes for the UrbanScope database." />
+  <title>UMDB — Data Access</title>
+  <meta name="description" content="Download locations, schema guidance, and reuse notes for the UMDB database." />
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon_16.png" />
   <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon_32.png" />
   <link rel="icon" href="./assets/favicon.ico" />
   <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
-  <meta property="og:image" content="./assets/urbanscope_logo.png" />
+  <meta property="og:image" content="./assets/UMDB_logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -19,9 +19,9 @@
   <div class="site-shell">
     <nav class="site-nav">
       <a class="site-brand" href="./index.html">
-        <div class="site-brand-mark"><img src="./assets/urbanscope_logo.png" alt="UrbanScope logo" /></div>
+        <div class="site-brand-mark"><img src="./assets/UMDB_logo.png" alt="UMDB logo" /></div>
         <div class="site-brand-copy">
-          <strong>UrbanScope</strong>
+          <strong>UMDB</strong>
           <span>Urban environmental omics resource</span>
         </div>
       </a>
@@ -39,7 +39,7 @@
 
     <section class="hero">
       <div class="eyebrow">Downloads And Schema</div>
-      <h1>UrbanScope exposes its database as browser-friendly pages and machine-readable public artifacts.</h1>
+      <h1>UMDB exposes its database as browser-friendly pages and machine-readable public artifacts.</h1>
       <p>
         This page documents where the current release lives, what the main files contain, and how collaborators can reuse the public
         records without reverse-engineering the website.
@@ -73,7 +73,7 @@
             </div>
             <div class="info-item">
               <strong>Assay metadata</strong>
-              The nested <span class="mono">assay</span> object stores UrbanScope’s higher-level assay classification for filtering and analytics.
+              The nested <span class="mono">assay</span> object stores UMDB’s higher-level assay classification for filtering and analytics.
             </div>
             <div class="info-item">
               <strong>AI curation metadata</strong>
@@ -104,7 +104,7 @@
     <section class="section">
       <div class="section-header">
         <h2>Downloading Raw FASTQ Files</h2>
-        <p>UrbanScope now supports search-derived dataset bundling so filtered results can be converted into raw-read download inputs.</p>
+        <p>UMDB now supports search-derived dataset bundling so filtered results can be converted into raw-read download inputs.</p>
       </div>
       <div class="card-grid">
         <article class="panel">
@@ -135,7 +135,7 @@
         <div class="kicker">Typical Workflow</div>
         <p>
           Search for a cohort in the explorer, export the matched SRR bundle, and then run the generated shell script on a machine with
-          SRA Toolkit installed. This gives UrbanScope a practical bridge from searchable metadata to raw FASTQ retrieval.
+          SRA Toolkit installed. This gives UMDB a practical bridge from searchable metadata to raw FASTQ retrieval.
         </p>
       </div>
     </section>
@@ -147,8 +147,8 @@
       </div>
       <div class="panel">
         <p>
-          Users of UrbanScope should cite both the UrbanScope resource and the original repositories or studies associated with any reused
-          BioProject, BioSample, or SRR accessions. UrbanScope reorganizes public metadata for discovery and comparison; it does not replace
+          Users of UMDB should cite both the UMDB resource and the original repositories or studies associated with any reused
+          BioProject, BioSample, or SRR accessions. UMDB reorganizes public metadata for discovery and comparison; it does not replace
           the need to cite primary data generators.
         </p>
       </div>
@@ -206,7 +206,7 @@
       renderTable(primaryFilesTable, ["File", "Purpose", "Audience"], [], "Loading public files...");
 
       try {
-        const manifest = await window.UrbanScopeDB.fetchManifest();
+        const manifest = await window.UMDBDB.fetchManifest();
         const firstPart = (manifest.parts || [])[0] || "srr_records_part000.json";
         const partLabel = (manifest.parts || []).length > 1
           ? `<a href="./db/${firstPart}"><span class="mono">docs/db/${firstPart}</span></a> and ${(manifest.parts || []).length - 1} companion part files`
@@ -214,9 +214,9 @@
 
         container.innerHTML = `
           <div class="metric"><span class="label">Generated</span><span class="value" style="font-size:22px">${formatTimestamp(manifest.generated_utc || manifest.generated || "")}</span><span class="note">Timestamp stored in the public manifest</span></div>
-          <div class="metric"><span class="label">Total SRR Records</span><span class="value">${window.UrbanScopeDB.formatNumber(manifest.total_records || 0)}</span><span class="note">Records distributed across the published part files</span></div>
-          <div class="metric"><span class="label">Part Files</span><span class="value">${window.UrbanScopeDB.formatNumber((manifest.parts || []).length)}</span><span class="note">Chunked JSON files used by the explorer and analytics pages</span></div>
-          <div class="metric"><span class="label">Release Years</span><span class="value">${window.UrbanScopeDB.formatNumber((manifest.years || []).length)}</span><span class="note">Distinct years represented in the current manifest summary</span></div>
+          <div class="metric"><span class="label">Total SRR Records</span><span class="value">${window.UMDBDB.formatNumber(manifest.total_records || 0)}</span><span class="note">Records distributed across the published part files</span></div>
+          <div class="metric"><span class="label">Part Files</span><span class="value">${window.UMDBDB.formatNumber((manifest.parts || []).length)}</span><span class="note">Chunked JSON files used by the explorer and analytics pages</span></div>
+          <div class="metric"><span class="label">Release Years</span><span class="value">${window.UMDBDB.formatNumber((manifest.years || []).length)}</span><span class="note">Distinct years represented in the current manifest summary</span></div>
         `;
 
         renderTable(primaryFilesTable,

@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>UrbanScope — Analytics</title>
-  <meta name="description" content="High-level analytics, summary tables, and JavaScript charts for the current UrbanScope database release." />
+  <title>UMDB — Analytics</title>
+  <meta name="description" content="High-level analytics, summary tables, and JavaScript charts for the current UMDB database release." />
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon_16.png" />
   <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon_32.png" />
   <link rel="icon" href="./assets/favicon.ico" />
   <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
-  <meta property="og:image" content="./assets/urbanscope_logo.png" />
+  <meta property="og:image" content="./assets/UMDB_logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -134,9 +134,9 @@
   <div class="site-shell">
     <nav class="site-nav">
       <a class="site-brand" href="./index.html">
-        <div class="site-brand-mark"><img src="./assets/urbanscope_logo.png" alt="UrbanScope logo" /></div>
+        <div class="site-brand-mark"><img src="./assets/UMDB_logo.png" alt="UMDB logo" /></div>
         <div class="site-brand-copy">
-          <strong>UrbanScope</strong>
+          <strong>UMDB</strong>
           <span>Urban environmental omics resource</span>
         </div>
       </a>
@@ -154,7 +154,7 @@
 
     <section class="hero">
       <div class="eyebrow">Database Summary</div>
-      <h1>High-level analytics for the current UrbanScope database release.</h1>
+      <h1>High-level analytics for the current UMDB database release.</h1>
       <p>
         This page summarizes the live database with manuscript-friendly metrics, useful JavaScript charts, and compact tables that
         describe scale, geography, assay composition, and project structure. Everything shown here is computed from the same public
@@ -184,7 +184,7 @@
             <p>Annual run counts provide a quick view of database growth over time.</p>
           </div>
           <div class="chart-shell">
-            <svg class="chart-svg tall" id="yearChart" viewBox="0 0 860 340" role="img" aria-label="UrbanScope runs by year"></svg>
+            <svg class="chart-svg tall" id="yearChart" viewBox="0 0 860 340" role="img" aria-label="UMDB runs by year"></svg>
           </div>
         </div>
         <div class="panel chart-panel">
@@ -193,7 +193,7 @@
             <p>Relative assay counts across the current run collection.</p>
           </div>
           <div class="chart-shell">
-            <svg class="chart-svg tall" id="assayChart" viewBox="0 0 560 340" role="img" aria-label="UrbanScope assay composition"></svg>
+            <svg class="chart-svg tall" id="assayChart" viewBox="0 0 560 340" role="img" aria-label="UMDB assay composition"></svg>
           </div>
           <div class="chart-title-note" id="assayNotes">Loading assay composition…</div>
         </div>
@@ -312,7 +312,7 @@
   <script src="./assets/db.js"></script>
   <script>
     function fmt(value) {
-      return window.UrbanScopeDB.formatNumber(value);
+      return window.UMDBDB.formatNumber(value);
     }
 
     function formatTimestamp(value) {
@@ -644,8 +644,8 @@
       const categorySearch = document.getElementById("categorySearch");
 
       try {
-        const { manifest, allRuns } = await window.UrbanScopeDB.fetchAllRuns();
-        const summary = window.UrbanScopeDB.summarize(allRuns);
+        const { manifest, allRuns } = await window.UMDBDB.fetchAllRuns();
+        const summary = window.UMDBDB.summarize(allRuns);
         const years = summary.years.slice().sort((a, b) => Number(a.name) - Number(b.name));
         const assays = summary.assays.slice();
         const countries = nonUnknown(summary.countries);

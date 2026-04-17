@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>UrbanScope — About</title>
-  <meta name="description" content="About UrbanScope, a public urban environmental omics resource and searchable database." />
+  <title>UMDB — About</title>
+  <meta name="description" content="About UMDB, a public urban environmental omics resource and searchable database." />
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon_16.png" />
   <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon_32.png" />
   <link rel="icon" href="./assets/favicon.ico" />
   <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
-  <meta property="og:image" content="./assets/urbanscope_logo.png" />
+  <meta property="og:image" content="./assets/UMDB_logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -19,9 +19,9 @@
   <div class="site-shell">
     <nav class="site-nav">
       <a class="site-brand" href="./index.html">
-        <div class="site-brand-mark"><img src="./assets/urbanscope_logo.png" alt="UrbanScope logo" /></div>
+        <div class="site-brand-mark"><img src="./assets/UMDB_logo.png" alt="UMDB logo" /></div>
         <div class="site-brand-copy">
-          <strong>UrbanScope</strong>
+          <strong>UMDB</strong>
           <span>Urban environmental omics resource</span>
         </div>
       </a>
@@ -39,9 +39,9 @@
 
     <section class="hero">
       <div class="eyebrow">Resource Overview</div>
-      <h1>UrbanScope frames the database as scientific infrastructure, not just a dashboard.</h1>
+      <h1>UMDB frames the database as scientific infrastructure, not just a dashboard.</h1>
       <p>
-        UrbanScope is a public-facing bioinformatics resource for discovering, contextualizing, and reusing urban environmental
+        UMDB is a public-facing bioinformatics resource for discovering, contextualizing, and reusing urban environmental
         sequencing datasets. It combines a searchable web interface with downloadable records and transparent methods so the
         resource can support manuscript review, comparative analysis, and downstream meta-analysis.
       </p>
@@ -124,7 +124,7 @@
     </section>
 
     <footer class="site-footer">
-      UrbanScope is distributed as a public scientific resource for research discovery and reuse. Source-linked records remain subject
+      UMDB is distributed as a public scientific resource for research discovery and reuse. Source-linked records remain subject
       to the metadata quality and submission practices of the original repositories.
     </footer>
   </div>
@@ -134,12 +134,12 @@
     (async () => {
       const stats = document.getElementById("heroStats");
       try {
-        const { allRuns } = await window.UrbanScopeDB.fetchAllRuns();
-        const summary = window.UrbanScopeDB.summarize(allRuns);
+        const { allRuns } = await window.UMDBDB.fetchAllRuns();
+        const summary = window.UMDBDB.summarize(allRuns);
         stats.innerHTML = `
-          <div class="metric"><span class="label">SRR Records</span><span class="value">${window.UrbanScopeDB.formatNumber(summary.totalRuns)}</span><span class="note">Public run-level records currently indexed</span></div>
-          <div class="metric"><span class="label">BioProjects</span><span class="value">${window.UrbanScopeDB.formatNumber(summary.totalProjects)}</span><span class="note">Aggregated project-level entries</span></div>
-          <div class="metric"><span class="label">Countries</span><span class="value">${window.UrbanScopeDB.formatNumber(summary.totalCountries)}</span><span class="note">Distinct country labels with resolved names</span></div>
+          <div class="metric"><span class="label">SRR Records</span><span class="value">${window.UMDBDB.formatNumber(summary.totalRuns)}</span><span class="note">Public run-level records currently indexed</span></div>
+          <div class="metric"><span class="label">BioProjects</span><span class="value">${window.UMDBDB.formatNumber(summary.totalProjects)}</span><span class="note">Aggregated project-level entries</span></div>
+          <div class="metric"><span class="label">Countries</span><span class="value">${window.UMDBDB.formatNumber(summary.totalCountries)}</span><span class="note">Distinct country labels with resolved names</span></div>
           <div class="metric"><span class="label">Geo-Resolved Runs</span><span class="value">${Math.round((summary.geoResolvedRuns / Math.max(summary.totalRuns, 1)) * 100)}%</span><span class="note">Runs with both country and city present</span></div>
         `;
       } catch (err) {

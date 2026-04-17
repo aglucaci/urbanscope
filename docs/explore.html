@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>UrbanScope — Interactive Charts</title>
-  <meta name="description" content="Interactive charts for exploring the UrbanScope database by year, country, city, and assay." />
+  <title>UMDB — Interactive Charts</title>
+  <meta name="description" content="Interactive charts for exploring the UMDB database by year, country, city, and assay." />
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon_16.png" />
   <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon_32.png" />
   <link rel="icon" href="./assets/favicon.ico" />
   <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
-  <meta property="og:image" content="./assets/urbanscope_logo.png" />
+  <meta property="og:image" content="./assets/UMDB_logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -107,9 +107,9 @@
   <div class="site-shell">
     <nav class="site-nav">
       <a class="site-brand" href="./index.html">
-        <div class="site-brand-mark"><img src="./assets/urbanscope_logo.png" alt="UrbanScope logo" /></div>
+        <div class="site-brand-mark"><img src="./assets/UMDB_logo.png" alt="UMDB logo" /></div>
         <div class="site-brand-copy">
-          <strong>UrbanScope</strong>
+          <strong>UMDB</strong>
           <span>Urban environmental omics resource</span>
         </div>
       </a>
@@ -226,7 +226,7 @@
 
   <script src="./assets/db.js"></script>
   <script>
-    const fmt = (value) => window.UrbanScopeDB.formatNumber(value);
+    const fmt = (value) => window.UMDBDB.formatNumber(value);
     const norm = (value) => (value ?? "").toString().trim();
     const known = (value) => {
       const s = norm(value).toLowerCase();
@@ -248,7 +248,7 @@
     }
 
     function yearFromRecord(rec) {
-      return window.UrbanScopeDB.yearFromRecord(rec);
+      return window.UMDBDB.yearFromRecord(rec);
     }
 
     function lineChart(svg, items) {
@@ -353,11 +353,11 @@
       const locationTable = document.getElementById("locationTable");
 
       try {
-        const { allRuns } = await window.UrbanScopeDB.fetchAllRuns();
+        const { allRuns } = await window.UMDBDB.fetchAllRuns();
         const allYears = Array.from(new Set(allRuns.map(yearFromRecord).filter(Boolean))).sort((a, b) => a - b);
-        const allCountries = Array.from(new Set(allRuns.map(window.UrbanScopeDB.getCountry).filter(known))).sort((a, b) => a.localeCompare(b));
-        const allCities = Array.from(new Set(allRuns.map(window.UrbanScopeDB.getCity).filter(known))).sort((a, b) => a.localeCompare(b));
-        const allAssays = Array.from(new Set(allRuns.map(window.UrbanScopeDB.getAssay).filter(Boolean))).sort((a, b) => a.localeCompare(b));
+        const allCountries = Array.from(new Set(allRuns.map(window.UMDBDB.getCountry).filter(known))).sort((a, b) => a.localeCompare(b));
+        const allCities = Array.from(new Set(allRuns.map(window.UMDBDB.getCity).filter(known))).sort((a, b) => a.localeCompare(b));
+        const allAssays = Array.from(new Set(allRuns.map(window.UMDBDB.getAssay).filter(Boolean))).sort((a, b) => a.localeCompare(b));
 
         fillSelect(startYear, allYears);
         fillSelect(endYear, allYears);
@@ -372,9 +372,9 @@
             const year = yearFromRecord(rec);
             if (minY != null && (year == null || year < minY)) return false;
             if (maxY != null && (year == null || year > maxY)) return false;
-            if (countrySelect.value && window.UrbanScopeDB.getCountry(rec) !== countrySelect.value) return false;
-            if (citySelect.value && window.UrbanScopeDB.getCity(rec) !== citySelect.value) return false;
-            if (assaySelect.value && window.UrbanScopeDB.getAssay(rec) !== assaySelect.value) return false;
+            if (countrySelect.value && window.UMDBDB.getCountry(rec) !== countrySelect.value) return false;
+            if (citySelect.value && window.UMDBDB.getCity(rec) !== citySelect.value) return false;
+            if (assaySelect.value && window.UMDBDB.getAssay(rec) !== assaySelect.value) return false;
             return true;
           });
         }
@@ -393,7 +393,7 @@
             name: year,
             count: runs.filter((rec) => yearFromRecord(rec) === year).length
           }));
-          const locationGetter = grouping === "city" ? window.UrbanScopeDB.getCity : window.UrbanScopeDB.getCountry;
+          const locationGetter = grouping === "city" ? window.UMDBDB.getCity : window.UMDBDB.getCountry;
           const locationCounts = tally(runs.map(locationGetter).filter(known));
           const topYear = yearCounts.slice().sort((a, b) => b.count - a.count)[0];
 
@@ -402,7 +402,7 @@
             return {
               name: item.name,
               count: item.count,
-              projects: new Set(subset.map(window.UrbanScopeDB.getBioProject).filter(Boolean)),
+              projects: new Set(subset.map(window.UMDBDB.getBioProject).filter(Boolean)),
               years: new Set(subset.map(yearFromRecord).filter(Boolean)),
               yearCounts: new Map(visibleYears.map((year) => [year, subset.filter((rec) => yearFromRecord(rec) === year).length]))
             };
@@ -410,7 +410,7 @@
 
           liveMetrics.innerHTML = `
             <div class="metric"><span class="label">Filtered Runs</span><span class="value">${fmt(runs.length)}</span><span class="note">Runs matching the current filters</span></div>
-            <div class="metric"><span class="label">Filtered BioProjects</span><span class="value">${fmt(new Set(runs.map(window.UrbanScopeDB.getBioProject).filter(Boolean)).size)}</span><span class="note">Distinct BioProjects in the filtered subset</span></div>
+            <div class="metric"><span class="label">Filtered BioProjects</span><span class="value">${fmt(new Set(runs.map(window.UMDBDB.getBioProject).filter(Boolean)).size)}</span><span class="note">Distinct BioProjects in the filtered subset</span></div>
             <div class="metric"><span class="label">Visible ${grouping === "city" ? "Cities" : "Countries"}</span><span class="value">${fmt(locationCounts.length)}</span><span class="note">Resolved location buckets after filtering</span></div>
             <div class="metric"><span class="label">Peak Year</span><span class="value">${topYear ? topYear.name : "NA"}</span><span class="note">${topYear ? fmt(topYear.count) + " runs" : "No dated records in this subset"}</span></div>
           `;

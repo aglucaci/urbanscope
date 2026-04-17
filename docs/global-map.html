@@ -438,6 +438,10 @@
     }
 
     (async () => {
+      if (!window.UMDB) {
+        document.getElementById("mapSubtitle").textContent = "Database script not loaded. Please serve the site from the docs/ directory or use a local web server.";
+        return;
+      }
       const chartRoot = document.getElementById("geoChart");
       const mapStage = document.getElementById("mapStage");
       const subtitle = document.getElementById("mapSubtitle");

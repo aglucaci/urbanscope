@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>UrbanScope — BioProject Explorer</title>
-  <meta name="description" content="UrbanScope is a searchable urban environmental omics database with methods, analytics, downloadable records, and a global map." />
+  <title>UMDB — BioProject Explorer</title>
+  <meta name="description" content="UMDB is a searchable urban environmental omics database with methods, analytics, downloadable records, and a global map." />
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon_16.png" />
   <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon_32.png" />
   <link rel="icon" href="./assets/favicon.ico" />
   <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
-  <meta property="og:image" content="./assets/urbanscope_logo.png" />
+  <meta property="og:image" content="./assets/UMDB_logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -425,9 +425,9 @@
   <div class="wrap">
     <nav class="site-nav" style="margin-bottom:18px">
       <a class="site-brand" href="./index.html">
-        <div class="site-brand-mark"><img src="./assets/urbanscope_logo.png" alt="UrbanScope logo" /></div>
+        <div class="site-brand-mark"><img src="./assets/UMDB_logo.png" alt="UMDB logo" /></div>
         <div class="site-brand-copy">
-          <strong>UrbanScope</strong>
+          <strong>UMDB</strong>
           <span>Urban environmental omics resource</span>
         </div>
       </a>
@@ -1804,14 +1804,14 @@
   function exportMatchedBundle() {
     const payload = buildBundlePayload();
     const label = slugify(q.value || country.value || city.value || assay.value || "matched_runs");
-    downloadTextFile(`urbanscope_bundle_${label}.json`, JSON.stringify(payload, null, 2), "application/json");
+    downloadTextFile(`UMDB_bundle_${label}.json`, JSON.stringify(payload, null, 2), "application/json");
     setMsg(`<span class="ok">Bundle exported.</span> Saved ${payload.counts.unique_srr_accessions.toLocaleString()} SRR accessions from the current search.`, "ok");
   }
 
   function exportSrrList() {
     const payload = buildBundlePayload();
     const label = slugify(q.value || country.value || city.value || assay.value || "matched_runs");
-    downloadTextFile(`urbanscope_srr_${label}.txt`, payload.srr_accessions.join("\n") + "\n");
+    downloadTextFile(`UMDB_srr_${label}.txt`, payload.srr_accessions.join("\n") + "\n");
     setMsg(`<span class="ok">SRR list exported.</span> Saved ${payload.counts.unique_srr_accessions.toLocaleString()} accessions for the current search.`, "ok");
   }
 
@@ -1823,12 +1823,12 @@
     return `#!/usr/bin/env bash
 set -euo pipefail
 
-# UrbanScope FASTQ bundle
+# UMDB FASTQ bundle
 # Generated: ${payload.exported_utc}
 # Matched BioProjects: ${payload.counts.matched_projects}
 # Matched SRR runs: ${payload.counts.unique_srr_accessions}
 
-OUTDIR="\${1:-urbanscope_fastq_${label}}"
+OUTDIR="\${1:-UMDB_fastq_${label}}"
 THREADS="\${THREADS:-6}"
 mkdir -p "$OUTDIR/sra" "$OUTDIR/fastq" "$OUTDIR/logs"
 
@@ -1849,19 +1849,19 @@ ${accessionBlock}
 )
 
 for SRR in "\${SRRS[@]}"; do
-  echo "[UrbanScope] downloading $SRR"
+  echo "[UMDB] downloading $SRR"
   prefetch "$SRR" --output-directory "$OUTDIR/sra" >> "$OUTDIR/logs/prefetch.log" 2>&1
   fasterq-dump "$OUTDIR/sra/$SRR" --split-files --threads "$THREADS" --outdir "$OUTDIR/fastq" >> "$OUTDIR/logs/fasterq_dump.log" 2>&1
 done
 
-echo "[UrbanScope] completed FASTQ export into $OUTDIR/fastq"
+echo "[UMDB] completed FASTQ export into $OUTDIR/fastq"
 `;
   }
 
   function exportFastqScript() {
     const payload = buildBundlePayload();
     const label = slugify(q.value || country.value || city.value || assay.value || "matched_runs");
-    downloadTextFile(`urbanscope_fastq_bundle_${label}.sh`, buildFastqScript(), "text/x-shellscript");
+    downloadTextFile(`UMDB_fastq_bundle_${label}.sh`, buildFastqScript(), "text/x-shellscript");
     setMsg(`<span class="ok">FASTQ script exported.</span> Script includes ${payload.counts.unique_srr_accessions.toLocaleString()} SRR runs from the current search.`, "ok");
   }
 
@@ -1907,7 +1907,7 @@ echo "[UrbanScope] completed FASTQ export into $OUTDIR/fastq"
 
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = `urbanscope_bioproject_page_${page}.json`;
+    a.download = `UMDB_bioproject_page_${page}.json`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 2000);
   }
@@ -1962,6 +1962,10 @@ echo "[UrbanScope] completed FASTQ export into $OUTDIR/fastq"
 
   // --------- Init ----------
   (async () => {
+    if (!window.UMDB) {
+      setMsg("Database script not loaded. Please serve the site from the docs/ directory or use a local web server.", "err");
+      return;
+    }
     try {
       const savedTheme = localStorage.getItem("umdb-explorer-theme");
       applyTheme(savedTheme === "light" ? "light" : "dark");
