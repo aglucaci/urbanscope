@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 420" role="img" aria-labelledby="title desc">
+  <title id="title">UMDB logo</title>
+  <desc id="desc">UMDB horizontal logo with an urban microbiome emblem and the words Urban Microbiome Database.</desc>
+  <defs>
+    <linearGradient id="skyline" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0E2A57" />
+      <stop offset="55%" stop-color="#117EA6" />
+      <stop offset="100%" stop-color="#35C7D0" />
+    </linearGradient>
+    <linearGradient id="tealNet" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#53D9A3" />
+      <stop offset="100%" stop-color="#7BE1C8" />
+    </linearGradient>
+    <linearGradient id="amberNet" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD56E" />
+      <stop offset="100%" stop-color="#F0B63F" />
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(40,30)">
+    <ellipse cx="220" cy="250" rx="180" ry="92" fill="#203861" />
+    <ellipse cx="220" cy="250" rx="170" ry="82" fill="#253E69" />
+    <path d="M52 266c12 18 61 47 168 47 106 0 162-27 168-47" fill="none" stroke="#2B86C5" stroke-width="12" stroke-linecap="round"/>
+    <path d="M66 277c21 17 73 35 154 35 82 0 131-16 155-33" fill="none" stroke="#8FD8B3" stroke-width="9" stroke-linecap="round" opacity=".7"/>
+
+    <path d="M75 221c0-9 5-17 14-21l41-17 18-61 53-22 17 4 26 46 33-1 32 12c7 3 12 10 12 18v46H75z" fill="#1C3058"/>
+
+    <path d="M111 202v-48l30-12v60z" fill="url(#skyline)"/>
+    <path d="M155 172v-87l28 8v79z" fill="#18335D"/>
+    <path d="M185 169v-126l25 12v114z" fill="url(#skyline)"/>
+    <path d="M217 183v-71l26 1v70z" fill="#2FC7CF"/>
+    <path d="M247 184v-82l30 10v72z" fill="#1B5478"/>
+
+    <rect x="171" y="71" width="6" height="52" fill="#34D4D0"/>
+    <rect x="195" y="56" width="5" height="101" fill="#34D4D0"/>
+    <rect x="255" y="126" width="7" height="11" fill="#F5C24D"/>
+    <rect x="255" y="146" width="7" height="11" fill="#F5C24D"/>
+    <rect x="255" y="166" width="7" height="11" fill="#F5C24D"/>
+
+    <path d="M63 222c17 0 25-9 35-9 15 0 20 8 31 8 10 0 15-5 24-5 12 0 17 8 30 8 8 0 13-4 20-4 15 0 17 9 31 9 13 0 19-8 30-8 14 0 20 9 34 9 8 0 17-5 29-8 10-3 22-3 38 0v38H63z" fill="#203861"/>
+
+    <g stroke="url(#tealNet)" stroke-width="7" stroke-linecap="round">
+      <line x1="92" y1="226" x2="118" y2="225"/>
+      <line x1="118" y1="225" x2="138" y2="212"/>
+      <line x1="138" y1="212" x2="162" y2="243"/>
+      <line x1="162" y1="243" x2="195" y2="243"/>
+      <line x1="195" y1="243" x2="219" y2="273"/>
+      <line x1="118" y1="225" x2="118" y2="252"/>
+      <line x1="137" y1="267" x2="170" y2="282"/>
+    </g>
+    <g fill="url(#tealNet)">
+      <circle cx="92" cy="226" r="10"/>
+      <circle cx="118" cy="225" r="14"/>
+      <circle cx="138" cy="212" r="11"/>
+      <circle cx="162" cy="243" r="18"/>
+      <circle cx="195" cy="243" r="12"/>
+      <circle cx="219" cy="273" r="17"/>
+      <circle cx="118" cy="252" r="11"/>
+      <circle cx="137" cy="267" r="10"/>
+      <circle cx="170" cy="282" r="8"/>
+      <circle cx="106" cy="274" r="6"/>
+      <circle cx="147" cy="286" r="5"/>
+    </g>
+
+    <g stroke="url(#amberNet)" stroke-width="6" stroke-linecap="round">
+      <line x1="258" y1="211" x2="286" y2="230"/>
+      <line x1="286" y1="230" x2="321" y2="217"/>
+      <line x1="286" y1="230" x2="287" y2="260"/>
+      <line x1="287" y1="260" x2="318" y2="273"/>
+      <line x1="258" y1="211" x2="256" y2="254"/>
+      <line x1="256" y1="254" x2="287" y2="260"/>
+      <line x1="321" y1="217" x2="349" y2="239"/>
+      <line x1="318" y1="273" x2="349" y2="239"/>
+      <line x1="286" y1="230" x2="349" y2="239"/>
+    </g>
+    <g fill="url(#amberNet)">
+      <circle cx="258" cy="211" r="13"/>
+      <circle cx="286" cy="230" r="14"/>
+      <circle cx="321" cy="217" r="11"/>
+      <circle cx="349" cy="239" r="10"/>
+      <circle cx="318" cy="273" r="11"/>
+      <circle cx="287" cy="260" r="12"/>
+      <circle cx="256" cy="254" r="15"/>
+    </g>
+
+    <path d="M76 184c18-26 34-42 56-54M364 189c-22-24-41-38-71-48" fill="none" stroke="#203861" stroke-width="6" stroke-linecap="round"/>
+  </g>
+
+  <g transform="translate(480,82)">
+    <text x="0" y="148" font-family="'IBM Plex Sans', 'Segoe UI', sans-serif" font-size="184" font-weight="700" fill="#223A64" letter-spacing="2">UMDB</text>
+    <text x="2" y="246" font-family="'IBM Plex Sans', 'Segoe UI', sans-serif" font-size="58" font-weight="500" fill="#2A8CA7">Urban Microbiome Database</text>
+  </g>
+</svg>
